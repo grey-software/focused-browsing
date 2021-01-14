@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://app.singlelink.co/u/focused-browsing" target="_blank">
-    <img alt="Material Math Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/logo.png">
+    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/logo.png">
   </a>
 </div>
 
@@ -11,8 +11,11 @@ A web extension that allows you to browse popular websites without elements that
 ### [Our Current Deployed Extensions](https://app.singlelink.co/u/focused-browsing)
 
 [LinkedIn Focus Chrome](https://chrome.google.com/webstore/detail/linkedin-focus/cmafljjdkloacahjddlpaognhjpacdff?hl=en)
+
 [LinkedIn Focus Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkedinfocus/)
+
 [Twitter Focus Chrome](https://chrome.google.com/webstore/detail/twitter-focus/kmdpomipbibobgdgfeidajmnlecloeml?hl=en&)
+
 [Twitter Focus Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkedinfocus/)
 
 ### Project Status
