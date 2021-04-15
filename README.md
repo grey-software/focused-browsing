@@ -6,7 +6,7 @@
 
 # Focused Browsing
 
-A web extension that allows you to browse popular websites without elements that are designed to take away your attention and focus. The websites we are currently targeting are 
+A web extension that allows you to browse popular websites without elements that are designed to take away your attention and focus. The websites we are currently targeting are Twitter & LinkedIn.
 
 ### [Our Current Deployed Extensions](https://app.singlelink.co/u/focused-browsing)
 
@@ -21,4 +21,3 @@ A web extension that allows you to browse popular websites without elements that
 ### Project Status
 
 This project currently has no active maintainer and will be developed during one of Grey Software's educational programs. The standby maintainer for this project is [Arsala](https://gitlab.com/ArsalaBangash)
-
