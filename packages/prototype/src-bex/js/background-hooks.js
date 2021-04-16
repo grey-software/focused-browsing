@@ -2,7 +2,7 @@
 // Note: Events sent from this background script using `bridge.send` can be `listen`'d for by all client BEX bridges for this BEX
 
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/background-hooks
-
+var openExtension = true;
 export default function attachBackgroundHooks (bridge /* , allActiveConnections */) {
   bridge.on('storage.get', event => {
     const payload = event.data
@@ -34,6 +34,17 @@ export default function attachBackgroundHooks (bridge /* , allActiveConnections 
     const payload = event.data
     chrome.storage.local.remove(payload.key, () => {
       bridge.send(event.eventResponseKey, payload.data)
+    })
+  })
+
+  chrome.browserAction.onClicked.addListener(() => {
+    bridge.send('bex.toggle.toolbar')
+  })
+
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+    bridge.send('bex.tab.opened', { url: tab.url }).then(response => {
+
+      console.log('Some response from the other side')
     })
   })
 
