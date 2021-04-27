@@ -11,6 +11,12 @@
   "browser_action": {
     "default_title": "quasar-browser-extension"
   },
+  "commands": {
+    "focus-feature":{
+      "suggested_key": {"default": "Ctrl+Shift+Y"},
+      "description": "Send a 'toggle-feature' event to the extension"
+    }
+  },
   "background": {
     "scripts": [
       "www/bex-background.js",
@@ -19,7 +25,7 @@
     "persistent": true
   },
   "content_scripts": [{
-    "matches": ["<all_urls>"],
+    "matches": ["*://*.twitter.com/*", "*://*.linkedin.com/*"],
     "js": [
       "www/bex-content-script.js",
       "js/content-script.js"
@@ -29,7 +35,8 @@
     ]
   }],
   "permissions": [
-    "<all_urls>",
+    "*://*.twitter.com/*", 
+    "*://*.linkedin.com/*",
     "storage",
     "tabs",
     "activeTab"

@@ -1,35 +1,28 @@
 // Hooks added here have a bridge allowing communication between the BEX Content Script and the Quasar Application.
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/content-hooks
 const FEED_CLASS = "css-1dbjc4n r-1jgb5lz r-1ye8kvj r-13qz1uu";
+const PANEL_CLASS = "css-1dbjc4n r-1ihkh82 r-1in3vh1 r-1867qdf r-1phboty r-rs99b7 r-1ifxtd0 r-1udh08x"
+
 const
   iFrame = document.createElement('iframe'),
-  defaultFrameHeight = '0px',
-  defaultFrameWidth = '0px'
-  
+  defaultFrameHeight = '100px',
+  defaultFrameWidth = '120px'
+
+  const currentUrl = window.document.URL
+console.log(currentUrl)
+
 export default function attachContentHooks (bridge) {
   // handle event
   bridge.on('focus', function (event) {
     console.log("focus mode")
     document.getElementsByClassName(FEED_CLASS)[1].style.visibility = "hidden"
+    document.getElementsByClassName(PANEL_CLASS)[0].style.visibility = "hidden"
   })
 
   bridge.on('un-focus', function (event) {
     console.log("unfocus mode")
     document.getElementsByClassName(FEED_CLASS)[1].style.visibility = "visible"
-  })
-
-  bridge.on('activateFocus', function (event){
-    const openExtension = event.data.openExtension
-    if (openExtension){
-       console.log("Open Frame")
-       setIFrameDimensions('100px', '120px')
-    }else{
-      console.log("Close Frame")
-      // document.getElementsByTagName('iframe')[0].style = "hidden"
-      setIFrameDimensions(defaultFrameHeight, defaultFrameWidth)
-    }
-
-    // bridge.send(event.responseKey)
+    document.getElementsByClassName(PANEL_CLASS)[0].style.visibility = "visible"
   })
 
 
@@ -64,5 +57,7 @@ function createIframe () {
   // When the page loads, insert our browser extension code.
   var iFrame = createIframe() 
   iFrame.src = chrome.runtime.getURL('www/index.html')
-  document.body.prepend(iFrame)
+  // document.body.prepend(iFrame)
+
+  // document.getElementsByClassName("css-1dbjc4n r-1awozwy")[0].append(iFrame)
 })()
