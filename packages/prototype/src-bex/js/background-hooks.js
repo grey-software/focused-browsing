@@ -4,13 +4,36 @@
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/background-hooks
 
 export default function attachBackgroundHooks (bridge /* , allActiveConnections */) {
-  var focus = false;
-  chrome.commands.onCommand.addListener(function(command) {
-    if (!focus){
-      bridge.send("focus")
-    }else{
-      bridge.send("un-focus")
-    }
-    focus = !focus
+  var focusMode = {"twitter": true, "linkedin": true};
+  var currentURL = null;
+  
+
+  chrome.commands.onCommand.addListener(function(command , tab) {
+
+    chrome.tabs.get(tab.id, function(tab){
+      currentURL = tab.url;
+      console.log(currentURL)
+
+      if (currentURL == "https://twitter.com/home") {
+        console.log("sending message to twitter")
+        sendStatus(focusMode, "twitter", bridge)
+      }else if (currentURL == "https://www.linkedin.com/feed/") {
+        console.log("sending message to linkedin")
+        sendStatus(focusMode, "linkedin", bridge)
+      }
+
+    });
   });
+
 }
+
+
+function sendStatus(focusMode, webPage, bridge){
+  if (focusMode[webPage]){
+    bridge.send("focus")
+  }else{
+    bridge.send("un-focus")
+  }
+  focusMode[webPage] = !focusMode[webPage]
+}
+
