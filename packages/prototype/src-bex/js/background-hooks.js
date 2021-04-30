@@ -6,8 +6,6 @@ const focusMode = { "twitter": true, "linkedin": true };
 var isCommandListenerRegistered = false
 
 export default function attachBackgroundHooks(bridge /* , allActiveConnections */) {
-  console.log(`INFO: Is Command listener registered? : ${isCommandListenerRegistered}`)
-
   registerCommandListener(bridge)
 }
 
