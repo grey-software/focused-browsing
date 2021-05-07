@@ -1,11 +1,9 @@
 // Hooks added here have a bridge allowing communication between the BEX Content Script and the Quasar Application.
 // More info: https://quasar.dev/quasar-cli/developing-browser-extensions/content-hooks
-const TWITTER_FEED_CLASS = "css-1dbjc4n r-1jgb5lz r-1ye8kvj r-13qz1uu";
-const TWITTER_PANEL_CLASS = "css-1dbjc4n r-1ihkh82 r-1in3vh1 r-1867qdf r-1phboty r-rs99b7 r-1ifxtd0 r-1udh08x"
+var TWITTER_FEED_CLASS = "";
+var TWITTER_PANEL_CLASS = "";
 
-
-
-
+const FEED_CONTAINER_CLASS_NAME = "section[aria-labelledby^=accessible-list]"
 const NEWS_FEED_CLASSNAME = "core-rail"
 const SHARED_NEWS_CLASSNAME = "ad-banner-container artdeco-card ember-view"
 const MAIN_CONTAINER_CLASSNAME = "neptune-grid three-column ghost-animate-in"
@@ -17,6 +15,8 @@ const
   iFrame = document.createElement('iframe'),
   defaultFrameHeight = '100px',
   defaultFrameWidth = '120px'
+
+
 
 
 const currentUrl = window.location.href
@@ -33,6 +33,8 @@ export default function attachContentHooks (bridge) {
     if (currentUrl == "twitter"){
       console.log("about to enter focus on Twitter")
       blockFeedAndPanelTwitter()
+      //I am appending it to the body just to test it out for now, to see if the code is being rendered on focus right away 
+      document.body.prepend(iFrame)
     }
     else if(currentUrl == "linkedin"){
       console.log("about to focus on linkedin")
@@ -67,9 +69,6 @@ const setIFrameDimensions = (height, width) => {
 
 // create iframe
 function createIframe () {
-  // const iframe = document.createElement('iframe')
-  // iframe.width = '120px'
-  // iframe.height = '100px'
   setIFrameDimensions(defaultFrameHeight, defaultFrameWidth)
   Object.assign(iFrame.style, {
     position: 'fixed',
@@ -78,8 +77,6 @@ function createIframe () {
   })
 
   iFrame.src = chrome.runtime.getURL('www/index.html')
-  console.log(iFrame.src)
-  return iFrame
 }
 
 
@@ -101,12 +98,14 @@ var hidden = false
 function hideTwitterDistractions(hide){
   try { 
     if(hide){
-      document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[0].children[0].children[3].style.visibility = "hidden"
-      document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[2].style.visibility = "hidden"
+      document.getElementsByClassName(TWITTER_FEED_CLASS)[0].style.visibility = "hidden"
+      document.getElementsByClassName(TWITTER_PANEL_CLASS)[1].style.visibility = "hidden"
+
+  
       hidden = true;
     }else{
-      document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[0].children[0].children[3].style.visibility = "visible"
-      document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[2].style.visibility = "visible"
+      document.getElementsByClassName(TWITTER_FEED_CLASS)[0].style.visibility = "visible"
+      document.getElementsByClassName(TWITTER_PANEL_CLASS)[1].style.visibility = "visible"
     }
   }catch(err){
     console.log(err)
@@ -116,7 +115,7 @@ function hideTwitterDistractions(hide){
 
 var intervalId;
 function tryBlockingTwitterHome() {
-  if (distractionsHidden(true)) {
+  if (distractionsHidden()) {
       clearInterval(intervalId)
   } else {
       try {
@@ -143,18 +142,11 @@ function blockFeedAndPanelTwitter() {
   }
 }
 
-function distractionsHidden(isHomePage) {
-  if (isHomePage) {
-      if (feedHasLoaded()) {
-          return document.getElementsByClassName(TWITTER_PANEL_CLASS)[0].style.visibility == "hidden" && document.getElementsByClassName(TWITTER_FEED_CLASS)[1].style.visibility == "hidden";
-      }
-      return false;
-  } else {
-      if (panelHasLoaded()) {
-          return document.getElementsByClassName(TWITTER_PANEL_CLASS)[0].style.visibility == "hidden"
-      } 
-      return false;
-  }
+function distractionsHidden() {
+    if (feedHasLoaded()) {
+      return isTwitterFeedHidden() && isTwitterPanelHidden()
+    }
+
 }
 
 
@@ -163,24 +155,39 @@ function homePageTwitterHasLoaded() {
 }
 
 
+function isTwitterFeedHidden(){
+  return document.getElementsByClassName(TWITTER_FEED_CLASS)[0].style.visibility == "hidden"
+}
 
+function isTwitterPanelHidden(){
+  return document.getElementsByClassName(TWITTER_PANEL_CLASS)[1].style.visibility == "hidden"
+}
 
 function panelHasLoaded() {
-  return  document.getElementsByClassName(TWITTER_FEED_CLASS)[1]
+  TWITTER_FEED_CLASS = getTwitterPanelClassName()
+  return TWITTER_FEED_CLASS
 }
 
 function feedHasLoaded() {
-  return document.getElementsByClassName(TWITTER_PANEL_CLASS)[0]
+  TWITTER_PANEL_CLASS = getTwitterFeedClassName()
+  return TWITTER_PANEL_CLASS
 }
 
+
+
+function getTwitterFeedClassName(){
+  return document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[0].children[0].children[3].className
+}
+
+function getTwitterPanelClassName(){
+  return document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[1].children[0].children[1].children[0].children[0].children[0].children[2].className
+}
 
 
 
 ;(function () {
   // When the page loads, insert our browser extension code.
-  var iFrame = createIframe() 
-  iFrame.src = chrome.runtime.getURL('www/index.html')
+  createIframe()  
   // document.body.prepend(iFrame)
-
-  // document.getElementsByClassName("css-1dbjc4n r-1awozwy")[0].append(iFrame)
+  // document.getElementsByClassName(TWITTER_FEED_CLASS)[1].append(iFrame)
 })()
