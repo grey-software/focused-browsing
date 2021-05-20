@@ -27,7 +27,8 @@ This project currently has no active maintainer and will be developed during one
 
 1. Go to project folder
 ```
-cd focused-browsing-v2
+
+cd packages/focused-browsing-v2
 ```
 
 2. Run build command to create extension package
