@@ -3,40 +3,51 @@ More info: https://quasar.dev/quasar-cli/developing-browser-extensions/backgroun
 */
 var focusMode = {"twitter": {"focus": true, "initialized": false}, "linkedin":{"focus": true, "initialized": false} };
 
+
+var isBackgroundHooksRegistered = false 
+
+var refreshListener = false 
+
 var isCommandListenerRegistered = false
 
 var isTabListenerRegistered = false 
 
+
+
+
 export default function attachBackgroundHooks(bridge /* , allActiveConnections */) {
-  chrome.tabs.query({
-    active: true,
-    currentWindow: true
-  }, function(tabs) {
-    var tab = tabs[0];
-    var url = tab.url;
-    if (url === "https://twitter.com/home") {
-      initializeFocus("twitter",bridge)
-    } else if (url === "https://www.linkedin.com/feed/") {
-      initializeFocus("linkedin",bridge)
-    }
-
-    registerCommandListener(bridge)
-    registerTabsListener(bridge)
-
-  });
+  if (!isBackgroundHooksRegistered){
+    chrome.tabs.query({
+      active: true,
+      currentWindow: true
+    }, function(tabs) {
+      var tab = tabs[0];
+      var url = tab.url;
+      if (url === "https://twitter.com/home") {
+        initializeFocus("twitter",bridge)
+      } else if (url === "https://www.linkedin.com/feed/") {
+        initializeFocus("linkedin",bridge)
+      }
+  
+      registerCommandListener(bridge)
+      // registerTabsListener(bridge)
+      isBackgroundHooksRegistered = !isBackgroundHooksRegistered
+    });
+  }else{
+    console.log("WARNING: Background Hooks  initialized, skipping")
+  }
 
 }
 
 function registerCommandListener(bridge) {
-  console.log(`INFO: Is Command listener registered? : ${isCommandListenerRegistered}`)
+  // console.log(`INFO: Is Command listener registered? : ${isCommandListenerRegistered}`)
 
-  if (isCommandListenerRegistered) {
-    console.log("WARNING: Command listener already registered, skipping")
-    return
-  }
+  // if (isCommandListenerRegistered) {
+  //   console.log("WARNING: Command listener already registered, skipping")
+  //   return
+  // }
 
   function toggleFocusListener(command, tab) {
-
     chrome.tabs.get(tab.id, function (tab) {
       const currentURL = tab.url;
       console.log(currentURL)
@@ -90,7 +101,11 @@ function registerTabsListener(bridge){
 
 }
 
-
+async function getCurrentTab() {
+  let queryOptions = { active: true, currentWindow: true };
+  let [tab] = await chrome.tabs.query(queryOptions);
+  return tab;
+}
 
 
 

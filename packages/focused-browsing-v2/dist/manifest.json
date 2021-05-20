@@ -1,0 +1,39 @@
+{
+    "name": "Focused Browsing",
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "description": "Improving the focus of our browsing experience", 
+    "browser_action": {
+        "default_title": "Focused Browsing"
+    },
+    "background":{
+        "scripts": ["js/background.js"],
+        "persistent": true
+    },
+    "commands": {
+        "focus-feature":{
+            "suggested_key": {"default": "Ctrl+Shift+1"},
+            "description": "Send a 'toggle-feature' event to the extension"
+        }
+    },
+    "content_scripts":[{
+        "matches": ["*://*.twitter.com/*",  "*://*.linkedin.com/*"],
+        "js": [
+            "js/content.js"
+        ]
+    }],
+    
+    "web_accessible_resources" :[
+        "www/*",
+        "js/*",
+        "css/*",
+        "<all_urls>"
+    ],
+    "permissions": [
+        "*://*.twitter.com/*", 
+        "*://*.linkedin.com/*",
+        "storage",
+        "tabs",
+        "activeTab"
+      ]
+}
