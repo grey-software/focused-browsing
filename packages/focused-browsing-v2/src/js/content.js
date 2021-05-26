@@ -25,7 +25,7 @@ var TWITTER_FEED_PARENT_NODE;
 var TWITTER_FEED_CHILD_NODE; 
 var TOPICS_TO_FOLLOW = null;
 
-var PANEL_ELEMENTS = [] 
+var PANEL_ELEMENTS;
 
 
 function focusListener(msg) {
@@ -35,10 +35,10 @@ function focusListener(msg) {
   let url = msg.url
   if (status == "focus"){
      if (url.includes("twitter")) {
+          PANEL_ELEMENTS =[]
           if(method == "initial"){
               focusTwitter();
           }else if(method == "hidePanels"){
-              PANEL_ELEMENTS = [] 
               focusTwitterPanel();
           }else{
               toggleTwitterDistractions(true);
@@ -85,7 +85,7 @@ function injectIframe() {
     appIframe.width = DEFAULT_FRAME_WIDTH;
     appIframe.height = DEFAULT_FRAME_HEIGHT;
     appIframe.id = IFRAME_ID
-    // document.body.style.paddingLeft = width;
+
     Object.assign(appIframe.style, {
         position: "fixed",
         border: "none",
@@ -189,11 +189,9 @@ function tryBlockingTwitterPanel() {
 function focusTwitter() {
   console.log("setting interval to block twitter")
   if (initialLoad) {
-    console.log("1000 interval")
     feedIntervalId = setInterval(tryBlockingTwitterHome, 500);
     initialLoad = !initialLoad
   } else {
-    console.log("100 interval")
     feedIntervalId = setInterval(tryBlockingTwitterHome, 100);
   }
 }
@@ -201,7 +199,7 @@ function focusTwitter() {
 
 var pageInterval;
 function focusTwitterPanel(){
-  pageInterval = setInterval(tryBlockingTwitterPanel, 1000);
+  pageInterval = setInterval(tryBlockingTwitterPanel, 700);
 }
 
 
@@ -229,19 +227,29 @@ function hideTwitterPanel(shouldHide){
 
   let PANEL = getTwitterPanel()
   if(shouldHide){
-    let i = 4
-    while (PANEL.children.length > 1) {
-      var nodeChild = PANEL.children[i].cloneNode(true)
-      PANEL_ELEMENTS.push(nodeChild)
-      PANEL.removeChild(PANEL.children[i])
-      i-=1
+    let length = PANEL.children.length
+    console.log("current length")
+    console.log(length)
+    // console.log(PANEL.children)
+    while (length != 1) {
+      var currentLastChild = PANEL.lastChild
+      PANEL_ELEMENTS.push(currentLastChild)
+      PANEL.removeChild(currentLastChild)
+      length -= 1 
     }
+
+
   }else{
-    let i = 3
-    while(i >= 0){
+    // let i = 3
+    // while(i >= 0){
+    //   PANEL.append(PANEL_ELEMENTS[i])
+    //   i-=1
+    // }
+
+    for(let i =0; i<PANEL_ELEMENTS.length; i+=1){
       PANEL.append(PANEL_ELEMENTS[i])
-      i-=1
     }
+
   }
 }
 
@@ -267,7 +275,7 @@ function distractionsHidden(isHomePage) {
 
   
 function homePageTwitterHasLoaded() {
-  return hasTwitterPanelLoaded() && getTwitterFeed()
+  return getTwitterPanel() && getTwitterFeed()
 }
 
 
@@ -287,18 +295,16 @@ function getTwitterPanel(){
 
 function hasTwitterPanelLoaded(){
   let panel = getTwitterPanel()
-  return panel.children.length == 5
+  return panel.children.length == 5 || panel.children.length == 3
 }
 
 
 function getTwitterFeedClassName() {
   let feed = getTwitterFeed()
-  console.log(feed)
   if(feed != null){
     return feed.className
   }else{
     throw 'feed class name not found!';
   }
 }
-
 
