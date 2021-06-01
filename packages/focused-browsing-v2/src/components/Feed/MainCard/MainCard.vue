@@ -29,6 +29,3 @@ export default {
   components: { CardHeading, ButtonGroup}
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

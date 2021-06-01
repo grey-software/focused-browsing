@@ -3,12 +3,6 @@
        <MainCard />
        <Quote />
        <CardTextLinks />
-    <!-- <div class="card-container">
-      <p class="heading-two">
-        Press Command/Ctrl&#43;shift&#43;1 to toggle on
-        and off
-      </p>
-    </div> -->
   </div>
 </template>
 
@@ -23,6 +17,3 @@ export default {
   components: { MainCard, Quote, CardTextLinks}
 };
 </script>
-
-<style lang="scss" scoped>
-</style>

@@ -11,7 +11,6 @@
         Focused Browsing is active
       </p>
     </div>
-  <!-- </div> -->
 </template>
 
 <script>
@@ -19,6 +18,3 @@ export default {
   name: "CardHeading"
 };
 </script>
-
-<style lang="scss" scoped>
-</style>
