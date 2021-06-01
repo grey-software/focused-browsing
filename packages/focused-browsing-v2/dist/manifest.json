@@ -19,7 +19,7 @@
     "content_scripts":[{
         "matches": ["*://*.twitter.com/*",  "*://*.linkedin.com/*"],
         "js": [
-            "js/content.js"
+            "jquery.min.js","js/content.js"
         ]
     }],
     

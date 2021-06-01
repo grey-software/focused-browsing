@@ -1,6 +1,9 @@
 {
     "/dist/js/background.js": "/dist/js/background.js",
     "/dist/js/content.js": "/dist/js/content.js",
-    "/dist/js/focusCard.js": "/dist/js/focusCard.js",
-    "/dist/css/card.css": "/dist/css/card.css"
+    "/dist/js/siteStrategy/Twitter/TwitterStrategy.js": "/dist/js/siteStrategy/Twitter/TwitterStrategy.js",
+    "/dist/js/renderCards/twitter/feed.js": "/dist/js/renderCards/twitter/feed.js",
+    "/dist/css/twitter-dark.css": "/dist/css/twitter-dark.css",
+    "/dist/css/twitter-dim.css": "/dist/css/twitter-dim.css",
+    "/dist/css/twitter.css": "/dist/css/twitter.css"
 }
