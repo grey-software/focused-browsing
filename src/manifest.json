@@ -1,0 +1,38 @@
+{
+    "name": "Focused Browsing",
+    "version": "0.9",
+    "manifest_version": 2,
+    "description": "Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
+    "browser_action": {
+        "default_title": "Focused Browsing"
+    },
+    "background": {
+        "scripts": ["js/background.js"],
+        "persistent": true
+    },
+    "commands": {
+        "focus-feature": {
+            "suggested_key": { "default": "Ctrl+Shift+1" },
+            "description": "Send a 'toggle-feature' event to the extension"
+        }
+    },
+    "content_scripts": [{
+        "matches": ["*://*.twitter.com/*", "*://*.linkedin.com/*"],
+        "js": [
+            "js/content.js"
+        ]
+    }],
+
+    "web_accessible_resources": [
+        "www/*",
+        "js/*",
+        "css/*",
+        "<all_urls>"
+    ],
+    "permissions": [
+        "*://*.twitter.com/*",
+        "*://*.linkedin.com/*",
+        "tabs",
+        "activeTab"
+    ]
+}

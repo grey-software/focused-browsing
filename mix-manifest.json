@@ -1,0 +1,10 @@
+{
+    "/dist/js/background.js": "/dist/js/background.js",
+    "/dist/js/content.js": "/dist/js/content.js",
+    "/dist/js/Twitter/TwitterController.js": "/dist/js/Twitter/TwitterController.js",
+    "/dist/js/feed-card-controller.js": "/dist/js/feed-card-controller.js",
+    "/dist/css/twitter-dark.css": "/dist/css/twitter-dark.css",
+    "/dist/css/twitter-dim.css": "/dist/css/twitter-dim.css",
+    "/dist/css/twitter.css": "/dist/css/twitter.css",
+    "/dist/manifest.json": "/dist/manifest.json"
+}
