@@ -23,7 +23,7 @@ export default {
       window.open("https://org.grey.software/");
     },
     openFocusedBrowsing(){
-      window.open("https://hackmd.io/mSFA7Bh_QNivFQmDJsNP6Q")
+      window.open("https://org.grey.software/focused-browing")
     }
 
   }
