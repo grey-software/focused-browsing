@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://org.grey.software/focused-browsing" target="_blank">
-    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/logo.png">
+    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/src/logo.png">
   </a>
 </div>
 
