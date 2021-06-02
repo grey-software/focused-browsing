@@ -7,6 +7,12 @@
         "default_icon": "./logo.png",
         "default_title": "Focused Browsing"
     },
+
+    "icons": { 
+        "16": "logox16.png",
+        "48": "logox48.png",
+        "128": "logox128.png"
+    },
     "background": {
         "scripts": ["js/background.js"],
         "persistent": true

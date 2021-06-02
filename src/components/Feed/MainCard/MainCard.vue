@@ -11,7 +11,7 @@
             <ButtonGroup />
             <div class="keyboard-shortcut">
               <p class="caption">
-                Or press Command/Ctrl&#43;Shift&#43;1 to show/hide
+                Or press <strong>Command/Ctrl&#43;Shift&#43;1 </strong> to show/hide
                 feed
               </p>
             </div>

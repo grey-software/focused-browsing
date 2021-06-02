@@ -1,10 +1,14 @@
 {
-    "/dist/js/background.js": "/dist/js/background.js",
-    "/dist/js/content.js": "/dist/js/content.js",
-    "/dist/js/Twitter/TwitterController.js": "/dist/js/Twitter/TwitterController.js",
-    "/dist/js/feed-card-controller.js": "/dist/js/feed-card-controller.js",
-    "/dist/css/twitter-dark.css": "/dist/css/twitter-dark.css",
-    "/dist/css/twitter-dim.css": "/dist/css/twitter-dim.css",
-    "/dist/css/twitter.css": "/dist/css/twitter.css",
-    "/dist/manifest.json": "/dist/manifest.json"
+    "/extension-build/js/background.js": "/extension-build/js/background.js",
+    "/extension-build/js/content.js": "/extension-build/js/content.js",
+    "/extension-build/js/Twitter/TwitterController.js": "/extension-build/js/Twitter/TwitterController.js",
+    "/extension-build/js/feed-card-controller.js": "/extension-build/js/feed-card-controller.js",
+    "/extension-build/css/twitter-dark.css": "/extension-build/css/twitter-dark.css",
+    "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
+    "/extension-build/css/twitter.css": "/extension-build/css/twitter.css",
+    "/extension-build/manifest.json": "/extension-build/manifest.json",
+    "/extension-build/logo.png": "/extension-build/logo.png",
+    "/extension-build/logox16.png": "/extension-build/logox16.png",
+    "/extension-build/logox48.png": "/extension-build/logox48.png",
+    "/extension-build/logox128.png": "/extension-build/logox128.png"
 }

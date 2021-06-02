@@ -1,19 +1,19 @@
 <template>
   <div class="quote-container">
     <p class="quote">
-      <strong class="quote-emphasis-0">"{{this.quote}}"</strong>
+      "{{this.quote}}"
     </p>
     <p class="quoter">- {{this.author}}</p>
   </div>
 </template>
 
 <script>
-import {quoteInfo} from './quoteInfo.js';
+import {quotes} from './quotes.js';
 export default {
-  name: "QuoteContainer",
+  name: "Quote",
   data() {
     return{
-      quoteInfo: quoteInfo,
+      quotes: quotes,
       quote: "",
       author: ""
     }
@@ -25,9 +25,9 @@ export default {
 
   methods: {
     setQuote() {
-      let randNum = Math.floor(Math.random() * this.quoteInfo.length)
-      this.quote = this.quoteInfo[randNum]['text']
-      this.author = this.quoteInfo[randNum]['source']
+      let randNum = Math.floor(Math.random() * this.quotes.length)
+      this.quote = this.quotes[randNum]['text']
+      this.author = this.quotes[randNum]['source']
     }
   }
 

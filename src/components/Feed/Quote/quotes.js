@@ -1,4 +1,4 @@
-export const quoteInfo = [
+export const quotes = [
     {
         id: 1,
         text:
