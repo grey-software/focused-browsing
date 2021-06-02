@@ -28,8 +28,6 @@ Command/Ctrl+Shift+1 currently toggles all distractions and we are thinking of o
 
 We currently support Twitter, and we have our eyes set on LinkedIn, Facebook, and Youtube next. If you would like us to support a website that is distracting you, let us know on our [Github discussion board](https://github.com/grey-software/focused-browsing/discussions).
 
-
-
 ## Developing Focused Browsing
 ---
 ### 1. Clone the repo and enter the directory 
