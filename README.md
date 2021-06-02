@@ -9,7 +9,7 @@ Focused browsing is a web extension that helps you focus on your creative and pr
 <img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src="https://user-images.githubusercontent.com/20130700/120509712-c1457f00-c396-11eb-9a46-fc1ccb01ab58.png">
 
 ## Project Status
-This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash), [Avi](https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI) For our Focused Browsing v0.9, we will be hiding distrations on Twitter only, but there will be more sites added to our domain in the future. 
+This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash), [Avi](https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI) For Focused Browsing v0.9, we will be hiding distrations on Twitter only, but there will be more sites added to our domain in the future. 
 
 
 ## Setup
@@ -25,8 +25,10 @@ npm install
 
 ## Usage
 
-3. Build the project package
+3. Build the extension package
 ```
 npm run dev
 ``` 
-This will build the project package into the dist folder. In additon to creating the package, it will watch for any changes made to the project under the src directory 
+This will build the project package into the dist folder. In additon to creating extension the package, it will watch for any changes made to the project under the src directory
+
+If you wish to build the package for production, you can simply enter the command ```npm run build```
