@@ -1,5 +1,5 @@
 <div align="center">
-  <a href="https://app.singlelink.co/u/focused-browsing" target="_blank">
+  <a href="https://org.grey.software/focused-browsing" target="_blank">
     <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/logo.png">
   </a>
 </div>
