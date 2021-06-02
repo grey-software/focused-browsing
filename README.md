@@ -1,6 +1,6 @@
 <div align="center">
   <a href="https://org.grey.software/focused-browsing" target="_blank">
-    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/logo.png">
+    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/src/logo.png">
   </a>
 </div>
 
@@ -55,18 +55,17 @@ yarn
 ```
 yarn dev
 ``` 
-Our development script builds the extension into the extension-build folder and actively watches for changes to the source code.
+Our development script builds the extension into the `extension-build` folder and actively watches for changes to the source code.
 
 
 ### 4. Load the extension on your browser
 
-Use the following links to learn how to load the extension-build package on to your perferred browser. 
+At the moment, Focused Browsing is only compatible with Google Chrome or Brave Browser.
 
-#### [If you use Chrome/Brave/Edge](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
+The image below from the [chrome documentation](https://developer.chrome.com/docs/extensions/mv3/getstarted/), shows how to load an unpublished extension using developer mode. 
+
 <br/>
 <img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src="https://user-images.githubusercontent.com/20130700/120519269-6add3e00-c3a0-11eb-9359-ac43efd68733.png">
-
-#### If you use Firefox (coming soon)
 <br/>
 
 ### 5. Reload the extension when you change a file
