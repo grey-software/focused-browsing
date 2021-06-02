@@ -5,46 +5,28 @@
 </div>
 
 # Focused Browsing
+Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.
+<img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src="https://user-images.githubusercontent.com/20130700/120509712-c1457f00-c396-11eb-9a46-fc1ccb01ab58.png">
 
-A web extension that allows you to browse popular websites without elements that are designed to take away your attention and focus. The websites we are currently targeting are Twitter & LinkedIn.
-
-### [Our Current Deployed Extensions](https://app.singlelink.co/u/focused-browsing)
-
-[LinkedIn Focus Chrome](https://chrome.google.com/webstore/detail/linkedin-focus/cmafljjdkloacahjddlpaognhjpacdff?hl=en)
-
-[LinkedIn Focus Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkedinfocus/)
-
-[Twitter Focus Chrome](https://chrome.google.com/webstore/detail/twitter-focus/kmdpomipbibobgdgfeidajmnlecloeml?hl=en&)
-
-[Twitter Focus Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkedinfocus/)
-
-### Project Status
-
-This project currently has no active maintainer and will be developed during one of Grey Software's educational programs. The standby maintainer for this project is [Arsala](https://gitlab.com/ArsalaBangash)
+## Project Status
+This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash), [Avi])https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI) For our Focused Browsing v0.9, we will be hiding distrations on Twitter only, but there will be more sites added to our domain in the future. 
 
 
-### To run Focused Browsing here are the instructions:
+## Setup
 
 1. Go to project folder
 ```
-
-cd packages/focused-browsing-v2
+cd ./src
+```
+2. Run npm install to download the dependencies of our extension
+```
+npm install
 ```
 
-2. Run build command to create extension package
+## Usage
+
+3. Build the project package
 ```
-npm run build
-```
-
-3. Go to google chrome, then to the extensions settings
-
-4. Click on manage extension 
-    <img width="321" alt="Screen Shot 2021-05-20 at 3 59 30 PM" src="https://user-images.githubusercontent.com/20130700/119042162-79c9f680-b985-11eb-9746-3815fb8ace4d.png">
-
-
-5. Enable developer mode
-    <img width="165" alt="Screen Shot 2021-05-20 at 3 59 42 PM" src="https://user-images.githubusercontent.com/20130700/119042180-7df61400-b985-11eb-912b-f594db8d5f43.png"> 
-
-6. Load extension package, by clicking on load unpacked, then select dist folder in focused-browsing-v2
-    <img width="138" alt="Screen Shot 2021-04-15 at 10 04 22 AM" src="https://user-images.githubusercontent.com/20130700/119042240-8fd7b700-b985-11eb-8fb2-5b23fa617714.png">
-    <img width="278" alt="Screen Shot 2021-05-20 at 3 59 59 PM" src="https://user-images.githubusercontent.com/20130700/119042254-95350180-b985-11eb-9a27-ac02ecb351bc.png">
+npm run dev
+``` 
+This will build the project package into the dist folder. In additon to creating the package, it will watch for any changes made to the project under the src directory 
