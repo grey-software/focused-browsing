@@ -1,50 +1,86 @@
-<div align="center">
-  <a href="https://app.singlelink.co/u/focused-browsing" target="_blank">
-    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/logo.png">
-  </a>
-</div>
-
 # Focused Browsing
+Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.
 
-A web extension that allows you to browse popular websites without elements that are designed to take away your attention and focus. The websites we are currently targeting are Twitter & LinkedIn.
+<img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src="https://user-images.githubusercontent.com/20130700/120509712-c1457f00-c396-11eb-9a46-fc1ccb01ab58.png">
 
-### [Our Current Deployed Extensions](https://app.singlelink.co/u/focused-browsing)
+## Project Status
+---
+This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash), [Avi](https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI).
 
-[LinkedIn Focus Chrome](https://chrome.google.com/webstore/detail/linkedin-focus/cmafljjdkloacahjddlpaognhjpacdff?hl=en)
+## Features
+---
+### Show & Hide distractions without leaving the tab you're on.
+<br/>
 
-[LinkedIn Focus Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkedinfocus/)
+We want to empower you to be able to focus when you want to, but we also don't want to make it tedious for you when you want to browse what's happening on the Internet.
 
-[Twitter Focus Chrome](https://chrome.google.com/webstore/detail/twitter-focus/kmdpomipbibobgdgfeidajmnlecloeml?hl=en&)
+That is why we made it easy for you to hide and bring back feeds without leaving your tab.
 
-[Twitter Focus Firefox](https://addons.mozilla.org/en-US/firefox/addon/linkedinfocus/)
+### Control Distractions using keyboard shortcuts
+<br/>
 
-### Project Status
+We added keyboard shortcuts to make it seamless and intuitive for you to toggle distractions on our supported websites. 
 
-This project currently has no active maintainer and will be developed during one of Grey Software's educational programs. The standby maintainer for this project is [Arsala](https://gitlab.com/ArsalaBangash)
+Command/Ctrl+Shift+1 currently toggles all distractions and we are thinking of other shortcuts to help optimize & personalize your experience. 
+
+### The websites that are important to you are on our roadmap
+<br/>
+
+We currently support Twitter, and we have our eyes set on LinkedIn, Facebook, and Youtube next. If you would like us to support a website that is distracting you, let us know on our [Github discussion board](https://github.com/grey-software/focused-browsing/discussions).
 
 
-### To run Focused Browsing here are the instructions:
 
-1. Go to project folder
+## Developing Focused Browsing
+---
+### 1. Clone the repo and enter the directory 
+```
+git clone https://github.com/grey-software/focused-browsing.git 
+cd focused-browsing
+```
+ or
+```
+git clone https://gitlab.com/grey-software/focused-browsing.git
+cd focused-browsing
+```
+### 2. Install Dependencies
+```
+yarn 
 ```
 
-cd packages/focused-browsing-v2
+### 3. Run the development script
 ```
-
-2. Run build command to create extension package
-```
-npm run build
-```
-
-3. Go to google chrome, then to the extensions settings
-
-4. Click on manage extension 
-    <img width="321" alt="Screen Shot 2021-05-20 at 3 59 30 PM" src="https://user-images.githubusercontent.com/20130700/119042162-79c9f680-b985-11eb-9746-3815fb8ace4d.png">
+yarn dev
+``` 
+Our development script builds the extension into the extension-build folder and actively watches for changes to the source code.
 
 
-5. Enable developer mode
-    <img width="165" alt="Screen Shot 2021-05-20 at 3 59 42 PM" src="https://user-images.githubusercontent.com/20130700/119042180-7df61400-b985-11eb-912b-f594db8d5f43.png"> 
+### 4. Load the extension on your browser
 
-6. Load extension package, by clicking on load unpacked, then select dist folder in focused-browsing-v2
-    <img width="138" alt="Screen Shot 2021-04-15 at 10 04 22 AM" src="https://user-images.githubusercontent.com/20130700/119042240-8fd7b700-b985-11eb-8fb2-5b23fa617714.png">
-    <img width="278" alt="Screen Shot 2021-05-20 at 3 59 59 PM" src="https://user-images.githubusercontent.com/20130700/119042254-95350180-b985-11eb-9a27-ac02ecb351bc.png">
+Use the following links to learn how to load the extension-build package on to your perferred browser. 
+
+#### [If you use Chrome/Brave/Edge](https://developer.chrome.com/docs/extensions/mv3/getstarted/)
+<br/>
+<img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src="https://user-images.githubusercontent.com/20130700/120519269-6add3e00-c3a0-11eb-9359-ac43efd68733.png">
+
+#### If you use Firefox (coming soon)
+<br/>
+
+### 5. Reload the extension when you change a file
+<br/>
+<img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src=https://user-images.githubusercontent.com/20130700/120519885-27cf9a80-c3a1-11eb-9c82-4fd3fccadf69.png>
+
+
+## The Story
+---
+
+Professionals and creators on the Internet are drowning in information.
+
+This hinders them from doing their best work because their ability to focus is affected by the content and news on their feed.
+
+Currently, platforms like LinkedIn and Twitter do not allow their users to hide their news and content feeds.
+
+But what if we offered them a way to regain control over the feeds they did or did not want to consume?
+
+Other extensions on the market were helpful but lacked the kind of user experience our team was looking for.
+
+That's why we're building Focused Browsing!
