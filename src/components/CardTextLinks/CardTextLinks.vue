@@ -23,7 +23,7 @@ export default {
       window.open("https://org.grey.software/");
     },
     openFocusedBrowsing(){
-      window.open("https://org.grey.software/focused-browing")
+      window.open("https://org.grey.software/focused-browsing/")
     }
 
   }
