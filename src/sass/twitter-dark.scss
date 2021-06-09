@@ -207,7 +207,8 @@ $white-2: rgba(254, 254, 254, 1);
 
 .quote-container {
   margin-bottom: 66px;
-  margin-left: 10px;
+  width:432px;
+  height: 57px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -216,11 +217,12 @@ $white-2: rgba(254, 254, 254, 1);
 
 .quote {
   color: $gray-2;
-  padding-left: 20px;
   display: flex;
   text-align: center;
   margin-bottom: 14px;
   letter-spacing: -0.21px;
+  padding-right: 10%;
+  padding-left: 10%;
   @include inter-14-regular;
 }
 
