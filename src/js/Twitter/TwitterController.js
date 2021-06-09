@@ -11,7 +11,7 @@ export default class TwitterController {
     this.feedIntervalId = 0
     this.pageInterval = 0
     this.initialLoad = false
-    this.TWITTER_FEED_FRAME_HEIGHT = "1000px";
+    this.TWITTER_FEED_FRAME_HEIGHT = "766px";
     this.TWITTER_FEED_FRAME_WIDTH = "598px";
 
     this.TWITTER_PANEL_FRAME_HEIGHT = "4000px";
@@ -64,7 +64,7 @@ export default class TwitterController {
     panelIframe.className = this.IFRAME_ClASS;
 
     Object.assign(feedIframe.style, {
-      position: "fixed",
+      position: "inherit",
       border: "none",
     });
 
