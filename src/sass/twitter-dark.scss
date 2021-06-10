@@ -88,7 +88,6 @@ $white-2: rgba(254, 254, 254, 1);
 .card-main {
   height: calc(66.49% - 102px);
   background-color: $black-1;
-  margin-bottom: 32px;
   overflow: hidden;
   border-radius: 16px;
   padding: 51px 42px;
@@ -101,7 +100,6 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .card-content {
-  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -109,7 +107,6 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .card-title {
-  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -193,6 +190,8 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .keyboard-shortcut {
+  margin-top: 24px;
+  margin-bottom: -10px;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -207,6 +206,7 @@ $white-2: rgba(254, 254, 254, 1);
 
 .quote-container {
   margin-bottom: 80px;
+  margin-top: 36px;
   width:432px;
   height: 69px;
   display: flex;
