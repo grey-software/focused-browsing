@@ -155,11 +155,9 @@ $white-2: rgba(254, 254, 254, 1);
     margin-bottom: 16px;
     overflow: hidden;
     border-radius: 8px;
-    padding: 14px 87px 13px;
+    padding: 14px 87px;
     display: flex;
     align-items: center;
-    height: 21px;
-    width: 132px;
 }
 
 .support-this-project {
@@ -171,11 +169,9 @@ $white-2: rgba(254, 254, 254, 1);
 .button-show-feed {
     overflow: hidden;
     border-radius: 8px;
-    padding: 13px 116px 12px 115px;
+    padding: 13px 116px;
     display: flex;
     align-items: center;
-    height: 21px;
-    width: 73px;
     border: 1px solid $white;
 }
 
