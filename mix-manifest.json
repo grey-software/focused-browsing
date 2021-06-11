@@ -3,6 +3,8 @@
     "/extension-build/js/content.js": "/extension-build/js/content.js",
     "/extension-build/js/Twitter/TwitterController.js": "/extension-build/js/Twitter/TwitterController.js",
     "/extension-build/js/feed-card-controller.js": "/extension-build/js/feed-card-controller.js",
+    "/extension-build/js/popup-card-controller.js": "/extension-build/js/popup-card-controller.js",
+    "/extension-build/css/popup.css": "/extension-build/css/popup.css",
     "/extension-build/css/twitter-dark.css": "/extension-build/css/twitter-dark.css",
     "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
     "/extension-build/css/twitter.css": "/extension-build/css/twitter.css",
