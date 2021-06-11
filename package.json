@@ -1,33 +1,33 @@
 {
-    "name": "focused-browsing",
-    "version": "0.9.0",
-    "description": "Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
-    "scripts": {
-        "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --env=production --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch"
-    },
-    "dependencies": {
-        "core-js": "^3.6.5",
-        "jquery": "^3.6.0",
-        "vue-router": "^3.2.0",
-        "vuex": "^3.4.0"
-    },
-    "devDependencies": {
-        "@babel/core": "^7.14.3",
-        "@babel/preset-env": "^7.14.4",
-        "babel-loader": "^8.2.2",
-        "cross-env": "^7.0.3",
-        "eslint": "^7.26.0",
-        "laravel-mix": "^6.0.19",
-        "postcss": "^8.2.15",
-        "sass": "^1.32.12",
-        "sass-loader": "^11.1.0",
-        "sass-resources-loader": "^2.2.1",
-        "vue": "^2.6.12",
-        "vue-eslint-parser": "^7.6.0",
-        "vue-loader": "^15.9.7",
-        "vue-template-compiler": "^2.6.12",
-        "webpack": "^5.38.1"
-    }
+  "name": "focused-browsing",
+  "version": "0.9.1",
+  "description": "Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
+  "scripts": {
+    "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --env=production --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch"
+  },
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "jquery": "^3.6.0",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.14.3",
+    "@babel/preset-env": "^7.14.4",
+    "babel-loader": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.26.0",
+    "laravel-mix": "^6.0.19",
+    "postcss": "^8.2.15",
+    "sass": "^1.32.12",
+    "sass-loader": "^11.1.0",
+    "sass-resources-loader": "^2.2.1",
+    "vue": "^2.6.12",
+    "vue-eslint-parser": "^7.6.0",
+    "vue-loader": "^15.9.7",
+    "vue-template-compiler": "^2.6.12",
+    "webpack": "^5.38.1"
+  }
 }
