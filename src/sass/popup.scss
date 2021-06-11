@@ -118,7 +118,7 @@ $white-2: rgba(254, 254, 254, 1);
   line-height: 27px;
 }
 
-.frame-32 {
+.popup-container {
   background-color: $white;
   overflow: hidden;
   border-radius: 8px;
@@ -127,13 +127,13 @@ $white-2: rgba(254, 254, 254, 1);
   flex-direction: column;
   align-items: center;
 }
-.frame-5 {
+.title-container {
   margin-bottom: 23.39px;
   padding: 10px;
   display: flex;
   align-items: flex-start;
 }
-.focused-browsing {
+.title {
   color: $black-1;
   letter-spacing: -0.16px;
   @include inter-12-semi-bold;
