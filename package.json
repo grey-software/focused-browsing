@@ -6,7 +6,7 @@
         "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --env=production --config=node_modules/laravel-mix/setup/webpack.config.js",
         "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js",
         "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch",
-        "generate-release-zip": "node generate-release-zip.js"
+        "generate-release-zip": "$npm_execpath run build;node generate-release-zip.js"
     },
     "dependencies": {
         "core-js": "^3.6.5",
