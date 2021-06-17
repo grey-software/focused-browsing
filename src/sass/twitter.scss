@@ -78,7 +78,7 @@ $white-2: rgba(254, 254, 254, 1);
   padding: 0;
 }
 
-.focus-container-twitter {
+.focus-container {
   background-color: $white;
   padding: 87px 83px 133px;
   display: flex;
@@ -89,7 +89,6 @@ $white-2: rgba(254, 254, 254, 1);
 .card-main {
   height: calc(66.49% - 102px);
   background-color: $white;
-  margin-bottom: 32px;
   overflow: hidden;
   border-radius: 16px;
   padding: 51px 42px;
@@ -102,7 +101,6 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .card-content {
-  margin-bottom: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -110,7 +108,6 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .card-title {
-  margin-bottom: 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -163,11 +160,9 @@ $white-2: rgba(254, 254, 254, 1);
   margin-bottom: 16px;
   overflow: hidden;
   border-radius: 8px;
-  padding: 14px 87px 13px;
+  padding: 14px 87px;
   display: flex;
   align-items: center;
-  height: 21px;
-  width: 132px;
 }
 
 .support-this-project {
@@ -179,11 +174,9 @@ $white-2: rgba(254, 254, 254, 1);
 .button-show-feed {
   overflow: hidden;
   border-radius: 8px;
-  padding: 13px 116px 12px 115px;
+  padding: 13px 116px;
   display: flex;
   align-items: center;
-  height: 21px;
-  width: 73px;
   border: 1px solid $black;
 }
 
@@ -194,6 +187,8 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .keyboard-shortcut {
+  margin-top: 24px;
+  margin-bottom: -10px;
   padding: 10px;
   display: flex;
   align-items: center;
@@ -208,9 +203,10 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .quote-container {
-  margin-bottom: 66px;
+  margin-bottom: 80px;
+  margin-top: 36px;
   width:432px;
-  height: 57px;
+  height: 69px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -223,6 +219,7 @@ $white-2: rgba(254, 254, 254, 1);
   text-align: center;
   margin-bottom: 14px;
   letter-spacing: -0.21px;
+  padding-top: 10%;
   padding-right: 10%;
   padding-left: 10%;
   @include inter-14-regular;

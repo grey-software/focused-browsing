@@ -9,29 +9,17 @@ function getTwitterPanel() {
         .children[0]
 }
 
-
-function hasTwitterPanelLoaded() {
-    let panel = getTwitterPanel()
-    return panel.children.length == 5 || panel.children.length == 2
-}
-
-
-function getTwitterFeedClassName() {
+function isFeedHidden() {
     let feed = getTwitterFeed()
-    if (feed != null) {
-        return feed.className
-    } else {
-        throw 'feed class name not found!';
-    }
+    return feed.children[0].nodeName == "IFRAME"
+}
+
+function  isPanelHidden() {
+    let panel = getTwitterPanel()
+    return panel.children.length == 2;
 }
 
 
-function homePageTwitterHasLoaded() {
-    return getTwitterPanel() && getTwitterFeed()
-}
 
-function sendLogToBackground(port, log){
-    port.postMessage({event: "log", log: log})
-}
 
-module.exports = { homePageTwitterHasLoaded, getTwitterFeedClassName, hasTwitterPanelLoaded, getTwitterPanel, getTwitterFeed, sendLogToBackground}
+module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden}

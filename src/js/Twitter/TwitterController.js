@@ -4,10 +4,9 @@ export default class TwitterController {
 
 
   constructor(port) {
-    this.port = port
     this.panel_elements = []
     this.twitterFeedChildNode = null
-
+    this.port = port
     this.feedIntervalId = 0
     this.pageInterval = 0
     this.initialLoad = false
@@ -22,7 +21,12 @@ export default class TwitterController {
     this.feedIframe = iframes[0]
     this.panelIframe = iframes[1]
 
-    this.blockAttemptCount = 0
+    this.blockFeedAttemptCount = 0
+    this.blockPanelAttemptCount = 0
+  }
+
+  setPort(port){
+    this.port = port
   }
 
   handleActionOnPage(url, action) {
@@ -77,7 +81,6 @@ export default class TwitterController {
   }
 
   clearTwitterElements() {
-    this.twitterFeedChildNode = null
     this.panel_elements = []
   }
 
@@ -87,10 +90,13 @@ export default class TwitterController {
 
   setFeedIframeSource() {
     if (document.body.style.backgroundColor == "rgb(0, 0, 0)") {
+      console.log("setting feed card to dark mode")
       this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDark.html")
     } else if (document.body.style.backgroundColor == "rgb(21, 32, 43)") {
+      console.log("setting feed card to dim mode")
       this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDim.html")
     } else {
+      console.log("setting feed card to light mode")
       this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeed.html")
     }
   }
@@ -135,12 +141,13 @@ export default class TwitterController {
       for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
         panel.append(this.panel_elements[i])
       }
+      this.clearTwitterElements()
     }
   }
 
   tryHidingTwitterFeed() {
     try {
-      if (this.isFeedHidden()) {
+      if (TwitterUtils.isFeedHidden()) {
         clearInterval(this.feedIntervalId);
         this.initialLoad = false;
         return
@@ -152,12 +159,12 @@ export default class TwitterController {
         feed.append(this.feedIframe)
       }
     } catch (err) {
-      this.blockAttemptCount += 1
-      if (this.blockAttemptCount > 2) {
+      this.blockFeedAttemptCount += 1
+      if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
         utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
-      } else if (this.blockAttemptCount > 4 && this.blockAttemptCount < 8) {
+      } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount <= 8) {
         utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
-      } else if (this.blockAttemptCount > 8){
+      } else if (this.blockFeedAttemptCount > 8){
         clearInterval(this.feedIntervalId);
       }
     }
@@ -165,7 +172,7 @@ export default class TwitterController {
 
   tryHidingTwitterPanel() {
     try {
-      if (this.isPanelHidden()) {
+      if (TwitterUtils.isPanelHidden()) {
         clearInterval(this.pageInterval);
         return
       } else {
@@ -176,25 +183,15 @@ export default class TwitterController {
         panel.append(this.panelIframe)
       }
     } catch (err) {
-      this.blockAttemptCount += 1
-      if (this.blockAttemptCount > 2) {
+      this.blockPanelAttemptCount += 1
+      if (this.blockPanelAttemptCount > 2) {
         utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
-      } else if (this.blockAttemptCount > 4 && this.blockAttemptCount < 8) {
+      } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
         utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
-      } else if (this.blockAttemptCount > 8) {
+      } else if (this.blockPanelAttemptCount > 8) {
         clearInterval(this.pageInterval);
       }
     }
-  }
-
-  isFeedHidden() {
-    let feed = TwitterUtils.getTwitterFeed()
-    return feed.children[0].nodeName == "IFRAME"
-  }
-
-  isPanelHidden() {
-    let panel = TwitterUtils.getTwitterPanel()
-    return panel.children.length == 2;
   }
 
 }

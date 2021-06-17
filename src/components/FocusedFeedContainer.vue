@@ -1,5 +1,5 @@
 <template>
-  <div class="focus-container-twitter">
+  <div class="focus-container">
        <MainCard />
        <Quote />
        <CardTextLinks />
