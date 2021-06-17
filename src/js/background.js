@@ -9,14 +9,10 @@ chrome.runtime.onConnect.addListener(function (connectionPort) {
   ports[tab_info.id] = connectionPort
   ports[tab_info.id].onMessage.addListener(onLogRecieved)
 
-  console.log("port established")
-  console.log(tab_info)
 });
 
 function tabListener(tabId, changeInfo, tab) {
   let url = tab.url
-  console.log(changeInfo)
-  console.log("url is: "+ url)
   if (changeInfo && changeInfo.status == "complete") {
     if (url.includes("twitter.com")) {
       if (focusMode["twitter"].focus) {
@@ -26,8 +22,6 @@ function tabListener(tabId, changeInfo, tab) {
         activeURL = url
       }
     }else if(url.includes("linkedin.com")){
-      console.log(url)
-      console.log("I am here exploring linkedin")
       if(focusMode["linkedin"].focus){
         if(isURLLinkedInHome(url)){
           sendAction("focus")
@@ -39,25 +33,12 @@ function tabListener(tabId, changeInfo, tab) {
 }
 
 function toggleFocusListener(command, tab) {
-  // chrome.tabs.get(tab.id, function (tab) {
-  //   let url = tab.url
-  //   console.log("url")
-  //   if (url.includes("twitter.com")) {
-  //     if (isURLTwitterHome(url) & !url.includes("/i/display")) {
-  //       toggleFocus("twitter")
-  //     }
-  //   }
-  // });
-
-  console.log("I am here")
-  console.log(activeURL)
   if (activeURL.includes("twitter.com")) {
     if (isURLTwitterHome(activeURL) & !activeURL.includes("/i/display")) {
       toggleFocus("twitter")
     }
   }else if(activeURL.includes("linkedin.com")){
     if (isURLLinkedInHome(activeURL)) {
-      console.log("toggling focus on linkedin")
       toggleFocus("linkedin")
     }
   }
@@ -86,16 +67,17 @@ function sendAction(action) {
       let tabID = tabs[0].id
       let port = getPortByID(tabID)
       let focusObject = {"url": activeURL, "action": action}
-      console.log("sending message")
-      console.log(focusObject)
-      port.postMessage(focusObject)
-
-
+      postMessageToContent(port, focusObject)
     });
 
   } catch (err) {
     console.log("background script hasn't initialized port")
   }
+}
+
+
+function postMessageToContent(port, focusObject){
+    port.postMessage(focusObject)
 }
 
 chrome.tabs.onUpdated.addListener(tabListener);

@@ -90,13 +90,10 @@ export default class TwitterController {
 
   setFeedIframeSource() {
     if (document.body.style.backgroundColor == "rgb(0, 0, 0)") {
-      console.log("setting feed card to dark mode")
       this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDark.html")
     } else if (document.body.style.backgroundColor == "rgb(21, 32, 43)") {
-      console.log("setting feed card to dim mode")
       this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeedDim.html")
     } else {
-      console.log("setting feed card to light mode")
       this.feedIframe.src = chrome.runtime.getURL("www/twitter/feed/twitterFeed.html")
     }
   }
