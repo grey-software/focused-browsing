@@ -1,0 +1,1 @@
+import{b as o}from"./assets/vendor.d461bf7c.js";try{o.browserAction.onClicked.addListener((o=>{console.log("tab object below"),console.log(o)}))}catch(e){console.log("here is the error"),console.log(e)}
