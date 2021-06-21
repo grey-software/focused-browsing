@@ -1,11 +1,17 @@
-// import TwitterController from './Twitter/TwitterController'
-import LinkedInFocus from './LinkedInFocus'
-
+import {browser} from "webextension-polyfill-ts"
+const a = browser
 var focusMode = { "twitter": { "focus": true }, "linkedin":{"focus":true}};
 
 var activeURL;
+var ports = {}
 
+chrome.runtime.onConnect.addListener(function (connectionPort) {
+  console.assert(connectionPort.name == "Focused Browsing");
+  let tab_info = connectionPort.sender.tab
+  ports[tab_info.id] = connectionPort
+  ports[tab_info.id].onMessage.addListener(onLogRecieved)
 
+});
 
 function tabListener(tabId, changeInfo, tab) {
   let url = tab.url
@@ -20,7 +26,7 @@ function tabListener(tabId, changeInfo, tab) {
     }else if(url.includes("linkedin.com")){
       if(focusMode["linkedin"].focus){
         if(isURLLinkedInHome(url)){
-          chrome.tabs.executeScript(tab.id, {file: "LinkedInFocus.js"});
+          sendAction("focus")
         }
         activeURL = url
       }
@@ -58,7 +64,17 @@ function onLogRecieved(msg){
 }
 
 function sendAction(action) {
-  
+  try {
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      let tabID = tabs[0].id
+      let port = getPortByID(tabID)
+      let focusObject = {"url": activeURL, "action": action}
+      postMessageToContent(port, focusObject)
+    });
+
+  } catch (err) {
+    console.log("background script hasn't initialized port")
+  }
 }
 
 

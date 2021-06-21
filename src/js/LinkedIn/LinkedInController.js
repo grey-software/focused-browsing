@@ -2,8 +2,7 @@ const LinkedInUtils = require("./LinkedInUtils.js")
 import utils from '../utils'
 
 export default class LinkedInController {
-    constructor(port) {
-        this.port = port
+    constructor() {
         this.panel_elements = []
         this.linkedin_feed_child_node = null
         this.linkedin_ad_child_node = null
@@ -113,9 +112,9 @@ export default class LinkedInController {
         } catch (err) {
             this.blockAdAttemptCount += 1
             if (this.blockAdAttemptCount > 2 && this.blockAdAttemptCount <= 4) {
-                utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
+                console.log("WARNING: LinkedIn elements usually load by now")
             } else if (this.blockAdAttemptCount > 4 && this.blockAdAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the LinkedIn elements")
+                console.log("ERROR: Something Wrong with the LinkedIn elements")
             } else if (this.blockAdAttemptCount > 8) {
                 clearInterval(this.adIntervalId);
             }
@@ -136,9 +135,9 @@ export default class LinkedInController {
         } catch (err) {
             this.blockFeedAttemptCount += 1
             if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
-                utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
+                console.log("WARNING: LinkedIn elements usually load by now")
             } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the LinkedIn elements")
+                console.log("ERROR: Something Wrong with the LinkedIn elements")
             } else if (this.blockFeedAttemptCount > 8) {
                 clearInterval(this.feedIntervalId);
             }
@@ -157,9 +156,9 @@ export default class LinkedInController {
         } catch (err) {
             this.blockPanelAttemptCount += 1
             if (this.blockPanelAttemptCount > 2 && this.blockPanelAttemptCount <= 4) {
-                utils.sendLogToBackground(this.port, "WARNING: LinkedIn elements usually load by now")
+                console.log("WARNING: LinkedIn elements usually load by now")
             } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
-                utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the LinkedIn elements")
+                console.log("ERROR: Something Wrong with the LinkedIn elements")
             } else if (this.blockPanelAttemptCount > 8) {
                 clearInterval(this.panelIntervalId);
             }

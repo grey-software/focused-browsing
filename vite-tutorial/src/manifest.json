@@ -15,5 +15,11 @@
     "background": {
         "page": "background.html"
     },
-    "web_accessible_resources":["assets/*"]
+    "web_accessible_resources":["assets/*"],
+    "permissions": [
+        "*://*.twitter.com/*",
+        "*://*.linkedin.com/*",
+        "tabs",
+        "activeTab"
+    ]
 }

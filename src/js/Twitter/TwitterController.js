@@ -3,10 +3,9 @@ import utils from '../utils'
 export default class TwitterController {
 
 
-  constructor(port) {
+  constructor() {
     this.panel_elements = []
     this.twitterFeedChildNode = null
-    this.port = port
     this.feedIntervalId = 0
     this.pageInterval = 0
     this.initialLoad = false
@@ -25,9 +24,6 @@ export default class TwitterController {
     this.blockPanelAttemptCount = 0
   }
 
-  setPort(port){
-    this.port = port
-  }
 
   handleActionOnPage(url, action) {
     if (action == "focus") {
@@ -158,9 +154,9 @@ export default class TwitterController {
     } catch (err) {
       this.blockFeedAttemptCount += 1
       if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
-        utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+        console.log("WARNING: Twitter elements usually load by now")
       } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount <= 8) {
-        utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+        console.log("ERROR: Something Wrong with the twitter elements")
       } else if (this.blockFeedAttemptCount > 8){
         clearInterval(this.feedIntervalId);
       }
@@ -182,9 +178,9 @@ export default class TwitterController {
     } catch (err) {
       this.blockPanelAttemptCount += 1
       if (this.blockPanelAttemptCount > 2) {
-        utils.sendLogToBackground(this.port, "WARNING: Twitter elements usually load by now")
+        console.log("WARNING: Twitter elements usually load by now")
       } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
-        utils.sendLogToBackground(this.port, "ERROR: Something Wrong with the twitter elements")
+        console.log("ERROR: Something Wrong with the twitter elements")
       } else if (this.blockPanelAttemptCount > 8) {
         clearInterval(this.pageInterval);
       }

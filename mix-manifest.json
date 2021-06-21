@@ -2,6 +2,7 @@
     "/extension-build/js/background.js": "/extension-build/js/background.js",
     "/extension-build/js/content.js": "/extension-build/js/content.js",
     "/extension-build/js/LinkedIn/LinkedInController.js": "/extension-build/js/LinkedIn/LinkedInController.js",
+    "/extension-build/js/LinkedInFocus.js": "/extension-build/js/LinkedInFocus.js",
     "/extension-build/js/Twitter/TwitterController.js": "/extension-build/js/Twitter/TwitterController.js",
     "/extension-build/js/feed-card-controller.js": "/extension-build/js/feed-card-controller.js",
     "/extension-build/js/popup-card-controller.js": "/extension-build/js/popup-card-controller.js",
