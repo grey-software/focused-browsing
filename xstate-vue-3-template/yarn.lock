@@ -1584,6 +1584,11 @@
     "@webassemblyjs/wast-parser" "1.9.0"
     "@xtuc/long" "4.2.2"
 
+"@xstate/vue@0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@xstate/vue/-/vue-0.4.0.tgz#045f1e73eabcdb5ef9ca8f824b2cc7295bf356ac"
+  integrity sha512-PXzWciVxfSvvB/QrxhH3OPnCjmE0cDQhq5FMP8WLB/OM8oZpa/EWseVR9UEwBitluh/KIoOA9NuGO+PFtDIlmQ==
+
 "@xtuc/ieee754@^1.2.0":
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/@xtuc/ieee754/-/ieee754-1.2.0.tgz#eef014a3145ae477a1cbc00cd1e552336dceb790"
@@ -8547,6 +8552,11 @@ ws@^6.0.0, ws@^6.2.1:
   integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
   dependencies:
     async-limiter "~1.0.0"
+
+xstate@4.15.2:
+  version "4.15.2"
+  resolved "https://registry.yarnpkg.com/xstate/-/xstate-4.15.2.tgz#52213ecbca7b9458ff9162c977c4944ee16891c8"
+  integrity sha512-C+3jzJbhkp9ywGB+E2YMbS4mLyuxv366+KGi2RBX6y99xZFezbrGfaPQGRvFvn58OlLlCuSfCwn6bPcp78aMyw==
 
 xtend@^4.0.0, xtend@~4.0.1:
   version "4.0.2"

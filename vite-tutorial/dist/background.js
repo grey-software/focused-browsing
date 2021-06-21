@@ -1,1 +1,1 @@
-import{b as o}from"./assets/vendor.d461bf7c.js";try{o.browserAction.onClicked.addListener((o=>{console.log("tab object below"),console.log(o)}))}catch(e){console.log("here is the error"),console.log(e)}
+import{c as o,b as s}from"./assets/vendor.7c3aa7c0.js";const c=o({state:()=>({focused:!0,config:{}}),mutations:{unfocus(o){console.log("unfocusing"),o.focused=!1}}});try{s.browserAction.onClicked.addListener((o=>{console.log("tab object below"),console.log(o),c.commit("unfocus")}))}catch(e){console.log("here is the error"),console.log(e)}
