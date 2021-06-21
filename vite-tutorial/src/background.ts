@@ -2,7 +2,8 @@ import { browser } from "webextension-polyfill-ts";
 import { createStore } from "vuex";
 
 interface FocusedBrowsingState {
-  focused: boolean;
+  isTwitterFocused: boolean;
+  isLinkedinFocused: boolean;
   config: Object;
 }
 
@@ -10,7 +11,8 @@ interface FocusedBrowsingState {
 const store = createStore({
   state() {
     return {
-      focused: true,
+      isTwitterFocused: true,
+      isLinkedinFocused: true,
       config: {},
     };
   },
