@@ -6,7 +6,7 @@ var activeURL;
 
 function tabListener(tabId, changeInfo, tab) {
   let url = tab.url
-  if (changeInfo && changeInfo.status == "loading") {
+  //  if (changeInfo && changeInfo.status == "loading") {
     if (url.includes("twitter.com")) {
       if (focusMode["twitter"].focus) {
         if (isURLTwitterHome(url) || url != "https://twitter.com/" & !url.includes("/i/display") ) {
@@ -27,7 +27,7 @@ function tabListener(tabId, changeInfo, tab) {
         activeURL = url
       }
     } 
-  }
+  // }
 }
 
 function toggleFocusListener(command, tab) {
