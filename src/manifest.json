@@ -14,7 +14,7 @@
     "128": "logox128.png"
   },
   "background": {
-    "scripts": ["js/background.js"],
+    "scripts": ["background.js", "focus.js"],
     "persistent": true
   },
   "commands": {
