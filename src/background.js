@@ -18,12 +18,10 @@ function tabListener(tabId, changeInfo, tab) {
       if(focusMode["linkedin"].focus){
         if(isURLLinkedInHome(url)){
           console.log("here executing script")
-          // chrome.tabs.executeScript(tab.id, {file: 'focus.js'});
-
           chrome.tabs.executeScript(tab.id, {
-            code: 'var currentURL = url;'
+            code: 'var currentURL = ' + JSON.stringify(url) + ';'
           }, function() {
-              chrome.tabs.executeScript(tab.id, {file: 'focus.js'});
+              chrome.tabs.executeScript(tab.id, {file: 'LinkedInFocus.js'});
           });
         }
         activeURL = url
