@@ -25,7 +25,7 @@ async function tabListener(tabId, changeInfo, tab) {
       if(focusMode["linkedin"].focus){
         if(isURLLinkedInHome(url)){
           console.log("about to excuting: "+ new Date().toLocaleTimeString())
-          await chrome.tabs.executeScript(tab.id, {file: 'LinkedInFocus.js'});
+          await chrome.tabs.executeScript(tab.id, {file: 'LinkedInFocus.js', runAt: 'document_start'});
 
         }
         activeURL = url
@@ -35,15 +35,16 @@ async function tabListener(tabId, changeInfo, tab) {
 }
 
 function toggleFocusListener(command, tab) {
-  if (activeURL.includes("twitter.com")) {
-    if (isURLTwitterHome(activeURL) & !activeURL.includes("/i/display")) {
-      toggleFocus("twitter")
-    }
-  }else if(activeURL.includes("linkedin.com")){
-    if (isURLLinkedInHome(activeURL)) {
-      toggleFocus("linkedin")
-    }
-  }
+  console.log(command)
+  // if (activeURL.includes("twitter.com")) {
+  //   if (isURLTwitterHome(activeURL) & !activeURL.includes("/i/display")) {
+  //     toggleFocus("twitter")
+  //   }
+  // }else if(activeURL.includes("linkedin.com")){
+  //   if (isURLLinkedInHome(activeURL)) {
+  //     toggleFocus("linkedin")
+  //   }
+  // }
 
 }
 

@@ -34,7 +34,6 @@
   "permissions": [
     "*://*.twitter.com/*",
     "*://*.linkedin.com/*",
-    "<all_urls>",
     "tabs",
     "activeTab"
   ]
