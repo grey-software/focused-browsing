@@ -3,38 +3,43 @@ const ACTION = "focus"
 let twitterController = new TwitterController()
 twitterController.handleActionOnPage(currentURL, ACTION)
 
-let keyPressedStates = {"f": false, "Shift": false, "Control":false}
+let keyPressedStates = { "KeyF": false, "Shift": false, "KeyB": false }
+let keysLeftToShortcut = 3
 const keyIsShortcutKey = (e) => {
-    return e.key == "Meta" || e.key == "Control" || e.key == "Shift" || e.key == "f"
+    return e.key == "Shift" || e.code == "KeyB" || e.code == "KeyF"
 }
 
 const allKeysPressed = (keyPressedStates) => {
     console.log(keyPressedStates)
     let allKeysPressed = true
-    Object.values(keyPressedStates).forEach(keyPressed => 
+    Object.values(keyPressedStates).forEach(keyPressed =>
         allKeysPressed = allKeysPressed && keyPressed
     )
     return allKeysPressed
 }
 
-function toggleFocus(e){
+function toggleFocus(e) {
     console.log(e)
-    if(e.type == "keydown"){
-        if(keyIsShortcutKey(e)){
-            let key = e.key
-            if (key == "Meta") key = "Control"
-            keyPressedStates[key] = true
+    if (e.type == "keydown") {
+        if (keyIsShortcutKey(e)) {
+            let keyCode = e.code
+            console.log(keyCode)
+
+            if (keyCode.includes("Shift")) { keyCode = "Shift" }
+            keyPressedStates[keyCode] = true
         }
-        if(allKeysPressed(keyPressedStates)){
+        if (allKeysPressed(keyPressedStates)) {
             console.log("short cut pressed")
         }
     }
 
-    if(e.type == "keyup"){
-        keyPressedStates = {"f": false, "Shift": false, "Control":false}
+    if (e.type == "keyup") {
+        keyPressedStates = { "KeyF": false, "Shift": false, "KeyB": false }
     }
-    
+
 }
 
-document.addEventListener("keydown",toggleFocus,false);
-document.addEventListener("keyup",toggleFocus,false);
+document.addEventListener("keydown", toggleFocus, false);
+document.addEventListener("keyup", toggleFocus, false);
+
+
