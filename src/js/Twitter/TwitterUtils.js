@@ -9,6 +9,15 @@ function getTwitterPanel() {
         .children[0]
 }
 
+
+function hasFeedLoaded(){
+    return getTwitterFeed().children.length == 1
+}
+
+function hasPanelLoaded(){
+    return getTwitterPanel().children.length == 5
+}
+
 function isFeedHidden() {
     let feed = getTwitterFeed()
     return feed.children[0].nodeName == "IFRAME"
@@ -22,4 +31,4 @@ function  isPanelHidden() {
 
 
 
-module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden}
+module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden, hasFeedLoaded, hasPanelLoaded}

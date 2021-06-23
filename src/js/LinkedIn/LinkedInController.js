@@ -1,5 +1,5 @@
-const LinkedInUtils = require("./LinkedInUtils.js")
-const LinkedInIFrameUtils = require("./LinkedInIFrameUtils")
+import LinkedInUtils from './LinkedInUtils'
+import LinkedInIFrameUtils from './LinkedInIFrameUtils'
 import utils from '../utils'
 
 export default class LinkedInController {

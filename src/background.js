@@ -1,33 +1,37 @@
+
 var focusMode = { "twitter": { "focus": true }, "linkedin":{"focus":true}};
 
 var activeURL;
 
+const injectedTabs = new Set()
 
+async function tabListener(tabId, changeInfo, tab) {
 
-function tabListener(tabId, changeInfo, tab) {
   let url = tab.url
-  //  if (changeInfo && changeInfo.status == "loading") {
+  console.log(changeInfo)
+   if (changeInfo && changeInfo.status == "loading") {
     if (url.includes("twitter.com")) {
       if (focusMode["twitter"].focus) {
         if (isURLTwitterHome(url) || url != "https://twitter.com/" & !url.includes("/i/display") ) {
-          sendAction("focus")
+          await chrome.tabs.executeScript(tab.id, 
+            {code: "var currentURL = " + JSON.stringify(url) + ";"},
+            function(){
+              chrome.tabs.executeScript(tab.id ,{file: 'TwitterFocus.js'})
+            });
         }
         activeURL = url
       }
     }else if(url.includes("linkedin.com")){
       if(focusMode["linkedin"].focus){
         if(isURLLinkedInHome(url)){
-          console.log("here executing script")
-          chrome.tabs.executeScript(tab.id, {
-            code: 'var currentURL = ' + JSON.stringify(url) + ';'
-          }, function() {
-              chrome.tabs.executeScript(tab.id, {file: 'LinkedInFocus.js'});
-          });
+          console.log("about to excuting: "+ new Date().toLocaleTimeString())
+          await chrome.tabs.executeScript(tab.id, {file: 'LinkedInFocus.js'});
+
         }
         activeURL = url
       }
     } 
-  // }
+  }
 }
 
 function toggleFocusListener(command, tab) {
@@ -68,7 +72,6 @@ function postMessageToContent(port, focusObject){
     port.postMessage(focusObject)
 }
 
-chrome.tabs.onUpdated.addListener(tabListener);
 chrome.tabs.onUpdated.addListener(tabListener);
 chrome.commands.onCommand.addListener(toggleFocusListener);
 chrome.runtime.onMessage.addListener(toggleFromVue);
