@@ -15,6 +15,18 @@ function getAdHeader(){
 
 }
 
+function hasFeedLoaded(){
+    return getLinkedInFeed().children.length == 2
+}
+
+function hasPanelLoaded(){
+    return getLinkedInPanel().children.length == 3
+} 
+
+function hasAdLoaded(){
+    return getAdHeader().children.length == 1
+}
+
 function isFeedHidden(){
     let feed = getLinkedInFeed()
     return feed.children[1].nodeName == "IFRAME"
@@ -32,4 +44,4 @@ function isAdHidden(){
 }
 
 
-module.exports = {getLinkedInFeed, getLinkedInPanel, getAdHeader, isFeedHidden, isPanelHidden, isAdHidden}
+module.exports = {getLinkedInFeed, getLinkedInPanel, getAdHeader, isFeedHidden, isPanelHidden, isAdHidden, hasFeedLoaded, hasPanelLoaded, hasAdLoaded}

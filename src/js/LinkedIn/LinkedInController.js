@@ -1,4 +1,5 @@
 const LinkedInUtils = require("./LinkedInUtils.js")
+const LinkedInIFrameUtils = require("./LinkedInIFrameUtils")
 import utils from '../utils'
 
 export default class LinkedInController {
@@ -12,10 +13,7 @@ export default class LinkedInController {
         this.initialLoad = false
         this.blockFeedAttemptCount = 0
         this.blockPanelAttemptCount = 0
-        this.LINKEDIN_FEED_FRAME_HEIGHT = "1000px";
-        this.LINKEDIN_FEED_FRAME_WIDTH = "549px";
-        this.IFRAME_ClASS = "focus-card";
-        this.feedIframe = this.createLinkedInIframe()
+        this.feedIframe = null
     }
 
     clearLinkedInElements() {
@@ -35,6 +33,7 @@ export default class LinkedInController {
 
     focus(url) {
         if (url.includes("/feed")) {
+            this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
             this.focusFeed()
             this.focusPanel()
             this.focusAd()
@@ -43,21 +42,21 @@ export default class LinkedInController {
 
     unfocus(url) {
         utils.removeFocusedBrowsingCards()
-        this.toggleLinkedInFeed(false)
+        this.setFeedVisibility(true)
         this.toggleLinkedInPanel(false)
         this.toggleLinkedInAd(false)
     }
 
     focusFeed() {
-        this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 500)
+        this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
     }
 
     focusPanel() {
-        this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 500)
+        this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 250)
     }
 
     focusAd() {
-        this.adIntervalId = setInterval(this.tryBlockingLinkedInAd.bind(this), 500)
+        this.adIntervalId = setInterval(this.tryBlockingLinkedInAd.bind(this), 250)
     }
 
 
@@ -72,9 +71,9 @@ export default class LinkedInController {
     }
 
 
-    toggleLinkedInFeed(shouldHide) {
+    setFeedVisibility(visibile) {
         var linkedin_feed_parent_node = LinkedInUtils.getLinkedInFeed()
-        if (shouldHide) {
+        if (!visibile) {
             this.linkedin_feed_child_node = linkedin_feed_parent_node.children[1]
             linkedin_feed_parent_node.removeChild(this.linkedin_feed_child_node)
         } else {
@@ -103,11 +102,10 @@ export default class LinkedInController {
 
     tryBlockingLinkedInAd() {
         try {
-            if (LinkedInUtils.isAdHidden()) {
+            if (LinkedInUtils.hasAdLoaded()){
+                this.toggleLinkedInAd(true)
                 clearInterval(this.adIntervalId);
                 return
-            } else {
-                this.toggleLinkedInAd(true)
             }
         } catch (err) {
             this.blockAdAttemptCount += 1
@@ -123,14 +121,17 @@ export default class LinkedInController {
 
     tryBlockingLinkedInFeed() {
         try {
-            if (LinkedInUtils.isFeedHidden()) {
-                clearInterval(this.feedIntervalId);
-                return
-            } else {
-                this.toggleLinkedInFeed(true)
-                this.setIframeSource()
+            console.log("Trying block feed: "+ new Date().toLocaleTimeString())
+            if (LinkedInUtils.hasFeedLoaded()){
+                console.log("feed has loaded and we are ready to block: "+ new Date().toLocaleTimeString())
+                this.setFeedVisibility(false)
+                
+                LinkedInIFrameUtils.setIframeSource(this.feedIframe)
+
                 let feed = LinkedInUtils.getLinkedInFeed()
                 feed.append(this.feedIframe)
+                clearInterval(this.feedIntervalId);
+                return
             }
         } catch (err) {
             this.blockFeedAttemptCount += 1
@@ -147,11 +148,10 @@ export default class LinkedInController {
 
     tryBlockingLinkedInPanel() {
         try {
-            if (LinkedInUtils.isPanelHidden()) {
+            if (LinkedInUtils.hasPanelLoaded()){
+                this.toggleLinkedInPanel(true)
                 clearInterval(this.panelIntervalId);
                 return
-            } else {
-                this.toggleLinkedInPanel(true)
             }
         } catch (err) {
             this.blockPanelAttemptCount += 1
@@ -165,24 +165,6 @@ export default class LinkedInController {
         }
     }
 
-    createLinkedInIframe() {
-        let feedIframe = document.createElement("iframe")
-
-        feedIframe.width = this.LINKEDIN_FEED_FRAME_WIDTH;
-        feedIframe.height = this.LINKEDIN_FEED_FRAME_HEIGHT;
-        feedIframe.className = this.IFRAME_ClASS;
-
-        Object.assign(feedIframe.style, {
-            position: "inherit",
-            border: "none",
-        });
-
-        return feedIframe
-    }
-
-    setIframeSource() {
-        this.feedIframe.src = chrome.runtime.getURL("www/linkedin/feed/linkedInFeed.html")
-    }
 
 
 }
