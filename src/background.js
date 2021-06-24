@@ -2,13 +2,13 @@
 var focusMode = { "twitter": { "focus": true }, "linkedin":{"focus":true}};
 
 var activeURL;
+var injectedTabs = new Set()
 
-async function tabListener(tabId, changeInfo, tab) {
 
-  if(changeInfo && changeInfo.status == "loading"){
-    await chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'});
-  }
-  
+async function tabListener(tabId, changeInfo) {
+    if(changeInfo && changeInfo.status == "loading"){
+      await chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'});
+    }
 }
 
 

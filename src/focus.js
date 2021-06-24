@@ -5,13 +5,8 @@ import TwitterController from './js/Twitter/TwitterController'
 let focused = true
 const currentURL = document.URL
 let controller = null 
-if(currentURL.includes("twitter.com")){
-    controller = new TwitterController()
-}else if(currentURL.includes("linkedin.com")){
-    controller = new LinkedInController()
-}
 
-if(controller){
+if(controller != null){
     controller.handleActionOnPage(currentURL, "focus")
 }
 
@@ -54,3 +49,15 @@ function toggleFocus(e) {
 
 document.addEventListener("keydown", toggleFocus, false);
 document.addEventListener("keyup", toggleFocus, false);
+
+(function() {
+    if(currentURL.includes("twitter.com")){
+        controller = new TwitterController()
+    }else if(currentURL.includes("linkedin.com")){
+        controller = new LinkedInController()
+    }
+
+    if(controller != null){
+        controller.handleActionOnPage(currentURL, "focus")
+    }
+})();

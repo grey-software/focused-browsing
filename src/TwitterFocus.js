@@ -1,7 +1,9 @@
 import TwitterController from './js/Twitter/TwitterController'
-const ACTION = "focus"
+let focused = true
+let action = "focus"
 let twitterController = new TwitterController()
-twitterController.handleActionOnPage(currentURL, ACTION)
+let currentURL = document.URL
+twitterController.handleActionOnPage(currentURL, action)
 
 let keyPressedStates = { "KeyF": false, "Shift": false, "KeyB": false }
 let keysLeftToShortcut = 3
@@ -29,7 +31,9 @@ function toggleFocus(e) {
             keyPressedStates[keyCode] = true
         }
         if (allKeysPressed(keyPressedStates)) {
-            console.log("short cut pressed")
+            let action = focused ? "unfocus": "focus"
+            twitterController.handleActionOnPage(currentURL, action)
+            focused = !focused
         }
     }
 
