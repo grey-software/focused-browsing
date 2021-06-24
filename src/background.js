@@ -3,50 +3,14 @@ var focusMode = { "twitter": { "focus": true }, "linkedin":{"focus":true}};
 
 var activeURL;
 
-const injectedTabs = new Set()
-
 async function tabListener(tabId, changeInfo, tab) {
 
-  let url = tab.url
-  console.log(changeInfo)
-   if (changeInfo && changeInfo.status == "loading") {
-    if (url.includes("twitter.com")) {
-      if (focusMode["twitter"].focus) {
-        if (isURLTwitterHome(url) || url != "https://twitter.com/" & !url.includes("/i/display") ) {
-          await chrome.tabs.executeScript(tab.id, 
-            {code: "var currentURL = " + JSON.stringify(url) + ";"},
-            function(){
-              chrome.tabs.executeScript(tab.id ,{file: 'TwitterFocus.js'})
-            });
-        }
-        activeURL = url
-      }
-    }else if(url.includes("linkedin.com")){
-      if(focusMode["linkedin"].focus){
-        if(isURLLinkedInHome(url)){
-          console.log("about to excuting: "+ new Date().toLocaleTimeString())
-          await chrome.tabs.executeScript(tab.id, {file: 'LinkedInFocus.js', runAt: 'document_start'});
-
-        }
-        activeURL = url
-      }
-    } 
+  if(changeInfo && changeInfo.status == "loading"){
+    await chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'});
   }
+  
 }
 
-function toggleFocusListener(command, tab) {
-  console.log(command)
-  // if (activeURL.includes("twitter.com")) {
-  //   if (isURLTwitterHome(activeURL) & !activeURL.includes("/i/display")) {
-  //     toggleFocus("twitter")
-  //   }
-  // }else if(activeURL.includes("linkedin.com")){
-  //   if (isURLLinkedInHome(activeURL)) {
-  //     toggleFocus("linkedin")
-  //   }
-  // }
-
-}
 
 function toggleFromVue(request, sender, sendResponse) {
   activeURL = sender.tab.url
@@ -64,9 +28,6 @@ function onLogRecieved(msg){
   }
 }
 
-function sendAction(action) {
-  
-}
 
 
 function postMessageToContent(port, focusObject){
@@ -74,7 +35,6 @@ function postMessageToContent(port, focusObject){
 }
 
 chrome.tabs.onUpdated.addListener(tabListener);
-chrome.commands.onCommand.addListener(toggleFocusListener);
 chrome.runtime.onMessage.addListener(toggleFromVue);
 
 function isURLTwitterHome(url) {

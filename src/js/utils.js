@@ -3,8 +3,6 @@ function removeFocusedBrowsingCards() {
     try {
       let cards = document.getElementsByClassName(IFRAME_ClASS)
       Array.from(cards).forEach(function (el) {
-        // console.log(cards)
-        console.log(el)
         el.remove()
       });
     } catch (err) {
@@ -12,8 +10,5 @@ function removeFocusedBrowsingCards() {
     }
 }
 
-function sendLogToBackground(port, log){
-    port.postMessage({event: "log", log: log})
-}
 
-module.exports = { removeFocusedBrowsingCards, sendLogToBackground }
+module.exports = {removeFocusedBrowsingCards}
