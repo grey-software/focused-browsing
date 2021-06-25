@@ -1,5 +1,14 @@
 
-var focusMode = { "twitter": { "focus": true }, "linkedin":{"focus":true}};
+
+var currentData = {"twitter": true, "linkedin":true}
+var focusDB = "focusDB"
+chrome.storage.local.set({focusDB: currentData });
+
+chrome.storage.local.get(focusDB, function(data){
+  console.log(data)
+})
+
+
 
 var activeURL;
 var injectedTabs = new Set()
@@ -45,15 +54,6 @@ function isURLLinkedInHome(url){
   return url == "https://www.linkedin.com/feed/"
 }
 
-
-function toggleFocus(webPage) {
-  if (!focusMode[webPage].focus) {
-    sendAction("focus")
-  } else {
-    sendAction("unfocus")
-  }
-  focusMode[webPage].focus = !focusMode[webPage].focus
-}
 
 function getPortByID(tabID) {
   return ports[tabID]
