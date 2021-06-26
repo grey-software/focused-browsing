@@ -4,7 +4,7 @@ import TwitterController from './js/Twitter/TwitterController'
 
 let focused = true
 const currentURL = document.URL
-let controller = null 
+let controller = null
 
 let focusDB = null
 
@@ -55,13 +55,13 @@ function sendAction(webPage) {
     } else {
         twitterController.handleActionOnPage(webPage, "unfocus")
     }
-    focusDB[key]= !focusDB[key]
+    focusDB[key] = !focusDB[key]
 }
 
 
-function readFocusDB(){
+function readFocusDB() {
     return new Promise((resolve, reject) => {
-        chrome.storage.local.get("focusDB", function(data){
+        chrome.storage.local.get("focusDB", function (data) {
             if (data != undefined) {
                 console.log("resolve")
                 resolve(data);
@@ -72,20 +72,49 @@ function readFocusDB(){
     })
 }
 
-async function getDB(){
+async function getVarFromLocalStorage(name) {
+    return new Promise(function (resolve, reject) {
+        try {
+            chrome.storage.local.get([name], function (items) {
+                var target = items[name]
+                console.log(target)
+                resolve(target)
+            });
+        }
+        catch {
+            reject()
+        }
+    })
+}
+
+async function setVarInLocalStorage(name, value) {
+    return new Promise(function (resolve, reject) {
+        var obj = {};
+        obj[name] = value;
+        chrome.storage.local.set(obj, function () {
+            resolve("var set successfully")
+        });
+    })
+}
+
+
+async function getDB() {
     let db = await readFocusDB()
     return db
 }
 
-(function() {
-    if(currentURL.includes("twitter.com")){
+(async function () {
+    if (currentURL.includes("twitter.com")) {
         controller = new TwitterController()
-    }else if(currentURL.includes("linkedin.com")){
+    } else if (currentURL.includes("linkedin.com")) {
         controller = new LinkedInController()
     }
 
-    let focusDB = getDB()
-    console.log(focusDB)
+    // let focusDB = getDB()
+    // console.log(focusDB)
+    await setVarInLocalStorage('focusDB', { premium: false })
+    await getVarFromLocalStorage('focusDB')
+
     // if(controller != null){
     //     sendAction(currentURL)
     // }
