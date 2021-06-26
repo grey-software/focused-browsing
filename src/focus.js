@@ -59,18 +59,6 @@ function sendAction(webPage) {
 }
 
 
-async function getStorage(){
-    const key = "focusDB";
-    let focusDB = null
-    return await chrome.storage.local.get(key, function(data){
-        console.log(data)
-        focusDB = data
-        // console.log(focusDB)
-        return focusDB;
-    }) 
-}
-
-
 function readFocusDB(){
     return new Promise((resolve, reject) => {
         chrome.storage.local.get("focusDB", function(data){

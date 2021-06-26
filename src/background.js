@@ -1,5 +1,3 @@
-
-
 var currentData = {"twitter": true, "linkedin":true}
 var focusDB = "focusDB"
 
