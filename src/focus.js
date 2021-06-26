@@ -4,7 +4,7 @@ import TwitterController from './js/Twitter/TwitterController'
 
 let focused = true
 const currentURL = document.URL
-let controller = null 
+let controller = null
 
 let focusDB = null
 
@@ -55,36 +55,36 @@ function sendAction(webPage) {
     } else {
         twitterController.handleActionOnPage(webPage, "unfocus")
     }
-    focusDB[key]= !focusDB[key]
+    focusDB[key] = !focusDB[key]
 }
 
 
-function readFocusDB(){
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get("focusDB", function(data){
-            if (data != undefined) {
-                console.log("resolve")
-                resolve(data);
-            } else {
-                reject();
-            }
-        });
+async function readFocusDB() {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const data = await chrome.storage.local.get("focusDB")
+            console.log("Success: Accepting")
+            resolve(data)
+        } catch {
+            console.log("Error: Rejecting")
+            reject();
+        }
     })
 }
 
-async function getDB(){
+async function getDB() {
     let db = await readFocusDB()
     return db
 }
 
-(function() {
-    if(currentURL.includes("twitter.com")){
+(async function () {
+    if (currentURL.includes("twitter.com")) {
         controller = new TwitterController()
-    }else if(currentURL.includes("linkedin.com")){
+    } else if (currentURL.includes("linkedin.com")) {
         controller = new LinkedInController()
     }
 
-    let focusDB = getDB()
+    let focusDB = await getDB()
     console.log(focusDB)
     // if(controller != null){
     //     sendAction(currentURL)
