@@ -2,12 +2,12 @@
 
 var currentData = {"twitter": true, "linkedin":true}
 var focusDB = "focusDB"
-chrome.storage.local.set({focusDB: currentData });
 
+chrome.storage.local.clear()
+chrome.storage.local.set({focusDB: currentData });
 chrome.storage.local.get(focusDB, function(data){
   console.log(data)
 })
-
 
 
 var activeURL;
@@ -16,6 +16,7 @@ var injectedTabs = new Set()
 
 async function tabListener(tabId, changeInfo) {
     if(changeInfo && changeInfo.status == "loading"){
+      console.log("here")
       await chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'});
     }
 }

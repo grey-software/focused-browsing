@@ -35,6 +35,7 @@
     "*://*.twitter.com/*",
     "*://*.linkedin.com/*",
     "tabs",
-    "activeTab"
+    "activeTab",
+    "storage"
   ]
 }

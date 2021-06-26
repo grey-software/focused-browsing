@@ -6,9 +6,8 @@ let focused = true
 const currentURL = document.URL
 let controller = null 
 
-if(controller != null){
-    controller.handleActionOnPage(currentURL, "focus")
-}
+let focusDB = null
+
 
 
 let keyPressedStates = { "KeyF": false, "Shift": false, "KeyB": false }
@@ -36,9 +35,7 @@ function toggleFocus(e) {
             keyPressedStates[keyCode] = true
         }
         if (allKeysPressed(keyPressedStates)) {
-            let action = focused ? "unfocus": "focus"
-            controller.handleActionOnPage(currentURL, action)
-            focused = !focused
+            sendAction(currentURL)
         }
     }
     if (e.type == "keyup") {
@@ -50,6 +47,48 @@ function toggleFocus(e) {
 document.addEventListener("keydown", toggleFocus, false);
 document.addEventListener("keyup", toggleFocus, false);
 
+
+function sendAction(webPage) {
+    let key = "twitter" ? webPage.includes("twitter.com") : "linkedin"
+    if (!focusDB[key]) {
+        twitterController.handleActionOnPage(webPage, "focus")
+    } else {
+        twitterController.handleActionOnPage(webPage, "unfocus")
+    }
+    focusDB[key]= !focusDB[key]
+}
+
+
+async function getStorage(){
+    const key = "focusDB";
+    let focusDB = null
+    return await chrome.storage.local.get(key, function(data){
+        console.log(data)
+        focusDB = data
+        // console.log(focusDB)
+        return focusDB;
+    }) 
+}
+
+
+function readFocusDB(){
+    return new Promise((resolve, reject) => {
+        chrome.storage.local.get("focusDB", function(data){
+            if (data != undefined) {
+                console.log("resolve")
+                resolve(data);
+            } else {
+                reject();
+            }
+        });
+    })
+}
+
+async function getDB(){
+    let db = await readFocusDB()
+    return db
+}
+
 (function() {
     if(currentURL.includes("twitter.com")){
         controller = new TwitterController()
@@ -57,7 +96,9 @@ document.addEventListener("keyup", toggleFocus, false);
         controller = new LinkedInController()
     }
 
-    if(controller != null){
-        controller.handleActionOnPage(currentURL, "focus")
-    }
+    let focusDB = getDB()
+    console.log(focusDB)
+    // if(controller != null){
+    //     sendAction(currentURL)
+    // }
 })();
