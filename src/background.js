@@ -1,4 +1,4 @@
-var currentData = {"twitter": true, "linkedin":true}
+var currentData = {"twitter": false, "linkedin":false}
 var focusDB = "focusDB"
 
 chrome.storage.local.clear()
@@ -13,10 +13,24 @@ var injectedTabs = new Set()
 
 
 async function tabListener(tabId, changeInfo) {
-    if(changeInfo && changeInfo.status == "loading"){
-      console.log("here")
-      await chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'});
-    }
+
+    if (injectedTabs.has(tabId)) return 
+
+
+    injectedTabs.add(tabId)
+
+    chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'},function(results) {
+      console.log(results)
+      // if (chrome.runtime.lastError || !results || !results.length) {
+      //     return;  // Permission error, tab closed, etc.
+      // }
+      // if (results[0] !== true) {
+      //     // Not already inserted before, do your thing, e.g. add your CSS:
+      //     chrome.tabs.insertCSS(tabId, { file: 'yourstylesheet.css' });
+      // }
+  });
+
+
 }
 
 

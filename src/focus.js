@@ -6,7 +6,9 @@ let focused = true
 const currentURL = document.URL
 let controller = null
 
-let focusDB = null
+let pageKey = ""
+let focusdb = null
+let initial = true
 
 
 
@@ -25,17 +27,14 @@ const allKeysPressed = (keyPressedStates) => {
 }
 
 function toggleFocus(e) {
-    console.log(e)
     if (e.type == "keydown") {
         if (keyIsShortcutKey(e)) {
             let keyCode = e.code
-            console.log(keyCode)
-
             if (keyCode.includes("Shift")) { keyCode = "Shift" }
             keyPressedStates[keyCode] = true
         }
         if (allKeysPressed(keyPressedStates)) {
-            sendAction(currentURL)
+            sendAction()
         }
     }
     if (e.type == "keyup") {
@@ -48,35 +47,28 @@ document.addEventListener("keydown", toggleFocus, false);
 document.addEventListener("keyup", toggleFocus, false);
 
 
-function sendAction(webPage) {
-    let key = "twitter" ? webPage.includes("twitter.com") : "linkedin"
-    if (!focusDB[key]) {
-        twitterController.handleActionOnPage(webPage, "focus")
-    } else {
-        twitterController.handleActionOnPage(webPage, "unfocus")
+async function sendAction() {
+    console.log(focusdb)
+    if(!focusdb[pageKey]) {
+        console.log("here handling action")
+        controller.handleActionOnPage(currentURL, "focus")
+    } else{
+        console.log("here handling action")
+        controller.handleActionOnPage(currentURL, "unfocus")
     }
-    focusDB[key] = !focusDB[key]
+    focusdb[pageKey] = !focusdb[pageKey]
+    await setVarInLocalStorage("focusdb", focusdb)
 }
 
 
-function readFocusDB() {
-    return new Promise((resolve, reject) => {
-        chrome.storage.local.get("focusDB", function (data) {
-            if (data != undefined) {
-                console.log("resolve")
-                resolve(data);
-            } else {
-                reject();
-            }
-        });
-    })
-}
+
 
 async function getVarFromLocalStorage(name) {
     return new Promise(function (resolve, reject) {
         try {
             chrome.storage.local.get([name], function (items) {
                 var target = items[name]
+                console.log("getting db")
                 console.log(target)
                 resolve(target)
             });
@@ -98,24 +90,37 @@ async function setVarInLocalStorage(name, value) {
 }
 
 
-async function getDB() {
-    let db = await readFocusDB()
-    return db
-}
-
 (async function () {
-    if (currentURL.includes("twitter.com")) {
-        controller = new TwitterController()
-    } else if (currentURL.includes("linkedin.com")) {
-        controller = new LinkedInController()
+
+    if (window.hasRun === true){
+        console.log("set flag")
+        return true;
     }
 
-    // let focusDB = getDB()
-    // console.log(focusDB)
-    await setVarInLocalStorage('focusDB', { premium: false })
-    await getVarFromLocalStorage('focusDB')
+    window.hasRun = true 
+    
+    if (currentURL.includes("twitter.com")) {
+        controller = new TwitterController()
+        pageKey = "twitter"
+    } else if (currentURL.includes("linkedin.com")) {
+        controller = new LinkedInController()
+        pageKey = "linkedin"
+    }
 
-    // if(controller != null){
-    //     sendAction(currentURL)
+
+    // focusdb = await getVarFromLocalStorage('focusDB')
+
+    // if(pageKey != null){
+    //     if(!focusdb[pageKey]){
+    //         controller.handleActionOnPage(currentURL, "focus")
+    //         focusdb[pageKey] = !focusdb[pageKey]
+    //         await setVarInLocalStorage("focusdb", focusdb)
+    //     }
     // }
+    // console.log(focusdb)
+
+    console.log("getting here")
+
+    window.hasRun
+
 })();
