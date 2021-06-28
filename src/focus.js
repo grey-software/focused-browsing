@@ -47,8 +47,7 @@ document.addEventListener("keydown", toggleFocus, false);
 document.addEventListener("keyup", toggleFocus, false);
 
 
-async function sendAction() {
-    console.log(focusdb)
+function sendAction() {
     if(!focusdb[pageKey]) {
         console.log("here handling action")
         controller.handleActionOnPage(currentURL, "focus")
@@ -57,48 +56,14 @@ async function sendAction() {
         controller.handleActionOnPage(currentURL, "unfocus")
     }
     focusdb[pageKey] = !focusdb[pageKey]
-    await setVarInLocalStorage("focusdb", focusdb)
 }
 
 
 
 
-async function getVarFromLocalStorage(name) {
-    return new Promise(function (resolve, reject) {
-        try {
-            chrome.storage.local.get([name], function (items) {
-                var target = items[name]
-                console.log("getting db")
-                console.log(target)
-                resolve(target)
-            });
-        }
-        catch {
-            reject()
-        }
-    })
-}
-
-async function setVarInLocalStorage(name, value) {
-    return new Promise(function (resolve, reject) {
-        var obj = {};
-        obj[name] = value;
-        chrome.storage.local.set(obj, function () {
-            resolve("var set successfully")
-        });
-    })
-}
 
 
-(async function () {
-
-    if (window.hasRun === true){
-        console.log("set flag")
-        return true;
-    }
-
-    window.hasRun = true 
-    
+(function () {  
     if (currentURL.includes("twitter.com")) {
         controller = new TwitterController()
         pageKey = "twitter"
@@ -108,19 +73,9 @@ async function setVarInLocalStorage(name, value) {
     }
 
 
-    // focusdb = await getVarFromLocalStorage('focusDB')
+    focusdb = {"twitter": false, "linkedin":false}
 
-    // if(pageKey != null){
-    //     if(!focusdb[pageKey]){
-    //         controller.handleActionOnPage(currentURL, "focus")
-    //         focusdb[pageKey] = !focusdb[pageKey]
-    //         await setVarInLocalStorage("focusdb", focusdb)
-    //     }
-    // }
-    // console.log(focusdb)
-
-    console.log("getting here")
-
-    window.hasRun
-
+    if(pageKey != null){
+        sendAction()
+    }
 })();

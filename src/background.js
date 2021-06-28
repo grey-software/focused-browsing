@@ -14,23 +14,30 @@ var injectedTabs = new Set()
 
 async function tabListener(tabId, changeInfo) {
 
-    if (injectedTabs.has(tabId)) return 
+    if(changeInfo && changeInfo.status == "loading"){
+      let result = await getInjectInfo(tabId)
+      
+      if(result && !result[0]){
+        chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'})
+        await chrome.tabs.executeScript(tabId, {
+          code: 'document.isFocusScripInjected = true',
+          runAt: 'document_start',
+        });
+      }
+    }
+}
 
 
-    injectedTabs.add(tabId)
 
-    chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'},function(results) {
-      console.log(results)
-      // if (chrome.runtime.lastError || !results || !results.length) {
-      //     return;  // Permission error, tab closed, etc.
-      // }
-      // if (results[0] !== true) {
-      //     // Not already inserted before, do your thing, e.g. add your CSS:
-      //     chrome.tabs.insertCSS(tabId, { file: 'yourstylesheet.css' });
-      // }
-  });
-
-
+async function getInjectInfo(tabId) {
+  return new Promise(function (resolve, reject) {
+      chrome.tabs.executeScript(tabId, {
+        code: 'var check = document.isFocusScripInjected || false; check',
+        runAt: 'document_start',
+      }, function(result){
+         resolve(result)
+      })
+  })
 }
 
 
