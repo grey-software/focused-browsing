@@ -18,7 +18,6 @@ const keyIsShortcutKey = (e) => {
 }
 
 const allKeysPressed = (keyPressedStates) => {
-    console.log(keyPressedStates)
     let allKeysPressed = true
     Object.values(keyPressedStates).forEach(keyPressed =>
         allKeysPressed = allKeysPressed && keyPressed
