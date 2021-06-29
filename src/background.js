@@ -1,80 +1,43 @@
-var currentData = {"twitter": false, "linkedin":false}
-var focusDB = "focusDB"
+async function injectFocusScriptOnTabChange(tabId, changeInfo) {
+  const isPageLoading = changeInfo && changeInfo.status == 'loading'
+  if (!isPageLoading) {
+    return
+  }
 
-chrome.storage.local.clear()
-chrome.storage.local.set({focusDB: currentData });
-chrome.storage.local.get(focusDB, function(data){
-  console.log(data)
-})
+  // the result of the resolved promise is an array that looks like: [false]
+  const focusScriptInjectedResult = await checkFocusScriptInjected(tabId)
+  const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
 
+  if (focusScriptInjected) {
+    return
+  }
 
-var activeURL;
-var injectedTabs = new Set()
+  chrome.tabs.executeScript(tabId, {
+    file: 'focus.js',
+    runAt: 'document_start',
+  })
 
-
-async function tabListener(tabId, changeInfo) {
-
-    if(changeInfo && changeInfo.status == "loading"){
-      let result = await getInjectInfo(tabId)
-      
-      if(result && !result[0]){
-        chrome.tabs.executeScript(tabId, {file: 'focus.js', runAt: 'document_start'})
-        await chrome.tabs.executeScript(tabId, {
-          code: 'document.isFocusScripInjected = true',
-          runAt: 'document_start',
-        });
-      }
-    }
-}
-
-
-
-async function getInjectInfo(tabId) {
-  return new Promise(function (resolve, reject) {
-      chrome.tabs.executeScript(tabId, {
-        code: 'var check = document.isFocusScripInjected || false; check',
-        runAt: 'document_start',
-      }, function(result){
-         resolve(result)
-      })
+  chrome.tabs.executeScript(tabId, {
+    code: 'document.isFocusScriptInjected = true',
+    runAt: 'document_start',
   })
 }
 
-
-function toggleFromVue(request, sender, sendResponse) {
-  activeURL = sender.tab.url
-
-  let webPage = activeURL.includes("twitter.com") ? "twitter" : "linkedin"
-  if (request.intent == "unfocus") {
-    toggleFocus(webPage)
-  }
+async function checkFocusScriptInjected(tabId) {
+  return new Promise(function (resolve, _) {
+    /*
+      This code queries the document for whether or not the focus script 
+      is already injected. We return the answer in our code so that we can determine whether or not we should 
+      inject the focus script again.
+    */
+    const checkingScriptDetails = {
+      code: 'let isFocusScriptInjected = document.isFocusScriptInjected || false; isFocusScriptInjected;',
+      runAt: 'document_start',
+    }
+    chrome.tabs.executeScript(tabId, checkingScriptDetails, function (result) {
+      resolve(result)
+    })
+  })
 }
 
-function onLogRecieved(msg){
-  if(msg.event == "log"){
-    let log = msg.log
-    console.log(log)
-  }
-}
-
-
-
-function postMessageToContent(port, focusObject){
-    port.postMessage(focusObject)
-}
-
-chrome.tabs.onUpdated.addListener(tabListener);
-chrome.runtime.onMessage.addListener(toggleFromVue);
-
-function isURLTwitterHome(url) {
-  return url == "https://twitter.com/home"
-}
-
-function isURLLinkedInHome(url){
-  return url == "https://www.linkedin.com/feed/"
-}
-
-
-function getPortByID(tabID) {
-  return ports[tabID]
-}
+chrome.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)

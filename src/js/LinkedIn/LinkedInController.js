@@ -32,7 +32,8 @@ export default class LinkedInController {
 
 
     focus(url) {
-        if (url.includes("/feed")) {
+        console.log(url)
+        if (LinkedInUtils.isHomePage(url)) {
             this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
             this.focusFeed()
             this.focusPanel()
@@ -63,8 +64,13 @@ export default class LinkedInController {
     toggleLinkedInAd(shouldHide) {
         var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
         if (shouldHide) {
+            console.log("blocking add")
+            console.log(linkedin_ad_parent_node)
+
             this.linkedin_ad_child_node = linkedin_ad_parent_node.children[0]
+            console.log(this.linkedin_ad_child_node)
             linkedin_ad_parent_node.removeChild(this.linkedin_ad_child_node)
+
         } else {
             linkedin_ad_parent_node.append(this.linkedin_ad_child_node)
         }
@@ -103,11 +109,14 @@ export default class LinkedInController {
     tryBlockingLinkedInAd() {
         try {
             if (LinkedInUtils.hasAdLoaded()){
+                console.log("trying to block add")
                 this.toggleLinkedInAd(true)
                 clearInterval(this.adIntervalId);
                 return
             }
         } catch (err) {
+            console.log("error blocking add")
+            console.log(err)
             this.blockAdAttemptCount += 1
             if (this.blockAdAttemptCount > 2 && this.blockAdAttemptCount <= 4) {
                 console.log("WARNING: LinkedIn elements usually load by now")
@@ -121,9 +130,7 @@ export default class LinkedInController {
 
     tryBlockingLinkedInFeed() {
         try {
-            console.log("Trying block feed: "+ new Date().toLocaleTimeString())
             if (LinkedInUtils.hasFeedLoaded()){
-                console.log("feed has loaded and we are ready to block: "+ new Date().toLocaleTimeString())
                 this.setFeedVisibility(false)
                 
                 LinkedInIFrameUtils.setIframeSource(this.feedIframe)

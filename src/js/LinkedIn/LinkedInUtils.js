@@ -1,6 +1,6 @@
 const LINKEDIN_FEED_CLASS = "scaffold-layout__main"
 const PANEL_CLASS = "scaffold-layout__aside"
-const AD_CLASS = "scaffold-layout__ad"
+const AD_CLASS = "ad-banner-container is-header-zone"
 
 function getLinkedInFeed(){
     return document.getElementsByClassName(LINKEDIN_FEED_CLASS)[0].children[2]
@@ -43,5 +43,9 @@ function isAdHidden(){
     return ad.children.length == 0;
 }
 
+function isHomePage(url){
+    return url == "https://www.linkedin.com/feed/" || url == "https://www.linkedin.com/"
+}
 
-module.exports = {getLinkedInFeed, getLinkedInPanel, getAdHeader, isFeedHidden, isPanelHidden, isAdHidden, hasFeedLoaded, hasPanelLoaded, hasAdLoaded}
+
+module.exports = {getLinkedInFeed, getLinkedInPanel, getAdHeader, isFeedHidden, isPanelHidden, isAdHidden, hasFeedLoaded, hasPanelLoaded, hasAdLoaded, isHomePage}

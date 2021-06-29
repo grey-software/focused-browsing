@@ -15,7 +15,6 @@ export default class TwitterController {
 
 
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
-    this.panelIframe = TwitterIFrameUtils.createTwitterPanelIframe()
     this.blockFeedAttemptCount = 0
     this.blockPanelAttemptCount = 0
   }
@@ -31,8 +30,10 @@ export default class TwitterController {
 
   focus(url) {
     // the panel shows up on every page
+    console.log(url)
     this.focusTwitterPanel()
-    if (url.includes("/home")) {
+    if (TwitterUtils.isHomePage(url)) {
+      console.log("")
       this.focusTwitterFeed()
     }
   }
@@ -116,12 +117,8 @@ export default class TwitterController {
 
   tryHidingTwitterPanel() {
     try {
-      let panel = TwitterUtils.getTwitterPanel()
-      TwitterIFrameUtils.setPanelIframeSource(this.panelIframe)
-
       if (TwitterUtils.hasPanelLoaded()) {
         this.toggleTwitterPanel(true);
-        panel.append(this.panelIframe)
         clearInterval(this.pageInterval);
         return
       }

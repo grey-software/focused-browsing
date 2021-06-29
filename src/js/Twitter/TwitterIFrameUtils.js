@@ -21,21 +21,6 @@ function createTwitterFeedIframe() {
     return feedIframe
 }
 
-function createTwitterPanelIframe(){
-  let panelIframe = document.createElement("iframe")
-
-  panelIframe.width = TWITTER_PANEL_FRAME_WIDTH;
-  panelIframe.height = TWITTER_PANEL_FRAME_HEIGHT;
-  panelIframe.className = IFRAME_ClASS;
-
-  Object.assign(panelIframe.style, {
-    position: "fixed",
-    border: "none",
-  });
-
-  return panelIframe
-}
-
 
 function setFeedIframeSource(feedIframe) {
     if (document.body.style.backgroundColor == "rgb(0, 0, 0)") {
@@ -47,12 +32,5 @@ function setFeedIframeSource(feedIframe) {
     }
 }
 
-function setPanelIframeSource(panelIframe) {
-    if (document.body.style.backgroundColor == "rgb(0, 0, 0)" || document.body.style.backgroundColor == "rgb(21, 32, 43)") {
-      panelIframe.src = chrome.runtime.getURL("www/twitter/panel/twitterPanelDark.html")
-    } else {
-      panelIframe.src = chrome.runtime.getURL("www/twitter/panel/twitterPanel.html")
-    }
-}
 
-module.exports = {createTwitterFeedIframe,createTwitterPanelIframe, setFeedIframeSource, setPanelIframeSource}
+module.exports = {createTwitterFeedIframe, setFeedIframeSource}

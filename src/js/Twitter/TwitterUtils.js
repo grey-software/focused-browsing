@@ -28,7 +28,11 @@ function  isPanelHidden() {
     return panel.children.length == 2;
 }
 
+function isHomePage(url){
+    return url == "https://twitter.com/home" || url == "https://twitter.com/"
+}
 
 
 
-module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden, hasFeedLoaded, hasPanelLoaded}
+
+module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden, hasFeedLoaded, hasPanelLoaded, isHomePage}
