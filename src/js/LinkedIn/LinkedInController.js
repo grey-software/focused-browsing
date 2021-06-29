@@ -21,15 +21,6 @@ export default class LinkedInController {
     }
 
 
-    handleActionOnPage(url, action) {
-        if (action == "focus") {
-            this.focus(url)
-        } else {
-            this.unfocus(url)
-        }
-
-    }
-
 
     focus(url) {
         console.log(url)

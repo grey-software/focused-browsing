@@ -1,34 +1,28 @@
 import LinkedInController from './js/LinkedIn/LinkedInController'
 import TwitterController from './js/Twitter/TwitterController'
+import FocusUtils from './focus-utils'
 
 const currentURL = document.URL
+let currentWebsite = ''
 let controller = null
-
-let pageKey = ''
-let focusdb = null
-
+const focusState = { twitter: false, linkedin: false }
 let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
-const keyIsShortcutKey = (e) => {
-  return e.key == 'Shift' || e.code == 'KeyB' || e.code == 'KeyF'
-}
 
-const allKeysPressed = (keyPressedStates) => {
-  let allKeysPressed = true
-  Object.values(keyPressedStates).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
-  return allKeysPressed
-}
+document.addEventListener('keydown', toggleFocus, false)
+document.addEventListener('keyup', toggleFocus, false)
+window.addEventListener('resize', handleResize)
 
 function toggleFocus(e) {
   if (e.type == 'keydown') {
-    if (keyIsShortcutKey(e)) {
+    if (FocusUtils.keyIsShortcutKey(e)) {
       let keyCode = e.code
       if (keyCode.includes('Shift')) {
         keyCode = 'Shift'
       }
-      keyPressedStates[keyCode] = true
+      setKeyPressedState(keyCode, true)
     }
-    if (allKeysPressed(keyPressedStates)) {
-      sendAction()
+    if (FocusedUtils.allKeysPressed(keyPressedStates)) {
+      updateFocusState()
     }
   }
   if (e.type == 'keyup') {
@@ -36,42 +30,46 @@ function toggleFocus(e) {
   }
 }
 
-document.addEventListener('keydown', toggleFocus, false)
-document.addEventListener('keyup', toggleFocus, false)
-
-window.addEventListener('resize', handleResize)
-
 function handleResize() {
   try {
-    if (focusdb[pageKey]) {
+    if (isCurrentlyFocused) {
       console.log('here handling action focus ')
-      controller.handleActionOnPage(currentURL, 'focus')
+      controller.focus(currentURL)
       // handle this with using toggle function to not trigger intervals
     }
-  } catch (err) {}
+  } catch (err) {
+    console.log(err)
+  }
 }
 
-function sendAction() {
-  if (!focusdb[pageKey]) {
-    controller.handleActionOnPage(currentURL, 'focus')
-  } else {
-    controller.handleActionOnPage(currentURL, 'unfocus')
+const shouldFocus = () => !focusState[currentWebsite]
+const isCurrentlyFocused = () => focusState[currentWebsite]
+const setKeyPressedState = (keyCode, state) => (keyPressedStates[keyCode] = state)
+
+function updateFocusState() {
+  shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
+  focusState[currentWebsite] = !focusState[currentWebsite]
+}
+
+function setUpFocusScript() {
+  if (currentURL.includes('twitter.com')) {
+    controller = new TwitterController()
+    currentWebsite = 'twitter'
+  } else if (currentURL.includes('linkedin.com')) {
+    controller = new LinkedInController()
+    currentWebsite = 'linkedin'
   }
-  focusdb[pageKey] = !focusdb[pageKey]
+}
+
+function initFocus() {
+  if (currentWebsite != null) {
+    if (shouldFocus) {
+      updateFocusState()
+    }
+  }
 }
 
 ;(function () {
-  if (currentURL.includes('twitter.com')) {
-    controller = new TwitterController()
-    pageKey = 'twitter'
-  } else if (currentURL.includes('linkedin.com')) {
-    controller = new LinkedInController()
-    pageKey = 'linkedin'
-  }
-
-  focusdb = { twitter: false, linkedin: false }
-
-  if (pageKey != null) {
-    sendAction()
-  }
+  setUpFocusScript()
+  initFocus()
 })()
