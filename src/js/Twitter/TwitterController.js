@@ -22,17 +22,17 @@ export default class TwitterController {
 
   focus(url) {
     // the panel shows up on every page
-    this.focusTwitterPanel()
+    this.focusPanel()
     if (TwitterUtils.isHomePage(url)) {
-      this.focusTwitterFeed()
+      this.focusFeed()
     }
   }
 
   unfocus(url) {
     utils.removeFocusedBrowsingCards()
-    this.toggleTwitterPanel(false)
+    this.setPanelVisibility(true)
     if (url.includes("/home")) {
-      this.toggleTwitterFeed(false)
+      this.setFeedVisibility(true)
     }
   }
 
@@ -41,28 +41,29 @@ export default class TwitterController {
     this.panel_elements = []
   }
 
-  focusTwitterPanel() {
+  focusPanel() {
     this.pageInterval = setInterval(this.tryHidingTwitterPanel.bind(this), 700);
   }
 
-  focusTwitterFeed() {
+  focusFeed() {
     this.feedIntervalId = setInterval(this.tryHidingTwitterFeed.bind(this), 500);
   }
 
-  toggleTwitterFeed(shouldhide) {
+  setFeedVisibility(visible) {
     let feed = TwitterUtils.getTwitterFeed()
-    if (shouldhide) {
+    if (!visible) {
       this.twitterFeedChildNode = feed.children[0]
       feed.removeChild(feed.childNodes[0])
+      TwitterIFrameUtils.injectFeedIframe(this.feedIframe, feed)
     } else {
       feed.append(this.twitterFeedChildNode)
     }
   }
 
-  toggleTwitterPanel(shouldHide) {
+  setPanelVisibility(visibile) {
 
     let panel = TwitterUtils.getTwitterPanel()
-    if (shouldHide) {
+    if (!visibile) {
       let length = panel.children.length
 
       while (length != 1) {
@@ -82,12 +83,8 @@ export default class TwitterController {
 
   tryHidingTwitterFeed() {
     try {
-      TwitterIFrameUtils.setFeedIframeSource(this.feedIframe)
-      let feed = TwitterUtils.getTwitterFeed()
-
       if (TwitterUtils.hasFeedLoaded()) {
-        this.toggleTwitterFeed(true);
-        feed.append(this.feedIframe)
+        this.setFeedVisibility(false);
         clearInterval(this.feedIntervalId);
         this.initialLoad = false;
         return
@@ -108,7 +105,7 @@ export default class TwitterController {
   tryHidingTwitterPanel() {
     try {
       if (TwitterUtils.hasPanelLoaded()) {
-        this.toggleTwitterPanel(true);
+        this.setPanelVisibility(false);
         clearInterval(this.pageInterval);
         return
       }

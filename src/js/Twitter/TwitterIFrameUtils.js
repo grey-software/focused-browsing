@@ -32,5 +32,12 @@ function setFeedIframeSource(feedIframe) {
     }
 }
 
+function injectFeedIframe(feedIframe,feed){
+  console.log("got here")
+  setFeedIframeSource(feedIframe)
+  feed.append(feedIframe)
+  console.log(feed)
+}
 
-module.exports = {createTwitterFeedIframe, setFeedIframeSource}
+
+module.exports = {createTwitterFeedIframe, setFeedIframeSource,injectFeedIframe}
