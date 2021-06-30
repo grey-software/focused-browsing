@@ -22,7 +22,6 @@ export default class TwitterController {
 
   focus(url) {
     // the panel shows up on every page
-    console.log(url)
     this.focusTwitterPanel()
     if (TwitterUtils.isHomePage(url)) {
       this.focusTwitterFeed()

@@ -1,17 +1,22 @@
+let focusState = { twitter: true, linkedin: true }
+
+chrome.storage.local.clear()
+chrome.storage.local.set({ focusState: focusState })
+chrome.storage.local.get('focusState', function (data) {
+  console.log(data)
+})
+
 async function injectFocusScriptOnTabChange(tabId, changeInfo) {
   const isPageLoading = changeInfo && changeInfo.status == 'loading'
   if (!isPageLoading) {
     return
   }
-
-  // the result of the resolved promise is an array that looks like: [false]
   const focusScriptInjectedResult = await checkFocusScriptInjected(tabId)
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
 
   if (focusScriptInjected) {
     return
   }
-
   chrome.tabs.executeScript(tabId, {
     file: 'focus.js',
     runAt: 'document_start',
@@ -31,7 +36,7 @@ async function checkFocusScriptInjected(tabId) {
       inject the focus script again.
     */
     const checkingScriptDetails = {
-      code: 'let isFocusScriptInjected = document.isFocusScriptInjected || false; isFocusScriptInjected;',
+      code: 'var isFocusScriptInjected = document.isFocusScriptInjected || false; isFocusScriptInjected;',
       runAt: 'document_start',
     }
     chrome.tabs.executeScript(tabId, checkingScriptDetails, function (result) {
@@ -41,3 +46,16 @@ async function checkFocusScriptInjected(tabId) {
 }
 
 chrome.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
+
+
+// chrome.tabs.onActivated.addListener(function (activeInfo) {
+//   let tabId = activeInfo.tabId
+//   // send a message to the tab with the url
+//   console.log("new tab activated")
+//   chrome.tabs.sendMessage(tabId, {text: "current tab has changed"},function(response){
+//     response = response || {};
+//     if(response.status == "tab change confirmed"){
+//       return
+//     }
+//   })
+// })

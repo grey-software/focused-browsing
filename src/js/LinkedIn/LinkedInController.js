@@ -23,7 +23,6 @@ export default class LinkedInController {
 
 
     focus(url) {
-        console.log(url)
         if (LinkedInUtils.isHomePage(url)) {
             this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
             this.focusFeed()
@@ -40,10 +39,21 @@ export default class LinkedInController {
     }
 
     focusFeed() {
-        this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
+        try{
+            this.setFeedVisibility(false)
+        }catch(err){
+            this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
+        }
+        // this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
     }
 
     focusPanel() {
+        try{
+            this.setFeedVisibility(false)
+        }catch(err){
+            this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 250)
+        }
+
         this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 250)
     }
 
@@ -55,11 +65,7 @@ export default class LinkedInController {
     toggleLinkedInAd(shouldHide) {
         var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
         if (shouldHide) {
-            console.log("blocking add")
-            console.log(linkedin_ad_parent_node)
-
             this.linkedin_ad_child_node = linkedin_ad_parent_node.children[0]
-            console.log(this.linkedin_ad_child_node)
             linkedin_ad_parent_node.removeChild(this.linkedin_ad_child_node)
 
         } else {
@@ -73,6 +79,11 @@ export default class LinkedInController {
         if (!visibile) {
             this.linkedin_feed_child_node = linkedin_feed_parent_node.children[1]
             linkedin_feed_parent_node.removeChild(this.linkedin_feed_child_node)
+
+            LinkedInIFrameUtils.setIframeSource(this.feedIframe)
+            let feed = LinkedInUtils.getLinkedInFeed()
+            feed.append(this.feedIframe)
+
         } else {
             linkedin_feed_parent_node.append(this.linkedin_feed_child_node)
         }
@@ -100,14 +111,11 @@ export default class LinkedInController {
     tryBlockingLinkedInAd() {
         try {
             if (LinkedInUtils.hasAdLoaded()){
-                console.log("trying to block add")
                 this.toggleLinkedInAd(true)
                 clearInterval(this.adIntervalId);
                 return
             }
         } catch (err) {
-            console.log("error blocking add")
-            console.log(err)
             this.blockAdAttemptCount += 1
             if (this.blockAdAttemptCount > 2 && this.blockAdAttemptCount <= 4) {
                 console.log("WARNING: LinkedIn elements usually load by now")
@@ -123,11 +131,6 @@ export default class LinkedInController {
         try {
             if (LinkedInUtils.hasFeedLoaded()){
                 this.setFeedVisibility(false)
-                
-                LinkedInIFrameUtils.setIframeSource(this.feedIframe)
-
-                let feed = LinkedInUtils.getLinkedInFeed()
-                feed.append(this.feedIframe)
                 clearInterval(this.feedIntervalId);
                 return
             }
