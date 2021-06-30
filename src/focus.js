@@ -2,7 +2,7 @@ import LinkedInController from './js/LinkedIn/LinkedInController'
 import TwitterController from './js/Twitter/TwitterController'
 import FocusUtils from './focus-utils'
 
-const currentURL = document.URL
+let currentURL = document.URL
 let currentWebsite = ''
 let controller = null
 let focusState = null
@@ -12,25 +12,37 @@ document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
 // window.addEventListener('resize', handleResize)
 
-// chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-//   console.log(msg)
-//   if (msg.text == 'current tab has changed') {
-//     console.log('old focus state')
-//     console.log(focusState)
-//     focusState = await getFocusStateFromLocalStorage('focusState')
-//     console.log('new focus state')
-//     console.log(focusState)
-//     if (currentWebsite != null) {
-//       if (isCurrentlyFocused()) {
-//         console.log("on tab update focusing")
-//         controller.focus(currentURL)
-//       } else {
-//         controller.unfocus(currentURL)
-//       }
-//     }
-//     sendResponse({ status: 'tab change confirmed' })
-//   }
-// })
+chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+
+  if (msg.text == 'different tab activated') {
+    let newFocusState = await getFocusStateFromLocalStorage('focusState')
+
+    if(JSON.stringify(newFocusState) == JSON.stringify(focusState)){return}
+    
+    focusState = newFocusState
+    if (currentWebsite != null) {
+      if (isCurrentlyFocused()) {
+        controller.focus(currentURL)
+      } else {
+        controller.unfocus(currentURL)
+      }
+    }
+    sendResponse({ status: 'tab change confirmed' })
+  }
+
+  else if(msg.text == "new page loaded on website"){
+    if(FocusUtils.isURLValid(msg.url)){
+        if(FocusUtils.isNotHomeURL(msg.url,currentURL)){
+            currentURL = msg.url
+            await setUpFocusScript()
+            initFocus()
+            sendResponse({ status: 'tab change confirmed' })
+        }
+    }
+  }
+})
+
+
 
 async function handleKeyboardShortcuts(e) {
   if (e.type == 'keydown') {
