@@ -34,26 +34,15 @@ export default class LinkedInController {
     unfocus(url) {
         utils.removeFocusedBrowsingCards()
         this.setFeedVisibility(true)
-        this.toggleLinkedInPanel(false)
-        this.toggleLinkedInAd(false)
+        this.setPanelVisibility(true)
+        this.setAdVisibility(true)
     }
 
     focusFeed() {
-        try{
-            this.setFeedVisibility(false)
-        }catch(err){
-            this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
-        }
-        // this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
+        this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
     }
 
     focusPanel() {
-        try{
-            this.setFeedVisibility(false)
-        }catch(err){
-            this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 250)
-        }
-
         this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 250)
     }
 
@@ -62,9 +51,9 @@ export default class LinkedInController {
     }
 
 
-    toggleLinkedInAd(shouldHide) {
+    setAdVisibility(visibile) {
         var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
-        if (shouldHide) {
+        if (!visibile) {
             this.linkedin_ad_child_node = linkedin_ad_parent_node.children[0]
             linkedin_ad_parent_node.removeChild(this.linkedin_ad_child_node)
 
@@ -79,19 +68,15 @@ export default class LinkedInController {
         if (!visibile) {
             this.linkedin_feed_child_node = linkedin_feed_parent_node.children[1]
             linkedin_feed_parent_node.removeChild(this.linkedin_feed_child_node)
-
-            LinkedInIFrameUtils.setIframeSource(this.feedIframe)
-            let feed = LinkedInUtils.getLinkedInFeed()
-            feed.append(this.feedIframe)
-
+            LinkedInIFrameUtils.injectFeedIframe(this.feedIframe,linkedin_feed_parent_node)
         } else {
             linkedin_feed_parent_node.append(this.linkedin_feed_child_node)
         }
     }
 
-    toggleLinkedInPanel(shouldHide) {
+    setPanelVisibility(visible) {
         let panel = LinkedInUtils.getLinkedInPanel()
-        if (shouldHide) {
+        if (!visible) {
             let length = panel.children.length
             while (length != 0) {
                 var currentLastChild = panel.children[length - 1]
@@ -111,7 +96,7 @@ export default class LinkedInController {
     tryBlockingLinkedInAd() {
         try {
             if (LinkedInUtils.hasAdLoaded()){
-                this.toggleLinkedInAd(true)
+                this.setAdVisibility(false)
                 clearInterval(this.adIntervalId);
                 return
             }
@@ -150,7 +135,7 @@ export default class LinkedInController {
     tryBlockingLinkedInPanel() {
         try {
             if (LinkedInUtils.hasPanelLoaded()){
-                this.toggleLinkedInPanel(true)
+                this.setPanelVisibility(false)
                 clearInterval(this.panelIntervalId);
                 return
             }

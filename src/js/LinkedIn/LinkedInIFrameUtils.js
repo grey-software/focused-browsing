@@ -21,5 +21,11 @@ function setIframeSource(feedIframe) {
     feedIframe.src = chrome.runtime.getURL("www/linkedin/feed/linkedInFeed.html")
 }
 
+function injectFeedIframe(feedIframe, feed){
+    setIframeSource(feedIframe)
+    feed.append(feedIframe)
+    console.log(feed)
+}
 
-module.exports = {createLinkedInIframe,setIframeSource }
+
+module.exports = {createLinkedInIframe,setIframeSource, injectFeedIframe}
