@@ -13,12 +13,18 @@ document.addEventListener('keyup', handleKeyboardShortcuts, false)
 // window.addEventListener('resize', handleResize)
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-
+  console.log(msg)
   if (msg.text == 'different tab activated') {
     let newFocusState = await getFocusStateFromLocalStorage('focusState')
+    console.log("new focus state")
+    console.log(newFocusState)
 
-    if(JSON.stringify(newFocusState) == JSON.stringify(focusState)){return}
-    
+    console.log("old focus state")
+    console.log(focusState)
+    if (JSON.stringify(newFocusState) == JSON.stringify(focusState)) {
+      return
+    }
+
     focusState = newFocusState
     if (currentWebsite != null) {
       if (isCurrentlyFocused()) {
@@ -28,21 +34,15 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
       }
     }
     sendResponse({ status: 'tab change confirmed' })
-  }
-
-  else if(msg.text == "new page loaded on website"){
-    if(FocusUtils.isURLValid(msg.url)){
-        if(FocusUtils.isNotHomeURL(msg.url,currentURL)){
-            currentURL = msg.url
-            await setUpFocusScript()
-            initFocus()
-            sendResponse({ status: 'tab change confirmed' })
-        }
+  } else if (msg.text == 'new page loaded on website') {
+    if (FocusUtils.isURLValid(msg.url)) {
+      currentURL = msg.url
+      await setUpFocusScript()
+      initFocus()
+      sendResponse({ status: 'tab change within website confirmed' })
     }
   }
 })
-
-
 
 async function handleKeyboardShortcuts(e) {
   if (e.type == 'keydown') {
@@ -93,7 +93,7 @@ async function updateStorage() {
 }
 
 async function renderFocusState(shouldFocus) {
-  console.log("should focus is: " + shouldFocus)
+  console.log('should focus is: ' + shouldFocus)
   console.log(shouldFocus)
   shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
 }
@@ -102,7 +102,7 @@ function toggleFocus() {
   console.log('old focus state on toggle')
   console.log(focusState)
   focusState[currentWebsite] = !focusState[currentWebsite]
-  console.log("new focus state on toggle")
+  console.log('new focus state on toggle')
   console.log(focusState)
 }
 

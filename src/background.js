@@ -18,14 +18,13 @@ async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
 
   if (focusScriptInjected) {
-
     if(url != activeURL && !isHomeURLLoad(activeURL, url)){
       console.log("url is: "+ url)
       console.log("activeURL is: " + activeURL)
       activeURL = url
       chrome.tabs.sendMessage(tabId, { text: 'new page loaded on website', url:activeURL}, function (response) {
         response = response || {}
-        if (response.status == 'tab change confirmed') {
+        if (response.status == 'tab change within website confirmed') {
           return
         }
       })
@@ -76,7 +75,8 @@ chrome.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
   let tabId = activeInfo.tabId
-  chrome.tabs.sendMessage(tabId, { text: 'current tab has changed' }, function (response) {
+  console.log("sending message")
+  chrome.tabs.sendMessage(tabId, { text: 'different tab activated' }, function (response) {
     response = response || {}
     if (response.status == 'tab change confirmed') {
       return

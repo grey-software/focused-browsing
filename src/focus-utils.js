@@ -7,5 +7,8 @@ const shortcutKeysPressed = (keyPressedStates) => {
     Object.values(keyPressedStates).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
     return allKeysPressed
 }
+
+
+
   
-module.exports = {keyIsShortcutKey, shortcutKeysPressed}
+module.exports = {keyIsShortcutKey, shortcutKeysPressed, isURLValid}

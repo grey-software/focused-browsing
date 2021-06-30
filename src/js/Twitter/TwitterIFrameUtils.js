@@ -1,8 +1,5 @@
 const TWITTER_FEED_FRAME_HEIGHT = "766px";
 const TWITTER_FEED_FRAME_WIDTH = "598px";
-
-const TWITTER_PANEL_FRAME_HEIGHT = "4000px";
-const TWITTER_PANEL_FRAME_WIDTH = "350px";
 const IFRAME_ClASS = "focus-card";
 
 
