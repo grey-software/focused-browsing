@@ -8,8 +8,16 @@ chrome.storage.local.get('focusState', function (data) {
   console.log(data)
 })
 
+let injectedTabs = new Set()
+
 async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   let url = tab.url
+  
+  console.log("page loading")
+  console.log(url)
+  console.log(changeInfo)
+
+  
   const isPageLoading = changeInfo && changeInfo.status == 'loading'
   if (!isPageLoading) {
     return
@@ -17,7 +25,6 @@ async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
 
   const focusScriptInjectedResult = await checkFocusScriptInjected(tabId)
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
-
   if (focusScriptInjected) {
     if (url != activeURL && !isHomeURLLoad(activeURL, url)) {
       console.log('url is: ' + url)
@@ -83,17 +90,3 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
     }
   })
 })
-
-async function getActiveURL() {
-  return new Promise(function (resolve, _) {
-    chrome.tabs.query(
-      {
-        active: true,
-        currentWindow: true,
-      },
-      function (tabs) {
-        resolve(tabs)
-      }
-    )
-  })
-}

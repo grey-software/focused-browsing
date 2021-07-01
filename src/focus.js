@@ -10,7 +10,6 @@ let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
 document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
-// window.addEventListener('resize', handleResize)
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
   console.log(msg)
@@ -60,18 +59,6 @@ async function handleKeyboardShortcuts(e) {
   }
   if (e.type == 'keyup') {
     keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
-  }
-}
-
-function handleResize() {
-  try {
-    if (isCurrentlyFocused()) {
-      console.log('here handling action focus ')
-      controller.focus(currentURL)
-      // handle this with using toggle function to not trigger intervals
-    }
-  } catch (err) {
-    console.log(err)
   }
 }
 

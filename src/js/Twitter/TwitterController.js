@@ -37,7 +37,13 @@ export default class TwitterController {
   }
 
   focusPanel() {
-    this.pageInterval = setInterval(this.tryBlockingPanel.bind(this), 700)
+    try{
+      console.log("trying to focus panel right away")
+      this.setPanelVisibility(false)
+    }catch(err){
+      console.log("setting interval to hide panel")
+      this.pageInterval = setInterval(this.tryBlockingPanel.bind(this), 700)
+    }
   }
 
   focusFeed() {
