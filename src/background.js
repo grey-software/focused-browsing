@@ -1,6 +1,6 @@
 let focusState = { twitter: true, linkedin: true }
 
-let activeURL = ""
+let activeURL = ''
 
 chrome.storage.local.clear()
 chrome.storage.local.set({ focusState: focusState })
@@ -19,11 +19,11 @@ async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
 
   if (focusScriptInjected) {
-    if(url != activeURL && !isHomeURLLoad(activeURL, url)){
-      console.log("url is: "+ url)
-      console.log("activeURL is: " + activeURL)
+    if (url != activeURL && !isHomeURLLoad(activeURL, url)) {
+      console.log('url is: ' + url)
+      console.log('activeURL is: ' + activeURL)
       activeURL = url
-      chrome.tabs.sendMessage(tabId, { text: 'new page loaded on website', url:activeURL}, function (response) {
+      chrome.tabs.sendMessage(tabId, { text: 'new page loaded on website', url: activeURL }, function (response) {
         response = response || {}
         if (response.status == 'tab change within website confirmed') {
           return
@@ -31,7 +31,7 @@ async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
       })
     }
 
-    return 
+    return
   }
 
   chrome.tabs.executeScript(tabId, {
@@ -63,12 +63,11 @@ async function checkFocusScriptInjected(tabId) {
   })
 }
 
-
 const isHomeURLLoad = (currentUrl, newUrl) => {
-  if(newUrl.includes("twitter.com")){
-    return newUrl == "https://twitter.com/home" && currentUrl == "https://twitter.com/"
-  }else if(newUrl.includes("linkedin.com")){
-    return newUrl == "https://www.linkedin.com/feed/" && currentUrl == "https://www.linkedin.com/"
+  if (newUrl.includes('twitter.com')) {
+    return newUrl == 'https://twitter.com/home' && currentUrl == 'https://twitter.com/'
+  } else if (newUrl.includes('linkedin.com')) {
+    return newUrl == 'https://www.linkedin.com/feed/' && currentUrl == 'https://www.linkedin.com/'
   }
 }
 
@@ -76,7 +75,7 @@ chrome.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
   let tabId = activeInfo.tabId
-  console.log("sending message")
+  console.log('sending message on activated')
   chrome.tabs.sendMessage(tabId, { text: 'different tab activated' }, function (response) {
     response = response || {}
     if (response.status == 'tab change confirmed') {

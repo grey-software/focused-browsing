@@ -13,9 +13,14 @@ document.addEventListener('keyup', handleKeyboardShortcuts, false)
 // window.addEventListener('resize', handleResize)
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+  console.log(msg)
   if (msg.text == 'different tab activated') {
+    console.log("in tab activation code")
     let newFocusState = await getFocusStateFromLocalStorage('focusState')
-    if (JSON.stringify(newFocusState) == JSON.stringify(focusState)) {
+    console.log("new focus state: " + JSON.stringify(newFocusState))
+    console.log("old focus state: " + JSON.stringify(focusState))
+    if ((newFocusState[currentWebsite]) == focusState[currentWebsite]) {
+      console.log("state of web page didn't change")
       return
     }
 
@@ -83,7 +88,10 @@ async function setUpFocusScript() {
 }
 
 async function updateStorage() {
-  await setFocusStateInLocalStorage('focusState', focusState)
+  let newState = await getFocusStateFromLocalStorage('focusState')
+  newState[currentWebsite] = focusState[currentWebsite] 
+  await setFocusStateInLocalStorage('focusState', newState)
+  focusState = newState
 }
 
 async function renderFocusState(shouldFocus) {
@@ -96,6 +104,7 @@ function toggleFocus() {
 
 const isCurrentlyFocused = () => focusState[currentWebsite]
 const setKeyPressedState = (keyCode, state) => (keyPressedStates[keyCode] = state)
+
 
 function initFocus() {
   if (!currentWebsite) {
@@ -120,10 +129,10 @@ async function getFocusStateFromLocalStorage(name) {
   })
 }
 
-async function setFocusStateInLocalStorage(name, value) {
+async function setFocusStateInLocalStorage(storageName, focusState) {
   return new Promise(function (resolve, _) {
     var obj = {}
-    obj[name] = value
+    obj[storageName] = focusState
     chrome.storage.local.set(obj, function () {
       resolve('var set successfully')
     })

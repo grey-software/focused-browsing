@@ -37,11 +37,17 @@ export default class TwitterController {
   }
 
   focusPanel() {
-    this.pageInterval = setInterval(this.tryHidingTwitterPanel.bind(this), 700)
+    this.pageInterval = setInterval(this.tryBlockingPanel.bind(this), 700)
   }
 
   focusFeed() {
-    this.feedIntervalId = setInterval(this.tryHidingTwitterFeed.bind(this), 500)
+
+    try{
+      this.setFeedVisibility(false)
+    }catch(err){
+      this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
+    }
+    // this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 500)
   }
 
   setFeedVisibility(visible) {
@@ -74,7 +80,7 @@ export default class TwitterController {
     }
   }
 
-  tryHidingTwitterFeed() {
+  tryBlockingFeed() {
     try {
       if (TwitterUtils.hasFeedLoaded()) {
         this.setFeedVisibility(false)
@@ -94,7 +100,7 @@ export default class TwitterController {
     }
   }
 
-  tryHidingTwitterPanel() {
+  tryBlockingPanel() {
     try {
       if (TwitterUtils.hasPanelLoaded()) {
         this.setPanelVisibility(false)

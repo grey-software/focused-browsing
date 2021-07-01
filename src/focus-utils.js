@@ -3,16 +3,13 @@ const keyIsShortcutKey = (e) => {
 }
 
 const shortcutKeysPressed = (keyPressedStates) => {
-    let allKeysPressed = true
-    Object.values(keyPressedStates).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
-    return allKeysPressed
+  let allKeysPressed = true
+  Object.values(keyPressedStates).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
+  return allKeysPressed
 }
-
 
 const isURLValid = (url) => {
-  return url.includes('twitter.com') || url.includes("linkedin.com")
+  return url.includes('twitter.com') || url.includes('linkedin.com')
 }
 
-
-  
-module.exports = {keyIsShortcutKey, shortcutKeysPressed, isURLValid}
+module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid }

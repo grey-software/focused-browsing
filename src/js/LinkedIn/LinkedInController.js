@@ -37,15 +37,20 @@ export default class LinkedInController {
   }
 
   focusFeed() {
-    this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
+    try{
+      this.setFeedVisibility(false)
+    }catch(err){
+      this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
+    }
+    // this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
   }
 
   focusPanel() {
-    this.panelIntervalId = setInterval(this.tryBlockingLinkedInPanel.bind(this), 250)
+    this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 250)
   }
 
   focusAd() {
-    this.adIntervalId = setInterval(this.tryBlockingLinkedInAd.bind(this), 250)
+    this.adIntervalId = setInterval(this.tryBlockingAd.bind(this), 250)
   }
 
   setAdVisibility(visibile) {
@@ -87,7 +92,7 @@ export default class LinkedInController {
     }
   }
 
-  tryBlockingLinkedInAd() {
+  tryBlockingAd() {
     try {
       if (LinkedInUtils.hasAdLoaded()) {
         this.setAdVisibility(false)
@@ -106,7 +111,7 @@ export default class LinkedInController {
     }
   }
 
-  tryBlockingLinkedInFeed() {
+  tryBlockingFeed() {
     try {
     //   console.log("here blocking feed")
       if (LinkedInUtils.hasFeedLoaded()) {
@@ -126,7 +131,7 @@ export default class LinkedInController {
     }
   }
 
-  tryBlockingLinkedInPanel() {
+  tryBlockingPanel() {
     try {
       if (LinkedInUtils.hasPanelLoaded()) {
         this.setPanelVisibility(false)
