@@ -17,7 +17,7 @@ function hasFeedLoaded(){
 }
 
 function hasPanelLoaded(){
-    return getTwitterPanel().children.length == 5
+    return getTwitterPanel().children.length != 0
 }
 
 function isFeedHidden() {

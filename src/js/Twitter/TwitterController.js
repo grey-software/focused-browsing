@@ -27,7 +27,7 @@ export default class TwitterController {
   unfocus(url) {
     utils.removeFocusedBrowsingCards()
     this.setPanelVisibility(true)
-    if (url.includes('/home')) {
+    if (TwitterUtils.isHomePage(url)) {
       this.setFeedVisibility(true)
     }
   }
@@ -63,6 +63,9 @@ export default class TwitterController {
       feed.removeChild(feed.childNodes[0])
       TwitterIFrameUtils.injectFeedIframe(this.feedIframe, feed)
     } else {
+      console.log("setting feed visibility to true")
+      console.log(feed)
+      console.log(this.twitterFeedChildNode)
       feed.append(this.twitterFeedChildNode)
     }
   }

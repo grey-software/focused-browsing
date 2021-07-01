@@ -85,7 +85,7 @@ export default class LinkedInController {
         length -= 1
       }
     } else {
-      for (let i = 0; i < this.panel_elements.length; i += 1) {
+      for (let i = this.panel_elements.length - 1; i >=0; i -= 1) {
         panel.append(this.panel_elements[i])
       }
       this.clearLinkedInElements()
