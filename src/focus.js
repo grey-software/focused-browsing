@@ -13,14 +13,8 @@ document.addEventListener('keyup', handleKeyboardShortcuts, false)
 // window.addEventListener('resize', handleResize)
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-  console.log(msg)
   if (msg.text == 'different tab activated') {
     let newFocusState = await getFocusStateFromLocalStorage('focusState')
-    console.log("new focus state")
-    console.log(newFocusState)
-
-    console.log("old focus state")
-    console.log(focusState)
     if (JSON.stringify(newFocusState) == JSON.stringify(focusState)) {
       return
     }
@@ -93,17 +87,11 @@ async function updateStorage() {
 }
 
 async function renderFocusState(shouldFocus) {
-  console.log('should focus is: ' + shouldFocus)
-  console.log(shouldFocus)
   shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
 }
 
 function toggleFocus() {
-  console.log('old focus state on toggle')
-  console.log(focusState)
   focusState[currentWebsite] = !focusState[currentWebsite]
-  console.log('new focus state on toggle')
-  console.log(focusState)
 }
 
 const isCurrentlyFocused = () => focusState[currentWebsite]

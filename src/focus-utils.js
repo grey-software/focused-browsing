@@ -9,6 +9,10 @@ const shortcutKeysPressed = (keyPressedStates) => {
 }
 
 
+const isURLValid = (url) => {
+  return url.includes('twitter.com') || url.includes("linkedin.com")
+}
+
 
   
 module.exports = {keyIsShortcutKey, shortcutKeysPressed, isURLValid}

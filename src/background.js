@@ -1,6 +1,7 @@
 let focusState = { twitter: true, linkedin: true }
 
 let activeURL = ""
+
 chrome.storage.local.clear()
 chrome.storage.local.set({ focusState: focusState })
 chrome.storage.local.get('focusState', function (data) {
