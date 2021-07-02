@@ -161,6 +161,12 @@ $white-2: rgba(254, 254, 254, 1);
   font-weight: 500;
   line-height: 27px;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .focus-container{
   background-color: $white;
   border-radius: 16px 16px 0px 0px;
