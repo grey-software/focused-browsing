@@ -178,14 +178,15 @@ $white-2: rgba(254, 254, 254, 1);
 }
 .quote-container {
   margin-bottom: 34px;
+  width: 500px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 .quote {
-  height: 73px;
-  width: 402px;
+  padding-right: 10%;
+  padding-left: 10%;
   color: $gray;
   display: flex;
   text-align: center;
@@ -199,12 +200,12 @@ $white-2: rgba(254, 254, 254, 1);
   @include inter-14-medium;
 }
 .card-main {
-  height: calc(63.44% - 80px);
+  height: calc(66.49% - 102px);
   background-color: $white;
   margin-bottom: 40px;
   overflow: hidden;
   border-radius: 16px;
-  padding: 40px 48px;
+  padding: 51px 42px;
   box-shadow: 0 8px 24px -4px $transparent-midnight-blue,
     0 6px 12px -6px $transparent-midnight-blue-2;
   display: flex;
