@@ -1,144 +1,246 @@
 @import url('https://rsms.me/inter/inter.css');
+// This is the project stylesheet
+// This is the project stylesheet
 
+// Colors
 $black: rgba(19, 19, 19, 1);
 $black-1: rgba(0, 0, 0, 1);
 $black-2: rgba(20, 20, 20, 1);
 $black-3: rgba(21, 32, 43, 1);
+$blue: rgba(0, 70, 250, 1);
 $dark-slate-gray: rgba(43, 66, 88, 1);
+$dark-slate-gray-2: rgba(32, 48, 64, 1);
 $gray: rgba(144, 144, 144, 1);
 $gray-2: rgba(135, 135, 135, 1);
 $gray-3: rgba(129, 132, 137, 1);
 $lavender: rgba(231, 234, 238, 1);
 $light-steel-blue: rgba(188, 178, 255, 1);
+$medium-slate-blue: rgba(93, 95, 239, 1);
 $orange: rgba(255, 182, 29, 1);
 $primary-1: rgba(45, 108, 223, 1);
+$primary-2: rgba(71, 85, 105, 1);
+$snow: rgba(250, 250, 250, 1);
+$text-1: rgba(148, 163, 184, 1);
 $transparent-black: rgba(19, 19, 19, 0.15);
+$transparent-black-2: rgba(19, 19, 19, 0.1);
+$transparent-midnight-blue: rgba(24, 39, 75, 0.08);
+$transparent-midnight-blue-2: rgba(24, 39, 75, 0.12);
 $white: rgba(255, 255, 255, 1);
 $white-2: rgba(254, 254, 254, 1);
 
 // Typographies
+@mixin inter-12-bold {
+  font-family: "Inter";
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
 @mixin inter-12-medium {
   font-family: "Inter";
   font-size: 12px;
   font-weight: 500;
   line-height: 18px;
 }
-
+@mixin inter-12-semi-bold {
+  font-family: "Inter";
+  font-size: 12px;
+  font-weight: 600;
+  line-height: normal;
+}
+@mixin inter-12-semi-bold-line18 {
+  font-family: "Inter";
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+}
 @mixin inter-13-medium {
   font-family: "Inter";
   font-size: 13px;
   font-weight: 500;
   line-height: 20px;
 }
-
+@mixin inter-14-bold {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+}
+@mixin inter-14-bold-line14 {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
 @mixin inter-14-medium {
   font-family: "Inter";
   font-size: 14px;
   font-weight: 500;
   line-height: 21px;
 }
-
+@mixin inter-14-medium-line14 {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+}
+@mixin inter-14-medium-line18 {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
 @mixin inter-14-regular {
   font-family: "Inter";
   font-size: 14px;
   font-weight: 400;
   line-height: 21px;
 }
-
 @mixin inter-14-semi-bold {
   font-family: "Inter";
   font-size: 14px;
   font-weight: 600;
   line-height: 21px;
 }
-
+@mixin inter-14-semi-bold-line14 {
+  font-family: "Inter";
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+}
+@mixin inter-15-extra-bold {
+  font-family: "Inter";
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 19px;
+}
 @mixin inter-16-regular {
   font-family: "Inter";
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
 }
-
 @mixin inter-18-medium {
   font-family: "Inter";
   font-size: 18px;
   font-weight: 500;
   line-height: 27px;
 }
-
 @mixin inter-18-regular {
   font-family: "Inter";
   font-size: 18px;
   font-weight: 400;
   line-height: 27px;
 }
-
-* {
-  margin: 0;
-  padding: 0;
+@mixin inter-18-semi-bold {
+  font-family: "Inter";
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
 }
-
-.focus-container {
+@mixin inter-32-medium {
+  font-family: "Inter";
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 54px;
+}
+@mixin roboto-14-bold {
+  font-family: "Roboto";
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+}
+@mixin roboto-14-medium {
+  font-family: "Roboto";
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+}
+@mixin subtitle2-mobile {
+  font-family: "Inter";
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 27px;
+}
+.focus-container{
   background-color: $white;
-  padding: 87px 83px 133px;
+  border-radius: 16px 16px 0px 0px;
+  padding: 40px 49px 42px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
-
+.quote-container {
+  margin-bottom: 34px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.quote {
+  height: 73px;
+  width: 402px;
+  color: $gray;
+  display: flex;
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: -0.27px;
+  @include inter-18-semi-bold;
+}
+.quoter {
+  color: $black;
+  letter-spacing: -0.21px;
+  @include inter-14-medium;
+}
 .card-main {
-  height: calc(66.49% - 102px);
+  height: calc(63.44% - 80px);
   background-color: $white;
+  margin-bottom: 40px;
   overflow: hidden;
   border-radius: 16px;
-  padding: 51px 42px;
-  box-shadow: 0 4px 12px 0 $transparent-black;
+  padding: 40px 48px;
+  box-shadow: 0 8px 24px -4px $transparent-midnight-blue,
+    0 6px 12px -6px $transparent-midnight-blue-2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   align-self: stretch;
 }
-
 .card-content {
+  margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-
-.card-title {
+.title-cointainer {
+  margin-bottom: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-
 .card-heading {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
 }
-
 .card-icon {
   margin-right: 7px;
   padding: 1.54px 1px 1.53px;
   display: flex;
   align-items: center;
 }
-
 .vector {
   flex: 1;
   align-self: stretch;
   object-fit: cover;
 }
-
 .heading {
   color: $primary-1;
   letter-spacing: -0.27px;
   @include inter-18-medium;
 }
-
 .card-subtitle {
   height: 60px;
   width: 348px;
@@ -148,124 +250,98 @@ $white-2: rgba(254, 254, 254, 1);
   letter-spacing: -0.21px;
   @include inter-14-regular;
 }
-
-.button-group {
+.buttons-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-
 .button-support {
   background-color: $primary-1;
   margin-bottom: 16px;
   overflow: hidden;
   border-radius: 8px;
-  padding: 14px 87px;
+  padding: 14px 87px 13px;
   display: flex;
   align-items: center;
+  height: 21px;
+  width: 132px;
 }
-
 .support-this-project {
   color: $white-2;
   letter-spacing: -0.21px;
   @include inter-14-semi-bold;
 }
-
 .button-show-feed {
   overflow: hidden;
   border-radius: 8px;
-  padding: 13px 116px;
+  padding: 13px 117px 12px;
   display: flex;
   align-items: center;
-  border: 1px solid $black;
+  height: 21px;
+  width: 70px;
+  border: 1px solid $primary-1;
 }
-
 .show-feed {
-  color: $black;
+  color: $primary-1;
   letter-spacing: -0.21px;
   @include inter-14-semi-bold;
 }
-
-.keyboard-shortcut {
-  margin-top: 24px;
-  margin-bottom: -10px;
+.shortcut-container {
   padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.caption {
+.shortcut-caption {
   color: $gray;
-  
-  letter-spacing: -0.18px;
-  @include inter-12-medium;
+  @include inter-14-semi-bold-line14;
 }
-
-.quote-container {
-  margin-bottom: 80px;
-  margin-top: 36px;
-  width:432px;
-  height: 69px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.quote {
+.shortcut-caption-emphasis-1 {
   color: $gray;
-  display: flex;
-  text-align: center;
-  margin-bottom: 14px;
   letter-spacing: -0.21px;
-  padding-top: 10%;
-  padding-right: 10%;
-  padding-left: 10%;
-  @include inter-14-regular;
+  @include inter-14-bold-line14;
 }
-
-.quoter {
-  color: $black-1;
+.shortcut-caption-emphasis-2 {
+  color: $gray;
   letter-spacing: -0.21px;
-  @include inter-14-medium;
+  @include inter-14-medium-line14;
 }
-
-.card-text-links {
-  margin-left: 68.5px;
+.icon-links-container {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-
-.about-grey-software {
-  color: $gray-2;
-  text-align: center;
-  text-decoration: underline;
-  letter-spacing: -0.18px;
-  @include inter-12-medium;
-
+.icon-info {
+  margin-right: 48px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+.icon-feedback {
+  margin-right: 48px;
+  padding: 2px 4px 2px 3px;
+  display: flex;
+  align-items: center;
+}
+.link-logo {
+  padding: 0.66px 0.51px 0.65px 0.5px;
+  display: flex;
+  align-items: center;
+  width: 22.99px;
+  height: 22.69px;
+  cursor: pointer;
+}
+.icon-logo {
+  display: flex;
+  align-items: flex-start;
+}
+.group {
+  width: 10.6px;
+  height: 22.69px;
   &:not(:last-of-type) {
-    margin-right: 48px;
+    margin-right: 1.79px;
   }
 }
-
-.about {
-  color: $gray-2;
-  text-align: center;
-  text-decoration: underline;
-  letter-spacing: -0.18px;
-  @include inter-12-medium;
-
-  &:not(:last-of-type) {
-    margin-right: 48px;
-  }
-}
-
-.about-grey {
-  margin-right: 40px
-}
-
 a {
   color: inherit;
   text-decoration: none;
