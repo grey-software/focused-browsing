@@ -167,6 +167,7 @@ $white-2: rgba(254, 254, 254, 1);
   padding: 0;
 }
 
+
 .focus-container{
   background-color: $white;
   border-radius: 16px 16px 0px 0px;
@@ -219,7 +220,7 @@ $white-2: rgba(254, 254, 254, 1);
   align-items: center;
   justify-content: center;
 }
-.title-cointainer {
+.title-container {
   margin-bottom: 8px;
   display: flex;
   flex-direction: column;

@@ -1,7 +1,7 @@
 <template>
 <div class="card-main">
       <div class="card-content">
-        <div class="title-cointainer">
+        <div class="title-container">
           <CardHeading/>
           <p class="card-subtitle">
             We&#039;ve hidden this website&#039;s
