@@ -12,4 +12,38 @@ const isURLValid = (url) => {
   return url.includes('twitter.com') || url.includes('linkedin.com')
 }
 
-module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid }
+const debounce = (func, delay) => {
+  let inDebounce
+  return function () {
+    const context = this
+    const args = arguments
+    clearTimeout(inDebounce)
+    inDebounce = setTimeout(() => func.apply(context, args), delay)
+  }
+}
+
+const throttle = (func, limit) => {
+  let lastFunc
+  let lastRan
+  return function () {
+    const context = this
+    const args = arguments
+    if (!lastRan) {
+      func.apply(context, args)
+      lastRan = Date.now()
+    } else {
+      if (lastFunc) {
+        clearTimeout(lastFunc)
+      }
+      lastFunc = setTimeout(function () {
+        if (Date.now() - lastRan >= limit) {
+          func.apply(context, args)
+          lastRan = Date.now()
+        }
+      }, limit - (Date.now() - lastRan))
+    }
+  }
+}
+
+// throttle.
+module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid, debounce, throttle }
