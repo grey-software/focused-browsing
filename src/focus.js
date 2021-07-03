@@ -1,6 +1,5 @@
 import LinkedInController from './js/LinkedIn/LinkedInController'
 import TwitterController from './js/Twitter/TwitterController'
-import TwitterUtils from './js/Twitter/TwitterUtils'
 import FocusUtils from './focus-utils'
 
 let currentURL = document.URL
@@ -9,17 +8,19 @@ let controller = null
 let focusState = null
 let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
-document.addEventListener('keydown', handleKeyboardShortcuts, false)
+document.addEventListener('keydown', FocusUtils.throttle(handleKeyboardShortcuts, 100), false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
-// window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
 
-// function handleResize(){
-//   if(currentWebsite != null){
-//     if(isCurrentlyFocused()){
-//       controller.focus(currentURL)
-//     }
-//   }
-// }
+
+window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
+
+function handleResize(){
+  if(currentWebsite != null){
+    if(isCurrentlyFocused()){
+      controller.focus(currentURL)
+    }
+  }
+}
 
 
 
