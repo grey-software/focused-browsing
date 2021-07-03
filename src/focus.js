@@ -1,5 +1,6 @@
 import LinkedInController from './js/LinkedIn/LinkedInController'
 import TwitterController from './js/Twitter/TwitterController'
+import TwitterUtils from './js/Twitter/TwitterUtils'
 import FocusUtils from './focus-utils'
 
 let currentURL = document.URL
@@ -10,15 +11,26 @@ let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
 document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
+// window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
+
+// function handleResize(){
+//   if(currentWebsite != null){
+//     if(isCurrentlyFocused()){
+//       controller.focus(currentURL)
+//     }
+//   }
+// }
+
+
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
   console.log(msg)
   if (msg.text == 'different tab activated') {
-    console.log("in tab activation code")
+    console.log('in tab activation code')
     let newFocusState = await getFocusStateFromLocalStorage('focusState')
-    console.log("new focus state: " + JSON.stringify(newFocusState))
-    console.log("old focus state: " + JSON.stringify(focusState))
-    if ((newFocusState[currentWebsite]) == focusState[currentWebsite]) {
+    console.log('new focus state: ' + JSON.stringify(newFocusState))
+    console.log('old focus state: ' + JSON.stringify(focusState))
+    if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
       console.log("state of web page didn't change")
       return
     }
@@ -39,6 +51,10 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
       initFocus()
       sendResponse({ status: 'tab change within website confirmed' })
     }
+  } else if(msg.text == "unfocus from vue"){
+    toggleFocus()
+    await updateStorage()
+    renderFocusState(focusState[currentWebsite])
   }
 })
 
@@ -76,7 +92,7 @@ async function setUpFocusScript() {
 
 async function updateStorage() {
   let newState = await getFocusStateFromLocalStorage('focusState')
-  newState[currentWebsite] = focusState[currentWebsite] 
+  newState[currentWebsite] = focusState[currentWebsite]
   await setFocusStateInLocalStorage('focusState', newState)
   focusState = newState
 }
@@ -91,7 +107,6 @@ function toggleFocus() {
 
 const isCurrentlyFocused = () => focusState[currentWebsite]
 const setKeyPressedState = (keyCode, state) => (keyPressedStates[keyCode] = state)
-
 
 function initFocus() {
   if (!currentWebsite) {
