@@ -8,7 +8,7 @@ export default class TwitterController {
     this.twitterFeedChildNode = null
 
     this.feedIntervalId = 0
-    this.panelInterval = 0
+    this.panelIntervalId = 0
     this.initialLoad = false
 
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
@@ -30,6 +30,8 @@ export default class TwitterController {
     if (TwitterUtils.isHomePage(url)) {
       this.setFeedVisibility(true)
     }
+    clearInterval(this.feedIntervalId)
+    clearInterval(this.panelIntervalId)
   }
 
   clearTwitterElements() {
@@ -37,24 +39,11 @@ export default class TwitterController {
   }
 
   focusPanel() {
-    setTimeout(console.log('has panel loaded: ' + TwitterUtils.hasPanelLoaded()), 1000)
-    try {
-      console.log('trying to focus panel right away')
-      // console.log("has panel loaded: " + TwitterUtils.hasPanelLoaded())
-      this.setPanelVisibility(false)
-    } catch (err) {
-      console.log('setting interval to hide panel')
-      this.panelInterval = setInterval(this.tryBlockingPanel.bind(this), 700)
-    }
+    this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 700)
   }
 
   focusFeed() {
-    console.log('has feed loaded: ' + TwitterUtils.hasFeedLoaded())
-    try {
-      this.setFeedVisibility(false)
-    } catch (err) {
-      this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
-    }
+    this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
   }
 
   setFeedVisibility(visible) {
@@ -92,9 +81,11 @@ export default class TwitterController {
 
   tryBlockingFeed() {
     try {
+      if (TwitterUtils.isFeedHidden()) {
+        return
+      }
       if (TwitterUtils.hasFeedLoaded()) {
         this.setFeedVisibility(false)
-        clearInterval(this.feedIntervalId)
         this.initialLoad = false
         return
       }
@@ -112,9 +103,12 @@ export default class TwitterController {
 
   tryBlockingPanel() {
     try {
+      if (TwitterUtils.isPanelHidden()) {
+        return
+      }
+
       if (TwitterUtils.hasPanelLoaded()) {
         this.setPanelVisibility(false)
-        clearInterval(this.panelInterval)
         return
       }
     } catch (err) {
@@ -124,7 +118,7 @@ export default class TwitterController {
       } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount <= 8) {
         console.log('ERROR: Something Wrong with the Twitter Panel')
       } else if (this.blockPanelAttemptCount > 8) {
-        clearInterval(this.panelInterval)
+        clearInterval(this.panelIntervalId)
       }
     }
   }

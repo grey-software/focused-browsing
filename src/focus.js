@@ -11,12 +11,12 @@ let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
 
-// window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
+// window.addEventListener('resize', FocusUtils.debounce(handleResize, 1000))
 
 // function handleResize() {
 //   if (currentWebsite != null) {
 //     if (isCurrentlyFocused()) {
-//       controller.focus(currentURL)
+//       // controller.focus(currentURL)
 //     }
 //   }
 // }

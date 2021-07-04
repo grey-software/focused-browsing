@@ -37,12 +37,7 @@ export default class LinkedInController {
   }
 
   focusFeed() {
-    try{
-      this.setFeedVisibility(false)
-    }catch(err){
-      this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
-    }
-    // this.feedIntervalId = setInterval(this.tryBlockingLinkedInFeed.bind(this), 250)
+    this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
   }
 
   focusPanel() {
