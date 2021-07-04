@@ -22,6 +22,7 @@ const debounce = (func, delay) => {
   }
 }
 
+
 const throttle = (func, limit) => {
   let lastFunc
   let lastRan
@@ -39,11 +40,13 @@ const throttle = (func, limit) => {
         if (Date.now() - lastRan >= limit) {
           func.apply(context, args)
           lastRan = Date.now()
-        }
+        }         
       }, limit - (Date.now() - lastRan))
     }
   }
 }
+
+// limit = 100 t0=50, t1=100 
 
 // throttle.
 module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid, debounce, throttle }

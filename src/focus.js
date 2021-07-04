@@ -11,18 +11,15 @@ let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 document.addEventListener('keydown', FocusUtils.throttle(handleKeyboardShortcuts, 100), false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
 
-
 window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
 
-function handleResize(){
-  if(currentWebsite != null){
-    if(isCurrentlyFocused()){
+function handleResize() {
+  if (currentWebsite != null) {
+    if (isCurrentlyFocused()) {
       controller.focus(currentURL)
     }
   }
 }
-
-
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
   console.log(msg)
@@ -52,7 +49,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
       initFocus()
       sendResponse({ status: 'tab change within website confirmed' })
     }
-  } else if(msg.text == "unfocus from vue"){
+  } else if (msg.text == 'unfocus from vue') {
     toggleFocus()
     await updateStorage()
     renderFocusState(focusState[currentWebsite])

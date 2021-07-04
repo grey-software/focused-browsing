@@ -13,11 +13,19 @@ function getTwitterPanel() {
 
 
 function hasFeedLoaded(){
-    return getTwitterFeed().children.length == 1
+    try{
+        return getTwitterFeed().children.length == 1
+    }catch(err){
+        return false
+    }
 }
 
 function hasPanelLoaded(){
-    return getTwitterPanel().children.length != 0
+    try{
+        return getTwitterPanel().children.length != 0
+    }catch(err){
+        return false
+    }
 }
 
 function isFeedHidden() {

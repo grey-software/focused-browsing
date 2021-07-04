@@ -26,9 +26,6 @@ export default {
   }, 
   methods: {
     showFeed(){
-      console.log("sending message")
-      // chrome.runtime.sendMessage({intent: "unfocus"});
-
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         var activeTab = tabs[0];
         chrome.tabs.sendMessage(activeTab.id, {text: "unfocus from vue"});
