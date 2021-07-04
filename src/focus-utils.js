@@ -29,29 +29,32 @@ const throttle = (func, limit) => {
   return function () {
     const context = this
     const args = arguments
+    console.log("i am getting called at least")
     if (!lastRan) {
+      console.log("lastRan not defined")
+      console.log("applying function call")
       func.apply(context, args)
       lastRan = Date.now()
     } else {
       if (lastFunc) {
         clearTimeout(lastFunc)
       }
-      if (Date.now() - lastRan >= limit) {
-        func.apply(context, args)
-        lastRan = Date.now()
-      } else {
-        lastFunc = setTimeout(function () {
-          if (Date.now() - lastRan >= limit) {
-            func.apply(context, args)
-            lastRan = Date.now()
-          }
-        }, limit - (Date.now() - lastRan))
-      }
+      console.log("last function run was timed at: " + JSON.stringify(lastRan))
+      // if (Date.now() - lastRan >= limit) {
+      //   func.apply(context, args)
+      //   lastRan = Date.now()
+      // } else {
+      lastFunc = setTimeout(function () {
+        if (Date.now() - lastRan >= limit) {
+          func.apply(context, args)
+          lastRan = Date.now()
+        }
+      }, limit - (Date.now() - lastRan))
     }
   }
 }
 
-// limit = 100 t0=50, t1=100 
+// limit = 50 t0=100, t1=200 
 
 // throttle.
 module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid, debounce, throttle }

@@ -8,17 +8,22 @@ let controller = null
 let focusState = null
 let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
-document.addEventListener('keydown', FocusUtils.throttle(handleKeyboardShortcuts, 100), false)
+document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
 
-window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
+// window.addEventListener('resize', FocusUtils.debounce(handleResize, 400))
 
-function handleResize() {
-  if (currentWebsite != null) {
-    if (isCurrentlyFocused()) {
-      controller.focus(currentURL)
-    }
-  }
+// function handleResize() {
+//   if (currentWebsite != null) {
+//     if (isCurrentlyFocused()) {
+//       controller.focus(currentURL)
+//     }
+//   }
+// }
+
+function onShortCutPressed() {
+  toggleFocus()
+  renderFocusState(focusState[currentWebsite])
 }
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
@@ -58,6 +63,8 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
 
 async function handleKeyboardShortcuts(e) {
   if (e.type == 'keydown') {
+    console.log('key down logs')
+    console.log(e)
     if (FocusUtils.keyIsShortcutKey(e)) {
       let keyCode = e.code
       if (keyCode.includes('Shift')) {
@@ -66,12 +73,23 @@ async function handleKeyboardShortcuts(e) {
       setKeyPressedState(keyCode, true)
     }
     if (FocusUtils.shortcutKeysPressed(keyPressedStates)) {
-      toggleFocus()
-      await updateStorage()
-      renderFocusState(focusState[currentWebsite])
+      // FocusUtils.throttle(async function(){
+      //   toggleFocus()
+      //   await updateStorage()
+      //   renderFocusState(focusState[currentWebsite])
+      // } , 50)
+      // console.log("here with all keyboard shortcuts pressed")
+      // toggleFocus()
+      // await updateStorage()
+      // renderFocusState(focusState[currentWebsite])
+      console.log("pressed all keys")
+      // FocusUtils.throttle(onShortCutPressed, 50)()
+      onShortCutPressed()
     }
   }
   if (e.type == 'keyup') {
+    console.log('key up logs')
+    console.log(e)
     keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
   }
 }
