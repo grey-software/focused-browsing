@@ -35,14 +35,16 @@ function isFeedHidden() {
 
 function  isPanelHidden() {
     let panel = getTwitterPanel()
-    return panel.children.length == 2;
+    return panel.children.length == 1;
 }
 
 function isHomePage(url){
     return url == "https://twitter.com/home" || url == "https://twitter.com/"
 }
 
+function clearPanelIntervalIds(panelIntervalIds){
+    panelIntervalIds.forEach(panelIntervalID => clearInterval(panelIntervalID))
+}
 
 
-
-module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden, hasFeedLoaded, hasPanelLoaded, isHomePage}
+module.exports = {getTwitterPanel, getTwitterFeed, isFeedHidden, isPanelHidden, hasFeedLoaded, hasPanelLoaded, isHomePage, clearPanelIntervalIds}

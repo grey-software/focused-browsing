@@ -11,26 +11,19 @@ let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
 
-// window.addEventListener('resize', FocusUtils.debounce(handleResize, 1000))
-
-// function handleResize() {
-//   if (currentWebsite != null) {
-//     if (isCurrentlyFocused()) {
-//       // controller.focus(currentURL)
-//     }
-//   }
-// }
-
-function onShortCutPressed() {
+async function onShortCutPressed() {
   toggleFocus()
+  await updateStorage()
   renderFocusState(focusState[currentWebsite])
 }
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+
   console.log(msg)
+  let newFocusState = await getFocusStateFromLocalStorage('focusState')
+
   if (msg.text == 'different tab activated') {
     console.log('in tab activation code')
-    let newFocusState = await getFocusStateFromLocalStorage('focusState')
     console.log('new focus state: ' + JSON.stringify(newFocusState))
     console.log('old focus state: ' + JSON.stringify(focusState))
     if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
@@ -50,7 +43,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
   } else if (msg.text == 'new page loaded on website') {
     if (FocusUtils.isURLValid(msg.url)) {
       currentURL = msg.url
-      await setUpFocusScript()
+      focusState = newFocusState
       initFocus()
       sendResponse({ status: 'tab change within website confirmed' })
     }
@@ -73,17 +66,8 @@ async function handleKeyboardShortcuts(e) {
       setKeyPressedState(keyCode, true)
     }
     if (FocusUtils.shortcutKeysPressed(keyPressedStates)) {
-      // FocusUtils.throttle(async function(){
-      //   toggleFocus()
-      //   await updateStorage()
-      //   renderFocusState(focusState[currentWebsite])
-      // } , 50)
-      // console.log("here with all keyboard shortcuts pressed")
-      // toggleFocus()
-      // await updateStorage()
-      // renderFocusState(focusState[currentWebsite])
       console.log("pressed all keys")
-      // FocusUtils.throttle(onShortCutPressed, 50)()
+
       onShortCutPressed()
     }
   }
@@ -130,6 +114,7 @@ function initFocus() {
   }
   console.log('current website is: ' + currentWebsite)
   if (isCurrentlyFocused()) {
+    console.log("need to focus on: " + currentURL)
     controller.focus(currentURL)
   }
 }
