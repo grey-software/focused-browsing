@@ -11,7 +11,7 @@ let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 document.addEventListener('keydown', handleKeyboardShortcuts, false)
 document.addEventListener('keyup', handleKeyboardShortcuts, false)
 
-async function onShortCutPressed() {
+async function onToggle() {
   toggleFocus()
   await updateStorage()
   renderFocusState(focusState[currentWebsite])
@@ -48,9 +48,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
       sendResponse({ status: 'tab change within website confirmed' })
     }
   } else if (msg.text == 'unfocus from vue') {
-    toggleFocus()
-    await updateStorage()
-    renderFocusState(focusState[currentWebsite])
+    onToggle()
   }
 })
 
@@ -68,7 +66,7 @@ async function handleKeyboardShortcuts(e) {
     if (FocusUtils.shortcutKeysPressed(keyPressedStates)) {
       console.log("pressed all keys")
 
-      onShortCutPressed()
+      onToggle()
     }
   }
   if (e.type == 'keyup') {
