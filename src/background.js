@@ -12,12 +12,11 @@ let injectedTabs = new Set()
 
 async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   let url = tab.url
-  
-  console.log("page loading")
+
+  console.log('page loading')
   console.log(url)
   console.log(changeInfo)
 
-  
   const isPageLoading = changeInfo && changeInfo.status == 'loading'
   if (!isPageLoading) {
     return

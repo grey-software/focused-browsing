@@ -27,7 +27,6 @@ export default class LinkedInController {
     clearInterval(this.panelIntervalId)
     clearInterval(this.adIntervalId)
     utils.removeFocusedBrowsingCards()
-
     this.setFeedVisibility(true)
     this.setPanelVisibility(true)
     this.setAdVisibility(true)
@@ -105,8 +104,7 @@ export default class LinkedInController {
         this.setAdVisibility(false)
         return
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   tryBlockingFeed() {
@@ -118,8 +116,7 @@ export default class LinkedInController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -131,7 +128,6 @@ export default class LinkedInController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 }

@@ -1,21 +1,19 @@
 <template>
   <div class="quote-container">
-    <p class="quote">
-      "{{this.quote}}"
-    </p>
-    <p class="quoter">- {{this.author}}</p>
+    <p class="quote">"{{ this.quote }}"</p>
+    <p class="quoter">- {{ this.author }}</p>
   </div>
 </template>
 
 <script>
-import {quotes} from './quotes.js';
+import { quotes } from './quotes.js'
 export default {
-  name: "Quote",
+  name: 'Quote',
   data() {
-    return{
+    return {
       quotes: quotes,
-      quote: "",
-      author: ""
+      quote: '',
+      author: '',
     }
   },
 
@@ -28,10 +26,7 @@ export default {
       let randNum = Math.floor(Math.random() * this.quotes.length)
       this.quote = this.quotes[randNum]['text']
       this.author = this.quotes[randNum]['source']
-    }
-  }
-
-
-  
-};
+    },
+  },
+}
 </script>

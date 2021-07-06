@@ -7,13 +7,6 @@
         "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js",
         "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch"
     },
-    "dependencies": {
-        "core-js": "^3.6.5",
-        "jquery": "^3.6.0",
-        "prettier": "^2.3.2",
-        "vue-router": "^3.2.0",
-        "vuex": "^3.4.0"
-    },
     "devDependencies": {
         "@babel/core": "^7.14.3",
         "@babel/preset-env": "^7.14.4",
@@ -29,6 +22,7 @@
         "vue-eslint-parser": "^7.6.0",
         "vue-loader": "^15.9.7",
         "vue-template-compiler": "^2.6.12",
-        "webpack": "^5.38.1"
+        "webpack": "^5.38.1",
+        "prettier": "^2.3.2"
     }
 }

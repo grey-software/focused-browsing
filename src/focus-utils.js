@@ -35,4 +35,10 @@ function setFocusStateInLocalStorage(storageName, focusState) {
   })
 }
 
-module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid, getFocusStateFromLocalStorage, setFocusStateInLocalStorage}
+module.exports = {
+  keyIsShortcutKey,
+  shortcutKeysPressed,
+  isURLValid,
+  getFocusStateFromLocalStorage,
+  setFocusStateInLocalStorage,
+}

@@ -31,23 +31,20 @@
 
 <script>
 export default {
-  name: "CardTextLinks",
-  data () {
-    return{
-
-    }
-  }, 
+  name: 'CardTextLinks',
+  data() {
+    return {}
+  },
   methods: {
-    openGrey(){
-      window.open("https://org.grey.software/");
+    openGrey() {
+      window.open('https://org.grey.software/')
     },
-    openFeedback(){
-      window.open("https://github.com/grey-software/focused-browsing/issues/new/choose")
+    openFeedback() {
+      window.open('https://github.com/grey-software/focused-browsing/issues/new/choose')
     },
-    openFocusedBrowsing(){
-      window.open("https://org.grey.software/focused-browsing/")
-    }
-
-  }
-};
+    openFocusedBrowsing() {
+      window.open('https://org.grey.software/focused-browsing/')
+    },
+  },
+}
 </script>

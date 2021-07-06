@@ -1,4 +1,3 @@
-
 // Colors
 @import url('https://rsms.me/inter/inter.css');
 // This is the project stylesheet
@@ -31,322 +30,325 @@ $white-2: rgba(254, 254, 254, 1);
 
 // Typographies
 @mixin inter-12-bold {
-    font-family: "Inter";
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 18px;
-  }
-  @mixin inter-12-medium {
-    font-family: "Inter";
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 18px;
-  }
-  @mixin inter-12-semi-bold {
-    font-family: "Inter";
-    font-size: 12px;
-    font-weight: 600;
-    line-height: normal;
-  }
-  @mixin inter-12-semi-bold-line18 {
-    font-family: "Inter";
-    font-size: 12px;
-    font-weight: 600;
-    line-height: 18px;
-  }
-  @mixin inter-13-medium {
-    font-family: "Inter";
-    font-size: 13px;
-    font-weight: 500;
-    line-height: 20px;
-  }
-  @mixin inter-14-bold {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 18px;
-  }
-  @mixin inter-14-bold-line14 {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 14px;
-  }
-  @mixin inter-14-medium {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 21px;
-  }
-  @mixin inter-14-medium-line14 {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 14px;
-  }
-  @mixin inter-14-medium-line18 {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 18px;
-  }
-  @mixin inter-14-regular {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 21px;
-  }
-  @mixin inter-14-semi-bold {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 21px;
-  }
-  @mixin inter-14-semi-bold-line14 {
-    font-family: "Inter";
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 14px;
-  }
-  @mixin inter-15-extra-bold {
-    font-family: "Inter";
-    font-size: 15px;
-    font-weight: 800;
-    line-height: 19px;
-  }
-  @mixin inter-16-regular {
-    font-family: "Inter";
-    font-size: 16px;
-    font-weight: 400;
-    line-height: 24px;
-  }
-  @mixin inter-18-medium {
-    font-family: "Inter";
-    font-size: 18px;
-    font-weight: 500;
-    line-height: 27px;
-  }
-  @mixin inter-18-regular {
-    font-family: "Inter";
-    font-size: 18px;
-    font-weight: 400;
-    line-height: 27px;
-  }
-  @mixin inter-18-semi-bold {
-    font-family: "Inter";
-    font-size: 18px;
-    font-weight: 600;
-    line-height: 27px;
-  }
-  @mixin inter-32-medium {
-    font-family: "Inter";
-    font-size: 32px;
-    font-weight: 500;
-    line-height: 54px;
-  }
-  @mixin roboto-14-bold {
-    font-family: "Roboto";
-    font-size: 14px;
-    font-weight: 700;
-    line-height: normal;
-  }
-  @mixin roboto-14-medium {
-    font-family: "Roboto";
-    font-size: 14px;
-    font-weight: 500;
-    line-height: normal;
-  }
-  @mixin subtitle2-mobile {
-    font-family: "Inter";
-    font-size: 16px;
-    font-weight: 500;
-    line-height: 27px;
-  }
-
-* {
-    margin:0;
-    padding:0;
+  font-family: 'Inter';
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 18px;
+}
+@mixin inter-12-medium {
+  font-family: 'Inter';
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+}
+@mixin inter-12-semi-bold {
+  font-family: 'Inter';
+  font-size: 12px;
+  font-weight: 600;
+  line-height: normal;
+}
+@mixin inter-12-semi-bold-line18 {
+  font-family: 'Inter';
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 18px;
+}
+@mixin inter-13-medium {
+  font-family: 'Inter';
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+}
+@mixin inter-14-bold {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+}
+@mixin inter-14-bold-line14 {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 14px;
+}
+@mixin inter-14-medium {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 21px;
+}
+@mixin inter-14-medium-line14 {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 14px;
+}
+@mixin inter-14-medium-line18 {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+@mixin inter-14-regular {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 21px;
+}
+@mixin inter-14-semi-bold {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 21px;
+}
+@mixin inter-14-semi-bold-line14 {
+  font-family: 'Inter';
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 14px;
+}
+@mixin inter-15-extra-bold {
+  font-family: 'Inter';
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 19px;
+}
+@mixin inter-16-regular {
+  font-family: 'Inter';
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+@mixin inter-18-medium {
+  font-family: 'Inter';
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 27px;
+}
+@mixin inter-18-regular {
+  font-family: 'Inter';
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 27px;
+}
+@mixin inter-18-semi-bold {
+  font-family: 'Inter';
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 27px;
+}
+@mixin inter-32-medium {
+  font-family: 'Inter';
+  font-size: 32px;
+  font-weight: 500;
+  line-height: 54px;
+}
+@mixin roboto-14-bold {
+  font-family: 'Roboto';
+  font-size: 14px;
+  font-weight: 700;
+  line-height: normal;
+}
+@mixin roboto-14-medium {
+  font-family: 'Roboto';
+  font-size: 14px;
+  font-weight: 500;
+  line-height: normal;
+}
+@mixin subtitle2-mobile {
+  font-family: 'Inter';
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 27px;
 }
 
-.focus-container{
-    background-color: $black-3;
-    border-radius: 16px 16px 0px 0px;
-    padding: 40px 49px 42px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.focus-container {
+  background-color: $black-3;
+  border-radius: 16px 16px 0px 0px;
+  padding: 40px 49px 42px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.quote-container {
+  margin-bottom: 34px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.quote {
+  padding-right: 10%;
+  padding-left: 10%;
+  color: $light-steel-blue;
+  display: flex;
+  text-align: center;
+  margin-bottom: 16px;
+  letter-spacing: -0.27px;
+  @include inter-18-semi-bold;
+}
+.quoter {
+  color: $light-steel-blue;
+  letter-spacing: -0.21px;
+  @include inter-14-medium;
+}
+.card-main {
+  height: calc(66.49% - 102px);
+  background-color: $dark-slate-gray-2;
+  margin-bottom: 40px;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 51px 42px;
+  box-shadow: 0 8px 24px -4px $transparent-black-2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+.card-content {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.title-container {
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.card-heading {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+.card-icon {
+  margin-right: 7px;
+  padding: 1.54px 1px 1.53px;
+  display: flex;
+  align-items: center;
+}
+.vector {
+  flex: 1;
+  align-self: stretch;
+  object-fit: cover;
+}
+.heading {
+  color: $light-steel-blue;
+  letter-spacing: -0.27px;
+  @include inter-18-medium;
+}
+.card-subtitle {
+  height: 60px;
+  width: 348px;
+  color: $light-steel-blue;
+  display: flex;
+  text-align: center;
+  letter-spacing: -0.21px;
+  @include inter-14-regular;
+}
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.button-support {
+  background-color: $light-steel-blue;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 14px 87px 13px;
+  display: flex;
+  align-items: center;
+  height: 21px;
+  width: 132px;
+}
+.support-this-project {
+  color: $black-3;
+  letter-spacing: -0.21px;
+  @include inter-14-semi-bold;
+}
+.button-show-feed {
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 13px 117px 12px;
+  display: flex;
+  align-items: center;
+  height: 21px;
+  width: 70px;
+  border: 1px solid $light-steel-blue;
+}
+.show-feed {
+  color: $light-steel-blue;
+  letter-spacing: -0.21px;
+  @include inter-14-semi-bold;
+}
+.shortcut-container {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shortcut-caption {
+  color: $light-steel-blue;
+  @include inter-14-semi-bold-line14;
+}
+.shortcut-caption-emphasis-1 {
+  color: $light-steel-blue;
+  letter-spacing: -0.21px;
+  @include inter-14-bold-line14;
+}
+.shortcut-caption-emphasis-2 {
+  color: $light-steel-blue;
+  letter-spacing: -0.21px;
+  @include inter-14-medium-line14;
+}
+.icon-links-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-info {
+  margin-right: 48px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+.icon-feedback {
+  margin-right: 48px;
+  padding: 2px 4px 2px 3px;
+  display: flex;
+  align-items: center;
+}
+.link-logo {
+  padding: 0.66px 0.51px 0.65px 0.5px;
+  display: flex;
+  align-items: center;
+  width: 22.99px;
+  height: 22.69px;
+  cursor: pointer;
+}
+.icon-logo {
+  display: flex;
+  align-items: flex-start;
+}
+.group {
+  width: 10.6px;
+  height: 22.69px;
+  &:not(:last-of-type) {
+    margin-right: 1.79px;
   }
-  .quote-container {
-    margin-bottom: 34px;
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .quote {
-    padding-right: 10%;
-    padding-left: 10%;
-    color: $light-steel-blue;
-    display: flex;
-    text-align: center;
-    margin-bottom: 16px;
-    letter-spacing: -0.27px;
-    @include inter-18-semi-bold;
-  }
-  .quoter {
-    color: $light-steel-blue;
-    letter-spacing: -0.21px;
-    @include inter-14-medium;
-  }
-  .card-main {
-    height: calc(66.49% - 102px);
-    background-color: $dark-slate-gray-2;
-    margin-bottom: 40px;
-    overflow: hidden;
-    border-radius: 16px;
-    padding: 51px 42px;
-    box-shadow: 0 8px 24px -4px $transparent-black-2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    align-self: stretch;
-  }
-  .card-content {
-    margin-bottom: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .title-container {
-    margin-bottom: 8px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  .card-heading {
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-  }
-  .card-icon {
-    margin-right: 7px;
-    padding: 1.54px 1px 1.53px;
-    display: flex;
-    align-items: center;
-  }
-  .vector {
-    flex: 1;
-    align-self: stretch;
-    object-fit: cover;
-  }
-  .heading {
-    color: $light-steel-blue;
-    letter-spacing: -0.27px;
-    @include inter-18-medium;
-  }
-  .card-subtitle {
-    height: 60px;
-    width: 348px;
-    color: $light-steel-blue;
-    display: flex;
-    text-align: center;
-    letter-spacing: -0.21px;
-    @include inter-14-regular;
-  }
-  .buttons-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .button-support {
-    background-color: $light-steel-blue;
-    margin-bottom: 16px;
-    overflow: hidden;
-    border-radius: 8px;
-    padding: 14px 87px 13px;
-    display: flex;
-    align-items: center;
-    height: 21px;
-    width: 132px;
-  }
-  .support-this-project {
-    color: $black-3;
-    letter-spacing: -0.21px;
-    @include inter-14-semi-bold;
-  }
-  .button-show-feed {
-    overflow: hidden;
-    border-radius: 8px;
-    padding: 13px 117px 12px;
-    display: flex;
-    align-items: center;
-    height: 21px;
-    width: 70px;
-    border: 1px solid $light-steel-blue;
-  }
-  .show-feed {
-    color: $light-steel-blue;
-    letter-spacing: -0.21px;
-    @include inter-14-semi-bold;
-  }
-  .shortcut-container {
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .shortcut-caption {
-    color: $light-steel-blue;
-    @include inter-14-semi-bold-line14;
-  }
-  .shortcut-caption-emphasis-1  {
-    color: $light-steel-blue;
-    letter-spacing: -0.21px;
-    @include inter-14-bold-line14;
-  }
-  .shortcut-caption-emphasis-2 {
-    color: $light-steel-blue;
-    letter-spacing: -0.21px;
-    @include inter-14-medium-line14;
-  }
-  .icon-links-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .icon-info {
-    margin-right: 48px;
-    padding: 2px;
-    display: flex;
-    align-items: center;
-  }
-  .icon-feedback {
-    margin-right: 48px;
-    padding: 2px 4px 2px 3px;
-    display: flex;
-    align-items: center;
-  }
-  .link-logo {
-    padding: 0.66px 0.51px 0.65px 0.5px;
-    display: flex;
-    align-items: center;
-    width: 22.99px;
-    height: 22.69px;
-    cursor: pointer;
-  }
-  .icon-logo {
-    display: flex;
-    align-items: flex-start;
-  }
-  .group {
-    width: 10.6px;
-    height: 22.69px;
-    &:not(:last-of-type) {
-      margin-right: 1.79px;
-    }
-  }
-a { color: inherit; text-decoration: none;}
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}

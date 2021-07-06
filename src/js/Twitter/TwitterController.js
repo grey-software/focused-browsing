@@ -32,14 +32,14 @@ export default class TwitterController {
   }
 
   focusPanel() {
-    if(this.panelIntervalId){
+    if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
     this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 700)
   }
 
   focusFeed() {
-    if(this.feedIntervalId){
+    if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
     this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
@@ -90,8 +90,7 @@ export default class TwitterController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -104,7 +103,6 @@ export default class TwitterController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   }
 }
