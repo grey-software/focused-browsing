@@ -9,11 +9,11 @@
     "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
     "/extension-build/css/twitter.css": "/extension-build/css/twitter.css",
     "/extension-build/css/linkedin.css": "/extension-build/css/linkedin.css",
-    "/extension-build/css/popup.css": "/extension-build/css/popup.css",
     "/extension-build/manifest.json": "/extension-build/manifest.json",
     "/extension-build/icons/logo.png": "/extension-build/icons/logo.png",
     "/extension-build/icons/logox128.png": "/extension-build/icons/logox128.png",
     "/extension-build/icons/logox16.png": "/extension-build/icons/logox16.png",
     "/extension-build/icons/logox32.png": "/extension-build/icons/logox32.png",
-    "/extension-build/icons/logox48.png": "/extension-build/icons/logox48.png"
+    "/extension-build/icons/logox48.png": "/extension-build/icons/logox48.png",
+    "/extension-build/css/popup.css": "/extension-build/css/popup.css"
 }

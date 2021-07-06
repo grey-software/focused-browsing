@@ -2,17 +2,17 @@
   <div class="focus-container">
     <Quote />
     <MainCard />
-    <CardLinks />
+    <CardLinksIcons />
   </div>
 </template>
 
 <script>
 import MainCard from './MainCard/MainCard.vue'
 import Quote from './Quote/Quote.vue'
-import CardLinks from './CardTextLinks/CardTextLinks.vue'
+import CardLinksIcons from './CardLinksIcons/CardLinksIcons.vue'
 
 export default {
   name: 'FocusedFeedContainer',
-  components: { MainCard, Quote, CardLinks },
+  components: { MainCard, Quote, CardLinksIcons },
 }
 </script>

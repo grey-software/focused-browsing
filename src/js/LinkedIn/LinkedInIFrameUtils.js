@@ -24,7 +24,6 @@ function setIframeSource(feedIframe) {
 function injectFeedIframe(feedIframe, feed) {
   setIframeSource(feedIframe)
   feed.append(feedIframe)
-  console.log(feed)
 }
 
 module.exports = { createLinkedInIframe, setIframeSource, injectFeedIframe }

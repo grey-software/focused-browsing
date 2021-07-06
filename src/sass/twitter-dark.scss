@@ -114,8 +114,8 @@ $white-2: rgba(254, 254, 254, 1);
 @mixin inter-16-regular {
   font-family: 'Inter';
   font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
+  font-weight: 600;
+  line-height: 22px;
 }
 @mixin inter-18-medium {
   font-family: 'Inter';
@@ -182,14 +182,14 @@ $white-2: rgba(254, 254, 254, 1);
   justify-content: center;
 }
 .quote {
-  padding-right: 10%;
-  padding-left: 10%;
+  padding-right: 4%;
+  padding-left: 4%;
   color: $light-steel-blue;
   display: flex;
   text-align: center;
   margin-bottom: 8px;
   letter-spacing: -0.27px;
-  @include inter-18-semi-bold;
+  @include inter-16-regular;
 }
 .quoter {
   color: $light-steel-blue;
@@ -320,6 +320,11 @@ $white-2: rgba(254, 254, 254, 1);
   display: flex;
   align-items: center;
 }
+.vector {
+  flex: 1;
+  align-self: stretch;
+  object-fit: cover;
+}
 .icon-feedback {
   margin-right: 48px;
   padding: 2px 4px 2px 3px;
@@ -327,18 +332,19 @@ $white-2: rgba(254, 254, 254, 1);
   align-items: center;
 }
 .link-logo {
-  padding: 0.66px 0.51px 0.65px 0.5px;
+  padding: 1.66px 30.51px 0.65px;
   display: flex;
   align-items: center;
   width: 22.99px;
   height: 22.69px;
   cursor: pointer;
 }
+
 .icon-logo {
   display: flex;
   align-items: flex-start;
 }
-.group {
+.group-two {
   width: 10.6px;
   height: 22.69px;
   &:not(:last-of-type) {

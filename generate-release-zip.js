@@ -1,5 +1,6 @@
-var zipFolder = require('zip-folder');
-const version = "v0.91"
+const zipFolder = require('zip-folder');
+const packageJSON = require('./package.json')
+const version = packageJSON.version
 
 zipFolder('./extension-build', `./focused-browsing-${version}.zip`, function(err) {
     if(err){
