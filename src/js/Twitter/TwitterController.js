@@ -35,7 +35,7 @@ export default class TwitterController {
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
-    this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 700)
+    this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 250)
   }
 
   focusFeed() {
