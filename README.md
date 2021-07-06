@@ -7,7 +7,7 @@
 # Focused Browsing
 Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.
 
-<img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src="https://user-images.githubusercontent.com/20130700/120509712-c1457f00-c396-11eb-9a46-fc1ccb01ab58.png">
+![](https://i.imgur.com/8uMi1wO.png)
 
 ## Developing Focused Browsing
 ---
