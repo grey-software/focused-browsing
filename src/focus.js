@@ -18,16 +18,10 @@ async function onToggle() {
 }
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-
-  console.log(msg)
-  let newFocusState = await getFocusStateFromLocalStorage('focusState')
-
+  let newFocusState = await FocusUtils.getFocusStateFromLocalStorage('focusState')
   if (msg.text == 'different tab activated') {
-    console.log('in tab activation code')
-    console.log('new focus state: ' + JSON.stringify(newFocusState))
-    console.log('old focus state: ' + JSON.stringify(focusState))
     if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
-      console.log("state of web page didn't change")
+      // state of web page didn't change
       return
     }
 
@@ -54,8 +48,6 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
 
 async function handleKeyboardShortcuts(e) {
   if (e.type == 'keydown') {
-    console.log('key down logs')
-    console.log(e)
     if (FocusUtils.keyIsShortcutKey(e)) {
       let keyCode = e.code
       if (keyCode.includes('Shift')) {
@@ -64,14 +56,10 @@ async function handleKeyboardShortcuts(e) {
       setKeyPressedState(keyCode, true)
     }
     if (FocusUtils.shortcutKeysPressed(keyPressedStates)) {
-      console.log("pressed all keys")
-
       onToggle()
     }
   }
   if (e.type == 'keyup') {
-    console.log('key up logs')
-    console.log(e)
     keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
   }
 }
@@ -84,14 +72,13 @@ async function setUpFocusScript() {
     controller = new LinkedInController()
     currentWebsite = 'linkedin'
   }
-  focusState = await getFocusStateFromLocalStorage('focusState')
-  console.log(focusState)
+  focusState = await FocusUtils.getFocusStateFromLocalStorage('focusState')
 }
 
 async function updateStorage() {
-  let newState = await getFocusStateFromLocalStorage('focusState')
+  let newState = await FocusUtils.getFocusStateFromLocalStorage('focusState')
   newState[currentWebsite] = focusState[currentWebsite]
-  await setFocusStateInLocalStorage('focusState', newState)
+  await FocusUtils.setFocusStateInLocalStorage('focusState', newState)
   focusState = newState
 }
 
@@ -110,34 +97,9 @@ function initFocus() {
   if (!currentWebsite) {
     return
   }
-  console.log('current website is: ' + currentWebsite)
   if (isCurrentlyFocused()) {
-    console.log("need to focus on: " + currentURL)
     controller.focus(currentURL)
   }
-}
-
-async function getFocusStateFromLocalStorage(name) {
-  return new Promise(function (resolve, reject) {
-    try {
-      chrome.storage.local.get(name, function (items) {
-        var target = items[name]
-        resolve(target)
-      })
-    } catch {
-      reject()
-    }
-  })
-}
-
-async function setFocusStateInLocalStorage(storageName, focusState) {
-  return new Promise(function (resolve, _) {
-    var obj = {}
-    obj[storageName] = focusState
-    chrome.storage.local.set(obj, function () {
-      resolve('var set successfully')
-    })
-  })
 }
 
 ;(async function () {

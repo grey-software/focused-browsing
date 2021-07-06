@@ -2,10 +2,8 @@ let mix = require("laravel-mix")
 
 mix.copy('src/www', 'extension-build/www')
 mix.copy('src/manifest.json', 'extension-build')
-mix.copy('src/logo.png','extension-build')
-mix.copy('src/logox16.png','extension-build')
-mix.copy('src/logox48.png','extension-build')
-mix.copy('src/logox128.png','extension-build')
+mix.copy('src/icons','extension-build/icons')
+
 
 mix.setPublicPath('./')
     .sass('src/sass/linkedin.scss', 'extension-build/css')

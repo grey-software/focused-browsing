@@ -12,49 +12,27 @@ const isURLValid = (url) => {
   return url.includes('twitter.com') || url.includes('linkedin.com')
 }
 
-const debounce = (func, delay) => {
-  let inDebounce
-  return function () {
-    const context = this
-    const args = arguments
-    clearTimeout(inDebounce)
-    inDebounce = setTimeout(() => func.apply(context, args), delay)
-  }
-}
-
-
-const throttle = (func, limit) => {
-  let lastFunc
-  let lastRan
-  return function () {
-    const context = this
-    const args = arguments
-    console.log("i am getting called at least")
-    if (!lastRan) {
-      console.log("lastRan not defined")
-      console.log("applying function call")
-      func.apply(context, args)
-      lastRan = Date.now()
-    } else {
-      if (lastFunc) {
-        clearTimeout(lastFunc)
-      }
-      console.log("last function run was timed at: " + JSON.stringify(lastRan))
-      // if (Date.now() - lastRan >= limit) {
-      //   func.apply(context, args)
-      //   lastRan = Date.now()
-      // } else {
-      lastFunc = setTimeout(function () {
-        if (Date.now() - lastRan >= limit) {
-          func.apply(context, args)
-          lastRan = Date.now()
-        }
-      }, limit - (Date.now() - lastRan))
+function getFocusStateFromLocalStorage(name) {
+  return new Promise(function (resolve, reject) {
+    try {
+      chrome.storage.local.get(name, function (items) {
+        var target = items[name]
+        resolve(target)
+      })
+    } catch {
+      reject()
     }
-  }
+  })
 }
 
-// limit = 50 t0=100, t1=200 
+function setFocusStateInLocalStorage(storageName, focusState) {
+  return new Promise(function (resolve, _) {
+    var obj = {}
+    obj[storageName] = focusState
+    chrome.storage.local.set(obj, function () {
+      resolve('var set successfully')
+    })
+  })
+}
 
-// throttle.
-module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid, debounce, throttle }
+module.exports = { keyIsShortcutKey, shortcutKeysPressed, isURLValid, getFocusStateFromLocalStorage, setFocusStateInLocalStorage}

@@ -82,7 +82,6 @@ chrome.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
 
 chrome.tabs.onActivated.addListener(async function (activeInfo) {
   let tabId = activeInfo.tabId
-  console.log('sending message on activated')
   chrome.tabs.sendMessage(tabId, { text: 'different tab activated' }, function (response) {
     response = response || {}
     if (response.status == 'tab change confirmed') {

@@ -10,14 +10,7 @@ export default class LinkedInController {
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
-    this.initialLoad = false
-    this.blockFeedAttemptCount = 0
-    this.blockPanelAttemptCount = 0
     this.feedIframe = null
-  }
-
-  clearLinkedInElements() {
-    this.panel_elements = []
   }
 
   focus(url) {
@@ -34,6 +27,7 @@ export default class LinkedInController {
     clearInterval(this.panelIntervalId)
     clearInterval(this.adIntervalId)
     utils.removeFocusedBrowsingCards()
+
     this.setFeedVisibility(true)
     this.setPanelVisibility(true)
     this.setAdVisibility(true)
@@ -43,7 +37,6 @@ export default class LinkedInController {
     if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
-
     this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
   }
 
@@ -51,7 +44,6 @@ export default class LinkedInController {
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
-
     this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 250)
   }
 
@@ -59,7 +51,6 @@ export default class LinkedInController {
     if (this.adIntervalId) {
       clearInterval(this.adIntervalId)
     }
-
     this.adIntervalId = setInterval(this.tryBlockingAd.bind(this), 250)
   }
 
@@ -101,7 +92,7 @@ export default class LinkedInController {
       for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
         panel.append(this.panel_elements[i])
       }
-      this.clearLinkedInElements()
+      utils.clearPanelElements(this.panel_elements)
     }
   }
 
@@ -115,14 +106,6 @@ export default class LinkedInController {
         return
       }
     } catch (err) {
-      // this.blockAdAttemptCount += 1
-      // if (this.blockAdAttemptCount > 2 && this.blockAdAttemptCount <= 4) {
-      //   console.log('WARNING: LinkedIn elements usually load by now')
-      // } else if (this.blockAdAttemptCount > 4 && this.blockAdAttemptCount < 8) {
-      //   console.log('ERROR: Something Wrong with the LinkedIn elements')
-      // } else if (this.blockAdAttemptCount > 8) {
-      //   clearInterval(this.adIntervalId)
-      // }
     }
   }
 
@@ -136,14 +119,6 @@ export default class LinkedInController {
         return
       }
     } catch (err) {
-      // this.blockFeedAttemptCount += 1
-      // if (this.blockFeedAttemptCount > 2 && this.blockFeedAttemptCount <= 4) {
-      //   console.log('WARNING: LinkedIn elements usually load by now')
-      // } else if (this.blockFeedAttemptCount > 4 && this.blockFeedAttemptCount < 8) {
-      //   console.log('ERROR: Something Wrong with the LinkedIn elements')
-      // } else if (this.blockFeedAttemptCount > 8) {
-      //   clearInterval(this.feedIntervalId)
-      // }
     }
   }
 
@@ -157,14 +132,6 @@ export default class LinkedInController {
         return
       }
     } catch (err) {
-      // this.blockPanelAttemptCount += 1
-      // if (this.blockPanelAttemptCount > 2 && this.blockPanelAttemptCount <= 4) {
-      //   console.log('WARNING: LinkedIn elements usually load by now')
-      // } else if (this.blockPanelAttemptCount > 4 && this.blockPanelAttemptCount < 8) {
-      //   console.log('ERROR: Something Wrong with the LinkedIn elements')
-      // } else if (this.blockPanelAttemptCount > 8) {
-      //   clearInterval(this.panelIntervalId)
-      // }
     }
   }
 }
