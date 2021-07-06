@@ -4,18 +4,10 @@ let activeURL = ''
 
 chrome.storage.local.clear()
 chrome.storage.local.set({ focusState: focusState })
-chrome.storage.local.get('focusState', function (data) {
-  console.log(data)
-})
-
 let injectedTabs = new Set()
 
 async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   let url = tab.url
-
-  console.log('page loading')
-  console.log(url)
-  console.log(changeInfo)
 
   const isPageLoading = changeInfo && changeInfo.status == 'loading'
   if (!isPageLoading) {
@@ -26,8 +18,6 @@ async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
   if (focusScriptInjected) {
     if (url != activeURL && !isHomeURLLoad(activeURL, url)) {
-      console.log('url is: ' + url)
-      console.log('activeURL is: ' + activeURL)
       activeURL = url
       chrome.tabs.sendMessage(tabId, { text: 'new page loaded on website', url: activeURL }, function (response) {
         response = response || {}
