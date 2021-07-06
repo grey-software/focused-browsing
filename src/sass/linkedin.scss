@@ -170,13 +170,13 @@ $white-2: rgba(254, 254, 254, 1);
 .focus-container {
   background-color: $white;
   border-radius: 16px 16px 0px 0px;
-  padding: 40px 49px 42px;
+  padding: 32px 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 .quote-container {
-  margin-bottom: 34px;
+  margin-bottom: 28px;
   width: 500px;
   display: flex;
   flex-direction: column;
@@ -189,7 +189,7 @@ $white-2: rgba(254, 254, 254, 1);
   color: $gray;
   display: flex;
   text-align: center;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   letter-spacing: -0.27px;
   @include inter-18-semi-bold;
 }
@@ -199,12 +199,11 @@ $white-2: rgba(254, 254, 254, 1);
   @include inter-14-medium;
 }
 .card-main {
-  height: calc(66.49% - 102px);
   background-color: $white;
   margin-bottom: 40px;
   overflow: hidden;
   border-radius: 16px;
-  padding: 51px 42px;
+  padding: 48px 42px;
   box-shadow: 0 8px 24px -4px $transparent-midnight-blue, 0 6px 12px -6px $transparent-midnight-blue-2;
   display: flex;
   flex-direction: column;
@@ -293,7 +292,7 @@ $white-2: rgba(254, 254, 254, 1);
   @include inter-14-semi-bold;
 }
 .shortcut-container {
-  padding: 10px;
+  margin-top: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
