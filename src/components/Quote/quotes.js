@@ -151,8 +151,8 @@ export const quotes = [
   },
   {
     id: 31,
-    text: 'Great achievement is usually born of great sacrifice, and is never the result of selfishness.',
-    source: 'Napoleon Hill',
+    text: 'We can easily forgive a child who is afraid of the dark; the real tragedy of life is when adults are afraid of the light.',
+    source: 'Plato',
   },
   {
     id: 32,
@@ -181,8 +181,8 @@ export const quotes = [
   },
   {
     id: 37,
-    text: "If you can't do great things, do small things in a great way.",
-    source: 'Napoleon Hill',
+    text: "Thinking is difficult, that's why most people judge.",
+    source: 'Carl Jung',
   },
   {
     id: 38,
