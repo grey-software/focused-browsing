@@ -1,16 +1,17 @@
+#### A web extension that helps you reclaim your focus by hiding distracting feeds on popular social websites.
+
 <div align="center">
   <a href="https://org.grey.software/focused-browsing" target="_blank">
-    <img alt="Focused Browsing Icon" width="100" src="https://gitlab.com/grey-software/focused-browsing/-/raw/main/src/icons/logo.png">
+    <img alt="Focused Browsing Icon" height="420" src="https://org.grey.software/focused-browsing/promo.png">
   </a>
 </div>
 
-# Focused Browsing
-Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.
+## Project Status
 
-![](https://i.imgur.com/8uMi1wO.png)
+This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash), [Avi](https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI).
 
 ## Developing Focused Browsing
----
+
 ### 1. Clone the repo and enter the directory 
 ```
 git clone https://github.com/grey-software/focused-browsing.git 
@@ -47,9 +48,17 @@ The image below from the [chrome documentation](https://developer.chrome.com/doc
 <br/>
 <img width="1157" alt="Screen Shot 2021-05-31 at 2 08 10 PM" src=https://user-images.githubusercontent.com/20130700/120519885-27cf9a80-c3a1-11eb-9c82-4fd3fccadf69.png>
 
-## Project Status
----
-This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash), [Avi](https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI).
+## Compatibility Chart
+
+### Legend
+
+**✅ Passed**
+**❗️Unsupported**
+**❓Untested**
+
+| Operating System | ![Brave](https://raw.githubusercontent.com/alrra/browser-logos/master/src/brave/brave_24x24.png) | ![Chrome](https://raw.githubusercontent.com/alrra/browser-logos/master/src/chrome/chrome_24x24.png) | ![Firefox](https://raw.githubusercontent.com/alrra/browser-logos/master/src/firefox/firefox_24x24.png) | ![Edge](https://raw.githubusercontent.com/alrra/browser-logos/master/src/edge/edge_24x24.png) |
+| ---------------- | ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- |
+| OSX 11.4 (20F71) | 1.26.74 ✅                                                                                       | 91.0.4472.114 ✅                                                                                    | ❗️                                                                                                    | ❓                                                                                            |
 
 ## Credits and Gratitude
 
@@ -68,30 +77,36 @@ We are where we are because of the time, energy, and passion of open source soft
 We are sincerely grateful for our access to tools that help us create better software. 
 
 ## Features
----
-### Show & Hide distractions without leaving the tab you're on.
-<br/>
 
-We want to empower you to be able to focus when you want to, but we also don't want to make it tedious for you when you want to browse what's happening on the Internet.
+### Show & Hide distractions without leaving the tab you're on.
+
+We want to empower you to focus when you want to, but we also don't want to make it tedious for you when you want to browse what's happening on the Internet.
 
 That is why we made it easy for you to hide and bring back feeds without leaving your tab.
 
+<div align="center">
+  <img alt="Screenshot showcasing hiding distractions without leaving the tab you're on" height="420" src="https://org.grey.software/focused-browsing/screenshot-1.png">
+</div>
+
 ### Control Distractions using keyboard shortcuts
-<br/>
 
-We added keyboard shortcuts to make it seamless and intuitive for you to toggle distractions on our supported websites. 
+We added keyboard shortcuts to make it seamless and intuitive for you to toggle distractions on our supported websites.
 
-Command/Ctrl+Shift+1 currently toggles all distractions and we are thinking of other shortcuts to help optimize & personalize your experience. 
+`Shift + F + B` currently toggles all distractions, and we are thinking of other shortcuts to help optimize & personalize your experience.
 
-### The websites that are important to you are on our roadmap
-<br/>
+<div align="center">
+  <img alt="Screenshot showcasing controlling focus using keyboard shortcuts" height="420" src="https://org.grey.software/focused-browsing/screenshot-2.png">
+</div>
 
-We currently support Twitter, and we have our eyes set on LinkedIn, Facebook, and Youtube next. If you would like us to support a website that is distracting you, let us know on our [Github discussion board](https://github.com/grey-software/focused-browsing/discussions).
+### We support Dim and Dark modes
 
+We added dim and dark mode support for Twitter because we wanted our extension to fit seamlessly with someone's browsing experience on the site.
 
+<div align="center">
+  <img alt="Screenshot showcasing Dim and Dark mode support" height="420" src="https://org.grey.software/focused-browsing/screenshot-3.png">
+</div>
 
 ## The Story
----
 
 Professionals and creators on the Internet are drowning in information.
 
