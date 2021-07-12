@@ -12,7 +12,7 @@ const isURLValid = (url) => {
   return url.includes('twitter.com') || url.includes('linkedin.com')
 }
 
-function getFocusStateFromLocalStorage(name) {
+function getFromLocalStorage(name) {
   return new Promise(function (resolve, reject) {
     try {
       chrome.storage.local.get(name, function (items) {
@@ -39,6 +39,6 @@ module.exports = {
   keyIsShortcutKey,
   shortcutKeysPressed,
   isURLValid,
-  getFocusStateFromLocalStorage,
+  getFromLocalStorage,
   setFocusStateInLocalStorage,
 }

@@ -8,17 +8,17 @@ let controller = null
 let focusState = null
 let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
-document.addEventListener('keydown', handleKeyboardShortcuts, false)
-document.addEventListener('keyup', handleKeyboardShortcuts, false)
+document.addEventListener('keydown', handleKeyEvent, false)
+document.addEventListener('keyup', handleKeyEvent, false)
 
-async function onToggle() {
-  toggleFocus()
-  await updateStorage()
+async function toggleFocus() {
+  toggleFocusState()
+  await updateFocusState()
   renderFocusState(focusState[currentWebsite])
 }
 
 chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
-  let newFocusState = await FocusUtils.getFocusStateFromLocalStorage('focusState')
+  let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
   if (msg.text == 'different tab activated') {
     if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
       // state of web page didn't change
@@ -42,11 +42,11 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
       sendResponse({ status: 'tab change within website confirmed' })
     }
   } else if (msg.text == 'unfocus from vue') {
-    onToggle()
+    toggleFocus()
   }
 })
 
-async function handleKeyboardShortcuts(e) {
+async function handleKeyEvent(e) {
   if (e.type == 'keydown') {
     if (FocusUtils.keyIsShortcutKey(e)) {
       let keyCode = e.code
@@ -56,7 +56,7 @@ async function handleKeyboardShortcuts(e) {
       setKeyPressedState(keyCode, true)
     }
     if (FocusUtils.shortcutKeysPressed(keyPressedStates)) {
-      onToggle()
+      toggleFocus()
     }
   }
   if (e.type == 'keyup') {
@@ -72,11 +72,11 @@ async function setUpFocusScript() {
     controller = new LinkedInController()
     currentWebsite = 'linkedin'
   }
-  focusState = await FocusUtils.getFocusStateFromLocalStorage('focusState')
+  focusState = await FocusUtils.getFromLocalStorage('focusState')
 }
 
-async function updateStorage() {
-  let newState = await FocusUtils.getFocusStateFromLocalStorage('focusState')
+async function updateFocusState() {
+  let newState = await FocusUtils.getFromLocalStorage('focusState')
   newState[currentWebsite] = focusState[currentWebsite]
   await FocusUtils.setFocusStateInLocalStorage('focusState', newState)
   focusState = newState
@@ -86,7 +86,7 @@ async function renderFocusState(shouldFocus) {
   shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
 }
 
-function toggleFocus() {
+function toggleFocusState() {
   focusState[currentWebsite] = !focusState[currentWebsite]
 }
 
