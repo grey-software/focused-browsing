@@ -2,18 +2,18 @@ let focusState = { twitter: true, linkedin: true }
 
 let activeURL = ''
 
-chrome.storage.local.clear()
+
 chrome.storage.local.set({ focusState: focusState })
 let injectedTabs = new Set()
 
 async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   let url = tab.url
-
+  console.log(changeInfo)
   const isPageLoading = changeInfo && changeInfo.status == 'loading'
   if (!isPageLoading) {
     return
   }
-
+  
   const focusScriptInjectedResult = await checkFocusScriptInjected(tabId)
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
   if (focusScriptInjected) {

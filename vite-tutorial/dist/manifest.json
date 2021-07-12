@@ -13,7 +13,7 @@
         "128": "assets/logox128.png"
     },
     "background": {
-        "page": "background.html"
+        "scripts": ["background.js"]
     },
     "web_accessible_resources":["assets/*"],
     "permissions": [

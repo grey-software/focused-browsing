@@ -27,6 +27,8 @@
         "vue-loader": "^15.9.7",
         "vue-template-compiler": "^2.6.12",
         "webpack": "^5.38.1",
-        "prettier": "^2.3.2"
+        "prettier": "^2.3.2",
+        "webextension-polyfill": "^0.8.0",
+        "webextension-polyfill-ts": "^0.25.0"
     }
 }
