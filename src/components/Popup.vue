@@ -19,21 +19,7 @@
 import CardLinksIcons from './CardLinksIcons/CardLinksIcons.vue'
 export default {
   name: 'Popup',
-  components: { CardLinksIcons },
-  data() {
-    return {}
-  },
-  methods: {
-    openGrey() {
-      window.open('https://org.grey.software/')
-    },
-    openFeedback() {
-      window.open('https://github.com/grey-software/focused-browsing/issues/new/choose')
-    },
-    openFocusedBrowsing() {
-      window.open('https://org.grey.software/focused-browsing/')
-    },
-  },
+  components: { CardLinksIcons }
 }
 </script>
 
