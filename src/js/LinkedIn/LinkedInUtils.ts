@@ -41,13 +41,13 @@ function isAdHidden() {
   return ad.children.length == 0
 }
 
-function isHomePage(url) {
+function isHomePage(url: string) {
   if(url.includes('linkedin.com')){
     return url.includes('/feed') || url == 'https://www.linkedin.com/' || url == 'https://www.linkedin.com/home'
   }
 }
 
-module.exports = {
+export default {
   getLinkedInFeed,
   getLinkedInPanel,
   getAdHeader,

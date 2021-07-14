@@ -1,3 +1,5 @@
+import { browser } from "webextension-polyfill-ts"
+
 const TWITTER_FEED_FRAME_HEIGHT = '766px'
 const TWITTER_FEED_FRAME_WIDTH = '598px'
 const IFRAME_ClASS = 'focus-card'
@@ -17,19 +19,19 @@ function createTwitterFeedIframe() {
   return feedIframe
 }
 
-function setFeedIframeSource(feedIframe) {
+function setFeedIframeSource(feedIframe: any) {
   if (document.body.style.backgroundColor == 'rgb(0, 0, 0)') {
-    feedIframe.src = chrome.runtime.getURL('www/twitter/feed/twitterFeedDark.html')
+    feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeedDark.html')
   } else if (document.body.style.backgroundColor == 'rgb(21, 32, 43)') {
-    feedIframe.src = chrome.runtime.getURL('www/twitter/feed/twitterFeedDim.html')
+    feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeedDim.html')
   } else {
-    feedIframe.src = chrome.runtime.getURL('www/twitter/feed/twitterFeed.html')
+    feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeed.html')
   }
 }
 
-function injectFeedIframe(feedIframe, feed) {
+function injectFeedIframe(feedIframe: any, feed: any) {
   setFeedIframeSource(feedIframe)
   feed.append(feedIframe)
 }
 
-module.exports = { createTwitterFeedIframe, setFeedIframeSource, injectFeedIframe }
+export default { createTwitterFeedIframe, setFeedIframeSource, injectFeedIframe }

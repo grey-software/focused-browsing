@@ -10,8 +10,8 @@ function removeFocusedBrowsingCards() {
   }
 }
 
-function clearPanelElements(panel_elements) {
+function clearPanelElements(panel_elements: any[]) {
   panel_elements = []
 }
 
-module.exports = { removeFocusedBrowsingCards, clearPanelElements }
+export default { removeFocusedBrowsingCards, clearPanelElements }

@@ -3,17 +3,26 @@ import LinkedInIFrameUtils from './LinkedInIFrameUtils'
 import utils from '../utils'
 
 export default class LinkedInController {
+
+  panel_elements: any[]
+  feedIntervalId: number
+  panelIntervalId: number
+  feedIframe: any
+  linkedin_feed_child_node: string | Node
+  linkedin_ad_child_node: string | Node
+  adIntervalId: number
+  
   constructor() {
     this.panel_elements = []
-    this.linkedin_feed_child_node = null
-    this.linkedin_ad_child_node = null
+    this.linkedin_feed_child_node = ""
+    this.linkedin_ad_child_node = ""
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
     this.feedIframe = null
   }
 
-  focus(url) {
+  focus(url: string) {
     if (LinkedInUtils.isHomePage(url)) {
       this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
       this.focusFeed()
@@ -22,38 +31,40 @@ export default class LinkedInController {
     }
   }
 
-  unfocus(url) {
-    clearInterval(this.feedIntervalId)
-    clearInterval(this.panelIntervalId)
-    clearInterval(this.adIntervalId)
-    utils.removeFocusedBrowsingCards()
-    this.setFeedVisibility(true)
-    this.setPanelVisibility(true)
-    this.setAdVisibility(true)
+  unfocus(url: string) {
+    if(LinkedInUtils.isHomePage(url)){
+      clearInterval(this.feedIntervalId)
+      clearInterval(this.panelIntervalId)
+      clearInterval(this.adIntervalId)
+      utils.removeFocusedBrowsingCards()
+      this.setFeedVisibility(true)
+      this.setPanelVisibility(true)
+      this.setAdVisibility(true)
+    }
   }
 
   focusFeed() {
     if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
-    this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
+    this.feedIntervalId = window.setInterval(this.tryBlockingFeed.bind(this), 250)
   }
 
   focusPanel() {
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
-    this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 250)
+    this.panelIntervalId = window.setInterval(this.tryBlockingPanel.bind(this), 250)
   }
 
   focusAd() {
     if (this.adIntervalId) {
       clearInterval(this.adIntervalId)
     }
-    this.adIntervalId = setInterval(this.tryBlockingAd.bind(this), 250)
+    this.adIntervalId = window.setInterval(this.tryBlockingAd.bind(this), 250)
   }
 
-  setAdVisibility(visibile) {
+  setAdVisibility(visibile: boolean) {
     var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
     if (!visibile) {
       this.linkedin_ad_child_node = linkedin_ad_parent_node.children[0]
@@ -63,7 +74,7 @@ export default class LinkedInController {
     }
   }
 
-  setFeedVisibility(visibile) {
+  setFeedVisibility(visibile: boolean) {
     var linkedin_feed_parent_node = LinkedInUtils.getLinkedInFeed()
     if (!visibile) {
       this.linkedin_feed_child_node = linkedin_feed_parent_node.children[1]
@@ -74,7 +85,7 @@ export default class LinkedInController {
     }
   }
 
-  setPanelVisibility(visible) {
+  setPanelVisibility(visible: boolean) {
     let panel = LinkedInUtils.getLinkedInPanel()
     if (!visible) {
       let length = panel.children.length

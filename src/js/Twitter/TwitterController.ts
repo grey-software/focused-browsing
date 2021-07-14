@@ -3,17 +3,21 @@ import TwitterIFrameUtils from './TwitterIFrameUtils'
 import utils from '../utils'
 
 export default class TwitterController {
+  panel_elements: any[]
+  twitterFeedChildNode: string | Node
+  feedIntervalId: number
+  panelIntervalId: number
+  feedIframe: any
   constructor() {
     this.panel_elements = []
-    this.twitterFeedChildNode = null
+    this.twitterFeedChildNode = ""
 
-    this.feedIntervalId = null
-    this.panelIntervalId = null
-
+    this.feedIntervalId = 0
+    this.panelIntervalId = 0
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
   }
 
-  focus(url) {
+  focus(url: string) {
     // the panel shows up on every page
     this.focusPanel()
     if (TwitterUtils.isHomePage(url)) {
@@ -21,7 +25,7 @@ export default class TwitterController {
     }
   }
 
-  unfocus(url) {
+  unfocus(url: string) {
     clearInterval(this.feedIntervalId)
     clearInterval(this.panelIntervalId)
     utils.removeFocusedBrowsingCards()
@@ -35,17 +39,17 @@ export default class TwitterController {
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
-    this.panelIntervalId = setInterval(this.tryBlockingPanel.bind(this), 250)
+    this.panelIntervalId = window.setInterval(this.tryBlockingPanel.bind(this), 250)
   }
 
   focusFeed() {
     if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
-    this.feedIntervalId = setInterval(this.tryBlockingFeed.bind(this), 250)
+    this.feedIntervalId = window.setInterval(this.tryBlockingFeed.bind(this), 250)
   }
 
-  setFeedVisibility(visible) {
+  setFeedVisibility(visible: boolean) {
     let feed = TwitterUtils.getTwitterFeed()
     if (!visible) {
       this.twitterFeedChildNode = feed.children[0]
@@ -56,19 +60,18 @@ export default class TwitterController {
     }
   }
 
-  setPanelVisibility(visibile) {
+  setPanelVisibility(visibile: boolean) {
     let panel = TwitterUtils.getTwitterPanel()
     if (!visibile) {
       let length = panel.children.length
 
       let current_panel_elements = []
-      while (length != 1) {
-        var currentLastChild = panel.lastChild
+      while (length != 0) {
+        var currentLastChild = panel.children[length - 1]
         current_panel_elements.push(currentLastChild)
         panel.removeChild(currentLastChild)
         length -= 1
       }
-
       this.panel_elements = current_panel_elements
     } else {
       for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {

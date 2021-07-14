@@ -1,3 +1,5 @@
+
+
 function getTwitterFeed() {
   return document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[0].children[0]
     .children[3]
@@ -34,23 +36,10 @@ function isPanelHidden() {
   return panel.children.length == 1
 }
 
-function isHomePage(url) {
-  if(url.includes('https://twitter.com/')){
+function isHomePage(url: string) {
+  if (url.includes('https://twitter.com/')) {
     return url.includes('/home') || url == 'https://twitter.com/'
   }
 }
 
-function clearPanelIntervalIds(panelIntervalIds) {
-  panelIntervalIds.forEach((panelIntervalID) => clearInterval(panelIntervalID))
-}
-
-module.exports = {
-  getTwitterPanel,
-  getTwitterFeed,
-  isFeedHidden,
-  isPanelHidden,
-  hasFeedLoaded,
-  hasPanelLoaded,
-  isHomePage,
-  clearPanelIntervalIds,
-}
+export default {getTwitterFeed, getTwitterPanel, hasFeedLoaded, hasPanelLoaded,isFeedHidden, isPanelHidden, isHomePage}

@@ -76,7 +76,7 @@ browser.tabs.onActivated.addListener(async function (activeInfo: { tabId: any })
   browser.tabs.sendMessage(
     tabId,
     { text: 'different tab activated' }
-  ).then((response: { status?: any }) => {
+  ).then((response: { status?: string }) => {
     response = response || {}
     if (response.status == 'tab change confirmed') {
       return

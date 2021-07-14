@@ -1,12 +1,13 @@
 import LinkedInController from './js/LinkedIn/LinkedInController'
 import TwitterController from './js/Twitter/TwitterController'
 import FocusUtils from './focus-utils'
+import { browser, Runtime } from 'webextension-polyfill-ts'
 
 let currentURL = document.URL
 let currentWebsite = ''
-let controller = null
-let focusState = null
-let keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
+let controller: TwitterController | LinkedInController
+let focusState: any = null
+let keyPressedStates: any = { KeyF: false, Shift: false, KeyB: false }
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
@@ -17,9 +18,9 @@ async function toggleFocus() {
   renderFocusState(focusState[currentWebsite])
 }
 
-chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) {
+browser.runtime.onMessage.addListener(async (message: any, sender: Runtime.MessageSender) => {
   let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
-  if (msg.text == 'different tab activated') {
+  if (message.text == 'different tab activated') {
     if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
       // state of web page didn't change
       return
@@ -33,21 +34,20 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
         controller.unfocus(currentURL)
       }
     }
-    sendResponse({ status: 'tab change confirmed' })
-  } else if (msg.text == 'new page loaded on website') {
-    if (FocusUtils.isURLValid(msg.url)) {
-      currentURL = msg.url
+    return Promise.resolve({ status: 'tab change confirmed' })
+  } else if (message.text == 'new page loaded on website') {
+    if (FocusUtils.isURLValid(message.url)) {
+      currentURL = message.url
       focusState = newFocusState
       initFocus()
-      sendResponse({ status: 'tab change within website confirmed' })
+      return Promise.resolve({ status: 'tab change confirmed' })
     }
-  } else if (msg.text == 'unfocus from vue') {
-    console.log("I am here")
+  } else if (message.text == 'unfocus from vue') {
     toggleFocus()
   }
 })
 
-async function handleKeyEvent(e) {
+async function handleKeyEvent(e: any) {
   if (e.type == 'keydown') {
     if (FocusUtils.keyIsShortcutKey(e)) {
       let keyCode = e.code
@@ -79,11 +79,10 @@ async function setUpFocusScript() {
 async function updateFocusState() {
   let newState = await FocusUtils.getFromLocalStorage('focusState')
   newState[currentWebsite] = focusState[currentWebsite]
-  await FocusUtils.setFocusStateInLocalStorage('focusState', newState)
   focusState = newState
 }
 
-async function renderFocusState(shouldFocus) {
+async function renderFocusState(shouldFocus: boolean) {
   shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
 }
 
@@ -91,8 +90,8 @@ function toggleFocusState() {
   focusState[currentWebsite] = !focusState[currentWebsite]
 }
 
-const isCurrentlyFocused = () => focusState[currentWebsite]
-const setKeyPressedState = (keyCode, state) => (keyPressedStates[keyCode] = state)
+const isCurrentlyFocused = () => {return focusState[currentWebsite]}
+const setKeyPressedState = (keyCode: string, state:any) => (keyPressedStates[keyCode] = state)
 
 function initFocus() {
   if (!currentWebsite) {
