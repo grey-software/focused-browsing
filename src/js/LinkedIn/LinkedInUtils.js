@@ -42,7 +42,9 @@ function isAdHidden() {
 }
 
 function isHomePage(url) {
-  return url == 'https://www.linkedin.com/feed/' || url == 'https://www.linkedin.com/'
+  if(url.includes('linkedin.com')){
+    return url.includes('/feed') || url == 'https://www.linkedin.com/' || url == 'https://www.linkedin.com/home'
+  }
 }
 
 module.exports = {

@@ -22,12 +22,9 @@ export default {
   },
   methods: {
     showFeed() {
-      browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-        var activeTab = tabs[0]
-        browser.tabs.sendMessage(activeTab.id, { text: 'unfocus from vue' })
-      })
-
-    
+      browser.runtime.sendMessage({
+        text: "unfocus from vue"
+      });
     },
     openSupport() {
       window.open('https://github.com/sponsors/grey-software')

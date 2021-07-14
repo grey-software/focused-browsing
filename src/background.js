@@ -1,14 +1,14 @@
+import { browser } from "webextension-polyfill-ts"
+
 let focusState = { twitter: true, linkedin: true }
 
 let activeURL = ''
 
 
 chrome.storage.local.set({ focusState: focusState })
-let injectedTabs = new Set()
 
 async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
   let url = tab.url
-  console.log(changeInfo)
   const isPageLoading = changeInfo && changeInfo.status == 'loading'
   if (!isPageLoading) {
     return
@@ -30,12 +30,13 @@ async function injectFocusScriptOnTabChange(tabId, changeInfo, tab) {
     return
   }
 
-  chrome.tabs.executeScript(tabId, {
+
+  browser.tabs.executeScript(tabId, {
     file: 'focus.js',
     runAt: 'document_start',
   })
 
-  chrome.tabs.executeScript(tabId, {
+  browser.tabs.executeScript(tabId, {
     code: 'document.isFocusScriptInjected = true',
     runAt: 'document_start',
   })
@@ -60,10 +61,11 @@ async function checkFocusScriptInjected(tabId) {
 }
 
 const isHomeURLLoad = (currentUrl, newUrl) => {
+  console.log("here checking homeURL")
   if (newUrl.includes('twitter.com')) {
     return newUrl == 'https://twitter.com/home' && currentUrl == 'https://twitter.com/'
   } else if (newUrl.includes('linkedin.com')) {
-    return newUrl == 'https://www.linkedin.com/feed/' && currentUrl == 'https://www.linkedin.com/'
+    return newUrl.includes('/feed') && currentUrl == 'https://www.linkedin.com/'
   }
 }
 
@@ -78,3 +80,12 @@ chrome.tabs.onActivated.addListener(async function (activeInfo) {
     }
   })
 })
+
+browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if(message.text == "unfocus from vue"){
+    browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
+      var activeTab = tabs[0]
+      browser.tabs.sendMessage(activeTab.id, { text: message.text })
+    })
+  }
+});

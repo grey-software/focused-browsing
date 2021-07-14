@@ -19,6 +19,7 @@
         "eslint": "^7.26.0",
         "laravel-mix": "^6.0.19",
         "postcss": "^8.2.15",
+        "prettier": "^2.3.2",
         "sass": "^1.32.12",
         "sass-loader": "^11.1.0",
         "sass-resources-loader": "^2.2.1",
@@ -26,9 +27,8 @@
         "vue-eslint-parser": "^7.6.0",
         "vue-loader": "^15.9.7",
         "vue-template-compiler": "^2.6.12",
-        "webpack": "^5.38.1",
-        "prettier": "^2.3.2",
         "webextension-polyfill": "^0.8.0",
-        "webextension-polyfill-ts": "^0.25.0"
+        "webextension-polyfill-ts": "^0.25.0",
+        "webpack": "^5.38.1"
     }
 }

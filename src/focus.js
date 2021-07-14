@@ -42,6 +42,7 @@ chrome.runtime.onMessage.addListener(async function (msg, sender, sendResponse) 
       sendResponse({ status: 'tab change within website confirmed' })
     }
   } else if (msg.text == 'unfocus from vue') {
+    console.log("I am here")
     toggleFocus()
   }
 })
@@ -103,15 +104,6 @@ function initFocus() {
 }
 
 ;(async function () {
-  // const browser = require("webextension-polyfill");
-  // browser.tabs.query({ active: true, currentWindow: true }).then(tabs => {
-  //   console.log("current active tab is")
-  //   var activeTab = tabs[0]
-  //   // console.log(activeTab)
-  //   // browser.tabs.sendMessage(activeTab.id, { text: 'unfocus from vue' })
-  // })
-
-
   await setUpFocusScript()
   initFocus()
 })()

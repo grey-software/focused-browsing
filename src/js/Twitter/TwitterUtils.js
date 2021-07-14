@@ -35,7 +35,9 @@ function isPanelHidden() {
 }
 
 function isHomePage(url) {
-  return url == 'https://twitter.com/home' || url == 'https://twitter.com/'
+  if(url.includes('https://twitter.com/')){
+    return url.includes('/home') || url == 'https://twitter.com/'
+  }
 }
 
 function clearPanelIntervalIds(panelIntervalIds) {
