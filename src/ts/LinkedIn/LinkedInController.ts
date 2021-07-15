@@ -3,7 +3,6 @@ import LinkedInIFrameUtils from './LinkedInIFrameUtils'
 import utils from '../utils'
 
 export default class LinkedInController {
-
   panel_elements: Node[]
   feedIntervalId: number
   panelIntervalId: number
@@ -11,11 +10,11 @@ export default class LinkedInController {
   linkedin_feed_child_node: string | Node
   linkedin_ad_child_node: string | Node
   adIntervalId: number
-  
+
   constructor() {
     this.panel_elements = []
-    this.linkedin_feed_child_node = ""
-    this.linkedin_ad_child_node = ""
+    this.linkedin_feed_child_node = ''
+    this.linkedin_ad_child_node = ''
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
@@ -31,7 +30,7 @@ export default class LinkedInController {
   }
 
   unfocus(url: string) {
-    if(LinkedInUtils.isHomePage(url)){
+    if (LinkedInUtils.isHomePage(url)) {
       clearInterval(this.feedIntervalId)
       clearInterval(this.panelIntervalId)
       clearInterval(this.adIntervalId)

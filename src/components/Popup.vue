@@ -19,7 +19,7 @@
 import CardLinksIcons from './CardLinksIcons/CardLinksIcons.vue'
 export default {
   name: 'Popup',
-  components: { CardLinksIcons }
+  components: { CardLinksIcons },
 }
 </script>
 

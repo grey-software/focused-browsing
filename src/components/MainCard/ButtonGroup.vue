@@ -14,7 +14,7 @@
 </template>
 
 <script>
-const browser = require("webextension-polyfill");
+const browser = require('webextension-polyfill')
 export default {
   name: 'ButtonGroup',
   data() {
@@ -23,8 +23,8 @@ export default {
   methods: {
     showFeed() {
       browser.runtime.sendMessage({
-        text: "unfocus from vue"
-      });
+        text: 'unfocus from vue',
+      })
     },
     openSupport() {
       window.open('https://github.com/sponsors/grey-software')

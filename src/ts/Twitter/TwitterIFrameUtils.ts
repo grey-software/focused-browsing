@@ -1,4 +1,4 @@
-import { browser } from "webextension-polyfill-ts"
+import { browser } from 'webextension-polyfill-ts'
 
 const TWITTER_FEED_FRAME_HEIGHT = '766px'
 const TWITTER_FEED_FRAME_WIDTH = '598px'

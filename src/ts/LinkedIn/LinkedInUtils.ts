@@ -42,7 +42,7 @@ function isAdHidden() {
 }
 
 function isHomePage(url: string) {
-  if(url.includes('linkedin.com')){
+  if (url.includes('linkedin.com')) {
     return url.includes('/feed') || url == 'https://www.linkedin.com/' || url == 'https://www.linkedin.com/home'
   }
 }

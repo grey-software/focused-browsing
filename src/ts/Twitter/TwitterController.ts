@@ -10,7 +10,7 @@ export default class TwitterController {
   feedIframe: HTMLIFrameElement
   constructor() {
     this.panel_elements = []
-    this.twitterFeedChildNode = ""
+    this.twitterFeedChildNode = ''
 
     this.feedIntervalId = 0
     this.panelIntervalId = 0

@@ -1,4 +1,4 @@
-import { browser } from "webextension-polyfill-ts"
+import { browser } from 'webextension-polyfill-ts'
 const LINKEDIN_FEED_FRAME_HEIGHT = '1000px'
 const LINKEDIN_FEED_FRAME_WIDTH = '549px'
 const IFRAME_ClASS = 'focus-card'
@@ -22,7 +22,7 @@ function setIframeSource(feedIframe: HTMLIFrameElement) {
   feedIframe.src = browser.runtime.getURL('www/linkedin/feed/linkedInFeed.html')
 }
 
-function injectFeedIframe(feedIframe:HTMLIFrameElement, feed:Element) {
+function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element) {
   setIframeSource(feedIframe)
   feed.append(feedIframe)
 }
