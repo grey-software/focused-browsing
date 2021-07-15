@@ -3,11 +3,11 @@ import TwitterIFrameUtils from './TwitterIFrameUtils'
 import utils from '../utils'
 
 export default class TwitterController {
-  panel_elements: any[]
+  panel_elements: Node[]
   twitterFeedChildNode: string | Node
   feedIntervalId: number
   panelIntervalId: number
-  feedIframe: any
+  feedIframe: HTMLIFrameElement
   constructor() {
     this.panel_elements = []
     this.twitterFeedChildNode = ""

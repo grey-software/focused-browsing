@@ -4,10 +4,10 @@ import utils from '../utils'
 
 export default class LinkedInController {
 
-  panel_elements: any[]
+  panel_elements: Node[]
   feedIntervalId: number
   panelIntervalId: number
-  feedIframe: any
+  feedIframe: HTMLIFrameElement
   linkedin_feed_child_node: string | Node
   linkedin_ad_child_node: string | Node
   adIntervalId: number
@@ -19,12 +19,11 @@ export default class LinkedInController {
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
-    this.feedIframe = null
+    this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
   }
 
   focus(url: string) {
     if (LinkedInUtils.isHomePage(url)) {
-      this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
       this.focusFeed()
       this.focusPanel()
       this.focusAd()

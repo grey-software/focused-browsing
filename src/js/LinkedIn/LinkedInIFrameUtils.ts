@@ -18,11 +18,11 @@ function createLinkedInIframe() {
   return feedIframe
 }
 
-function setIframeSource(feedIframe: any) {
+function setIframeSource(feedIframe: HTMLIFrameElement) {
   feedIframe.src = browser.runtime.getURL('www/linkedin/feed/linkedInFeed.html')
 }
 
-function injectFeedIframe(feedIframe:any, feed:any) {
+function injectFeedIframe(feedIframe:HTMLIFrameElement, feed:Element) {
   setIframeSource(feedIframe)
   feed.append(feedIframe)
 }

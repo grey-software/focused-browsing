@@ -19,7 +19,7 @@ function createTwitterFeedIframe() {
   return feedIframe
 }
 
-function setFeedIframeSource(feedIframe: any) {
+function setFeedIframeSource(feedIframe: HTMLIFrameElement) {
   if (document.body.style.backgroundColor == 'rgb(0, 0, 0)') {
     feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeedDark.html')
   } else if (document.body.style.backgroundColor == 'rgb(21, 32, 43)') {
@@ -29,7 +29,7 @@ function setFeedIframeSource(feedIframe: any) {
   }
 }
 
-function injectFeedIframe(feedIframe: any, feed: any) {
+function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element) {
   setFeedIframeSource(feedIframe)
   feed.append(feedIframe)
 }
