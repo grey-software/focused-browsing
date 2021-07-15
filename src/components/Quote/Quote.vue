@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { quotes } from './quotes.js'
+import { quotes } from './quotes.ts'
 export default {
   name: 'Quote',
   data() {
