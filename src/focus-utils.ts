@@ -1,14 +1,10 @@
 import { browser } from "webextension-polyfill-ts"
 
-const keyIsShortcutKey = (e: any) => {
+const keyIsShortcutKey = (e: KeyboardEvent) => {
   return e.key == 'Shift' || e.code == 'KeyB' || e.code == 'KeyF'
 }
 
-const shortcutKeysPressed = (keyPressedStates: {
-  KeyF: boolean;
-  Shift: boolean;
-  KeyB: boolean;
-}) => {
+const shortcutKeysPressed = (keyPressedStates: {[key: string]:boolean}) => {
   let allKeysPressed = true
   Object.values(keyPressedStates).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
   return allKeysPressed

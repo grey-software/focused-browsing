@@ -19,7 +19,7 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
   if (focusScriptInjected) {
     if (url != activeURL && activeURL && url && !isHomeURLLoad(activeURL, url)) {
       activeURL = url
-      browser.tabs.sendMessage(tabId, { text: 'new page loaded on website', url: activeURL }).then((response: { status?: any }) =>{
+      browser.tabs.sendMessage(tabId, { text: 'new page loaded on website', url: activeURL }).then((response: { status?: string }) =>{
         response = response || {}
         if (response.status == 'tab change within website confirmed') {
           return
@@ -69,7 +69,7 @@ const isHomeURLLoad = (currentUrl: string, newUrl: string) => {
 
 browser.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
 
-browser.tabs.onActivated.addListener(async function (activeInfo: { tabId: any }) {
+browser.tabs.onActivated.addListener(async function (activeInfo: { tabId: number }) {
   let tabId = activeInfo.tabId
 
   browser.tabs.sendMessage(
@@ -83,11 +83,11 @@ browser.tabs.onActivated.addListener(async function (activeInfo: { tabId: any })
   })
 })
 
-browser.runtime.onMessage.addListener((message: any, sender: Runtime.MessageSender) => {
+browser.runtime.onMessage.addListener((message: {text: string}, sender: Runtime.MessageSender) => {
   if (message.text == "unfocus from vue") {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs: any[]) => {
+    browser.tabs.query({ active: true, currentWindow: true }).then((tabs: Tabs.Tab[]) => {
       var activeTab = tabs[0]
-      browser.tabs.sendMessage(activeTab.id, { text: message.text })
+      browser.tabs.sendMessage(activeTab.id!, { text: message.text })
     })
   }
 })

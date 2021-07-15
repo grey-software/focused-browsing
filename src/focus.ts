@@ -6,8 +6,8 @@ import { browser, Runtime } from 'webextension-polyfill-ts'
 let currentURL = document.URL
 let currentWebsite:string = ''
 let controller: TwitterController | LinkedInController
-let focusState: {[key: string]:boolean}
-let keyPressedStates:any = { KeyF: false, Shift: false, KeyB: false }
+let focusState: {[key: string]:boolean }
+let keyPressedStates:{[key: string]:boolean} = { KeyF: false, Shift: false, KeyB: false }
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
@@ -18,7 +18,7 @@ async function toggleFocus() {
   renderFocusState(focusState[currentWebsite])
 }
 
-browser.runtime.onMessage.addListener(async (message: any, sender: Runtime.MessageSender) => {
+browser.runtime.onMessage.addListener(async (message: {text:string,url:string}, sender: Runtime.MessageSender) => {
   let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
   if (message.text == 'different tab activated') {
     if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
@@ -92,7 +92,7 @@ function toggleFocusState() {
 }
 
 const isCurrentlyFocused = () => focusState[currentWebsite]
-const setKeyPressedState = (keyCode: string, state:any) => (keyPressedStates[keyCode] = state)
+const setKeyPressedState = (keyCode: string, state:boolean) => (keyPressedStates[keyCode] = state)
 
 function initFocus() {
   if (!currentWebsite) {
