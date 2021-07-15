@@ -4,10 +4,10 @@ import FocusUtils from './focus-utils'
 import { browser, Runtime } from 'webextension-polyfill-ts'
 
 let currentURL = document.URL
-let currentWebsite = ''
+let currentWebsite:string = ''
 let controller: TwitterController | LinkedInController
-let focusState: any = null
-let keyPressedStates: any = { KeyF: false, Shift: false, KeyB: false }
+let focusState: {[key: string]:boolean}
+let keyPressedStates:any = { KeyF: false, Shift: false, KeyB: false }
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
@@ -47,7 +47,7 @@ browser.runtime.onMessage.addListener(async (message: any, sender: Runtime.Messa
   }
 })
 
-async function handleKeyEvent(e: any) {
+async function handleKeyEvent(e: KeyboardEvent) {
   if (e.type == 'keydown') {
     if (FocusUtils.keyIsShortcutKey(e)) {
       let keyCode = e.code
@@ -90,7 +90,7 @@ function toggleFocusState() {
   focusState[currentWebsite] = !focusState[currentWebsite]
 }
 
-const isCurrentlyFocused = () => {return focusState[currentWebsite]}
+const isCurrentlyFocused = () => focusState[currentWebsite]
 const setKeyPressedState = (keyCode: string, state:any) => (keyPressedStates[keyCode] = state)
 
 function initFocus() {
