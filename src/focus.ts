@@ -79,6 +79,7 @@ async function setUpFocusScript() {
 async function updateFocusState() {
   let newState = await FocusUtils.getFromLocalStorage('focusState')
   newState[currentWebsite] = focusState[currentWebsite]
+  FocusUtils.setFocusStateInLocalStorage('focusState', newState)
   focusState = newState
 }
 

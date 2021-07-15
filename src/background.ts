@@ -60,7 +60,6 @@ async function checkFocusScriptInjected(tabId: number) {
 }
 
 const isHomeURLLoad = (currentUrl: string, newUrl: string) => {
-  console.log("here checking homeURL")
   if (newUrl.includes('twitter.com')) {
     return newUrl == 'https://twitter.com/home' && currentUrl == 'https://twitter.com/'
   } else if (newUrl.includes('linkedin.com')) {

@@ -19,6 +19,7 @@ export default class TwitterController {
 
   focus(url: string) {
     // the panel shows up on every page
+
     this.focusPanel()
     if (TwitterUtils.isHomePage(url)) {
       this.focusFeed()
@@ -26,8 +27,8 @@ export default class TwitterController {
   }
 
   unfocus(url: string) {
-    clearInterval(this.feedIntervalId)
-    clearInterval(this.panelIntervalId)
+    window.clearInterval(this.feedIntervalId)
+    window.clearInterval(this.panelIntervalId)
     utils.removeFocusedBrowsingCards()
     this.setPanelVisibility(true)
     if (TwitterUtils.isHomePage(url)) {
@@ -37,14 +38,14 @@ export default class TwitterController {
 
   focusPanel() {
     if (this.panelIntervalId) {
-      clearInterval(this.panelIntervalId)
+      window.clearInterval(this.panelIntervalId)
     }
     this.panelIntervalId = window.setInterval(this.tryBlockingPanel.bind(this), 250)
   }
 
   focusFeed() {
     if (this.feedIntervalId) {
-      clearInterval(this.feedIntervalId)
+      window.clearInterval(this.feedIntervalId)
     }
     this.feedIntervalId = window.setInterval(this.tryBlockingFeed.bind(this), 250)
   }
