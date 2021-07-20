@@ -1,0 +1,19 @@
+name: Feature Request
+description: Tell us about a feature you'd like to have in Focused Browsing
+title: "[Feature Request]: "
+assignees:
+  - ArsalaBangash
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this feature request!
+  - type: textarea
+    id: request
+    attributes:
+      label: Your feature request
+      description: Tell us which feature you'd like to have in Focused Browsing
+      placeholder: Tell us what you'd like to see and why!
+      value: "A bug happened!"
+    validations:
+      required: true
