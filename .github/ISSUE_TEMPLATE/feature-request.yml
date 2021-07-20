@@ -14,6 +14,6 @@ body:
       label: Your feature request
       description: Tell us which feature you'd like to have in Focused Browsing
       placeholder: Tell us what you'd like to see and why!
-      value: "A bug happened!"
+      value: ""
     validations:
       required: true
