@@ -8,7 +8,6 @@
     "/extension-build/css/twitter.css": "/extension-build/css/twitter.css",
     "/extension-build/css/linkedin.css": "/extension-build/css/linkedin.css",
     "/extension-build/css/inter.css": "/extension-build/css/inter.css",
-    "/extension-build/css/popup.css": "/extension-build/css/popup.css",
     "/extension-build/css/twitter-dark.css": "/extension-build/css/twitter-dark.css",
     "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
     "/extension-build/manifest.json": "/extension-build/manifest.json",
@@ -19,7 +18,6 @@
     "/extension-build/icons/logox48.png": "/extension-build/icons/logox48.png",
     "/extension-build/css/font-files/Inter-Black.woff": "/extension-build/css/font-files/Inter-Black.woff",
     "/extension-build/css/font-files/Inter-Black.woff2": "/extension-build/css/font-files/Inter-Black.woff2",
-    "/extension-build/css/font-files/Inter-BlackItalic.woff": "/extension-build/css/font-files/Inter-BlackItalic.woff",
     "/extension-build/css/font-files/Inter-BlackItalic.woff2": "/extension-build/css/font-files/Inter-BlackItalic.woff2",
     "/extension-build/css/font-files/Inter-Bold.woff": "/extension-build/css/font-files/Inter-Bold.woff",
     "/extension-build/css/font-files/Inter-Bold.woff2": "/extension-build/css/font-files/Inter-Bold.woff2",
@@ -55,5 +53,6 @@
     "/extension-build/css/font-files/Inter-ThinItalic.woff2": "/extension-build/css/font-files/Inter-ThinItalic.woff2",
     "/extension-build/css/font-files/Inter-italic.var.woff2": "/extension-build/css/font-files/Inter-italic.var.woff2",
     "/extension-build/css/font-files/Inter-roman.var.woff2": "/extension-build/css/font-files/Inter-roman.var.woff2",
-    "/extension-build/css/font-files/Inter.var.woff2": "/extension-build/css/font-files/Inter.var.woff2"
+    "/extension-build/css/font-files/Inter.var.woff2": "/extension-build/css/font-files/Inter.var.woff2",
+    "/extension-build/css/popup.css": "/extension-build/css/popup.css"
 }
