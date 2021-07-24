@@ -4,7 +4,7 @@ const TWITTER_FEED_FRAME_HEIGHT = '766px'
 const TWITTER_FEED_FRAME_WIDTH = '598px'
 const IFRAME_ClASS = 'focus-card'
 
-function createTwitterFeedIframe() {
+function createTwitterFeedIframe(): HTMLIFrameElement {
   let feedIframe = document.createElement('iframe')
 
   feedIframe.width = TWITTER_FEED_FRAME_WIDTH
@@ -19,7 +19,7 @@ function createTwitterFeedIframe() {
   return feedIframe
 }
 
-function setFeedIframeSource(feedIframe: HTMLIFrameElement) {
+function setFeedIframeSource(feedIframe: HTMLIFrameElement): void {
   if (document.body.style.backgroundColor == 'rgb(0, 0, 0)') {
     feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeedDark.html')
   } else if (document.body.style.backgroundColor == 'rgb(21, 32, 43)') {
@@ -29,7 +29,7 @@ function setFeedIframeSource(feedIframe: HTMLIFrameElement) {
   }
 }
 
-function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element) {
+function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
   setFeedIframeSource(feedIframe)
   feed.append(feedIframe)
 }

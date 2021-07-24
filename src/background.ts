@@ -1,4 +1,4 @@
-import { browser, Runtime, Tabs } from 'webextension-polyfill-ts'
+import { Action, browser, Runtime, Tabs } from 'webextension-polyfill-ts'
 
 let focusState = { twitter: true, linkedin: true }
 
@@ -85,3 +85,4 @@ browser.runtime.onMessage.addListener((message: { text: string }, sender: Runtim
     })
   }
 })
+

@@ -3,7 +3,7 @@ const LINKEDIN_FEED_FRAME_HEIGHT = '1000px'
 const LINKEDIN_FEED_FRAME_WIDTH = '549px'
 const IFRAME_ClASS = 'focus-card'
 
-function createLinkedInIframe() {
+function createLinkedInIframe(): HTMLIFrameElement {
   let feedIframe = document.createElement('iframe')
 
   feedIframe.width = LINKEDIN_FEED_FRAME_WIDTH
@@ -18,11 +18,11 @@ function createLinkedInIframe() {
   return feedIframe
 }
 
-function setIframeSource(feedIframe: HTMLIFrameElement) {
+function setIframeSource(feedIframe: HTMLIFrameElement): void {
   feedIframe.src = browser.runtime.getURL('www/linkedin/feed/linkedInFeed.html')
 }
 
-function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element) {
+function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
   setIframeSource(feedIframe)
   feed.append(feedIframe)
 }

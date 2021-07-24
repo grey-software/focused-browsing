@@ -104,7 +104,7 @@ function initFocus() {
   }
 }
 
-;(async function () {
+; (async function () {
   await setUpFocusScript()
   initFocus()
 })()
