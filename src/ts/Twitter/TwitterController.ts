@@ -65,9 +65,9 @@ export default class TwitterController {
     let panel = TwitterUtils.getTwitterPanel()
     if (!visibile) {
       let length = panel.children.length
-
+      console.log("length of panel is: " + length)
       let current_panel_elements = []
-      while (length != 0) {
+      while (length != 1) {
         var currentLastChild = panel.children[length - 1]
         current_panel_elements.push(currentLastChild)
         panel.removeChild(currentLastChild)
@@ -91,7 +91,7 @@ export default class TwitterController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingPanel() {
@@ -104,6 +104,6 @@ export default class TwitterController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 }

@@ -89,7 +89,7 @@ export default class LinkedInController {
       let length = panel.children.length
 
       let current_panel_elements = []
-      while (length != 0) {
+      while (length != 1) {
         var currentLastChild = panel.children[length - 1]
         current_panel_elements.push(currentLastChild)
         panel.removeChild(currentLastChild)
@@ -113,7 +113,7 @@ export default class LinkedInController {
         this.setAdVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingFeed() {
@@ -125,7 +125,7 @@ export default class LinkedInController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingPanel() {
@@ -137,6 +137,6 @@ export default class LinkedInController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 }
