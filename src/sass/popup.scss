@@ -28,35 +28,11 @@ $white: rgba(255, 255, 255, 1);
 $white-2: rgba(254, 254, 254, 1);
 
 // Typographies
-@mixin inter-12-bold {
-  font-family: 'Inter';
-  font-size: 12px;
-  font-weight: 700;
-  line-height: 18px;
-}
-@mixin inter-12-medium {
-  font-family: 'Inter';
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-}
 @mixin inter-12-semi-bold {
   font-family: 'Inter';
   font-size: 12px;
   font-weight: 600;
   line-height: normal;
-}
-@mixin inter-12-semi-bold-line18 {
-  font-family: 'Inter';
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 18px;
-}
-@mixin inter-13-medium {
-  font-family: 'Inter';
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 20px;
 }
 @mixin inter-14-bold {
   font-family: 'Inter';
@@ -64,102 +40,14 @@ $white-2: rgba(254, 254, 254, 1);
   font-weight: 700;
   line-height: 18px;
 }
-@mixin inter-14-bold-line14 {
-  font-family: 'Inter';
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 14px;
-}
-@mixin inter-14-medium {
-  font-family: 'Inter';
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 21px;
-}
-@mixin inter-14-medium-line14 {
-  font-family: 'Inter';
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 14px;
-}
+
 @mixin inter-14-medium-line18 {
   font-family: 'Inter';
   font-size: 14px;
   font-weight: 500;
   line-height: 18px;
 }
-@mixin inter-14-regular {
-  font-family: 'Inter';
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 21px;
-}
-@mixin inter-14-semi-bold {
-  font-family: 'Inter';
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 21px;
-}
-@mixin inter-14-semi-bold-line14 {
-  font-family: 'Inter';
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 14px;
-}
-@mixin inter-15-extra-bold {
-  font-family: 'Inter';
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 19px;
-}
-@mixin inter-16-regular {
-  font-family: 'Inter';
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 24px;
-}
-@mixin inter-18-medium {
-  font-family: 'Inter';
-  font-size: 18px;
-  font-weight: 500;
-  line-height: 27px;
-}
-@mixin inter-18-regular {
-  font-family: 'Inter';
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 27px;
-}
-@mixin inter-18-semi-bold {
-  font-family: 'Inter';
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 27px;
-}
-@mixin inter-32-medium {
-  font-family: 'Inter';
-  font-size: 32px;
-  font-weight: 500;
-  line-height: 54px;
-}
-@mixin roboto-14-bold {
-  font-family: 'Roboto';
-  font-size: 14px;
-  font-weight: 700;
-  line-height: normal;
-}
-@mixin roboto-14-medium {
-  font-family: 'Roboto';
-  font-size: 14px;
-  font-weight: 500;
-  line-height: normal;
-}
-@mixin subtitle2-mobile {
-  font-family: 'Inter';
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 27px;
-}
+
 
 .popup-container {
   background-color: $white;
@@ -177,6 +65,7 @@ $white-2: rgba(254, 254, 254, 1);
   display: flex;
   align-items: flex-start;
 }
+
 .title {
   color: $black-1;
   letter-spacing: -0.16px;
@@ -197,38 +86,45 @@ $white-2: rgba(254, 254, 254, 1);
   color: $black-1;
   @include inter-14-medium-line18;
 }
+
 .press-shift-f-b-to-show-or-hide-the-emphasis-1 {
   color: $primary-1;
   letter-spacing: -0.21px;
   @include inter-14-bold;
 }
+
 .vector-3 {
   width: 350px;
   margin-bottom: 28px;
 }
+
 .icon-links-container {
   margin-left: 70px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+
 .icon-info {
   margin-right: 48px;
   padding: 2px;
   display: flex;
   align-items: center;
 }
+
 .vector {
   flex: 1;
   align-self: stretch;
   object-fit: cover;
 }
+
 .icon-feedback {
   margin-right: 48px;
   padding: 2px 4px 2px 3px;
   display: flex;
   align-items: center;
 }
+
 .link-logo {
   padding: 1.66px 21.51px 0.65px;
   display: flex;
@@ -242,9 +138,11 @@ $white-2: rgba(254, 254, 254, 1);
   display: flex;
   align-items: flex-start;
 }
+
 .group-two {
   width: 10.6px;
   height: 22.69px;
+
   &:not(:last-of-type) {
     margin-right: 1.79px;
   }

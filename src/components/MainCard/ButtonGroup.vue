@@ -14,6 +14,7 @@
 </template>
 
 <script>
+const browser = require('webextension-polyfill')
 export default {
   name: 'ButtonGroup',
   data() {
@@ -21,9 +22,8 @@ export default {
   },
   methods: {
     showFeed() {
-      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-        var activeTab = tabs[0]
-        chrome.tabs.sendMessage(activeTab.id, { text: 'unfocus from vue' })
+      browser.runtime.sendMessage({
+        text: 'unfocus from vue',
       })
     },
     openSupport() {
