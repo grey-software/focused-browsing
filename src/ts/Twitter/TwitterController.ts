@@ -65,7 +65,6 @@ export default class TwitterController {
     let panel = TwitterUtils.getTwitterPanel()
     if (!visibile) {
       let length = panel.children.length
-      console.log("length of panel is: " + length)
       let current_panel_elements = []
       while (length != 1) {
         var currentLastChild = panel.children[length - 1]
