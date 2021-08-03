@@ -6,7 +6,9 @@
         "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --env=production --config=node_modules/laravel-mix/setup/webpack.config.js",
         "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js",
         "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch",
-        "generate-release-zip": "$npm_execpath run build;node generate-release-zip.js"
+        "generate-release-zip": "$npm_execpath run build;node generate-release-zip.js",
+        "cypress:open": "cypress open",
+        "test": "cypress run --spec cypress/integration/sample_spec.js"
     },
     "dependencies": {
         "zip-folder": "^1.0.0"
@@ -16,6 +18,7 @@
         "@babel/preset-env": "^7.14.4",
         "babel-loader": "^8.2.2",
         "cross-env": "^7.0.3",
+        "cypress": "^8.1.0",
         "eslint": "^7.26.0",
         "laravel-mix": "^6.0.19",
         "postcss": "^8.2.15",
