@@ -28,6 +28,27 @@ function isFeedHidden(): boolean {
     return false
 }
 
+
+function hasSuggestionsLoaded(): boolean {
+    try {
+        let suggestions = getYoutubeSuggestions()
+        if (suggestions) {
+            return suggestions.children.length != 0
+        }
+        return false
+    } catch (err) {
+        return false
+    }
+}
+
+function areSuggestionsHidden(): boolean {
+    let suggestions = getYoutubeSuggestions()
+    if (suggestions) {
+        return suggestions.children.length == 1
+    }
+    return false
+}
+
 function isHomePage(url: string): boolean {
     return (url == "https://www.youtube.com/")
 }
@@ -39,6 +60,9 @@ function isVideoPage(url: string): boolean {
     return false
 }
 
+export default {
+    getYouTubeFeed, getYoutubeSuggestions, hasFeedLoaded, isFeedHidden, hasSuggestionsLoaded, areSuggestionsHidden, isHomePage, isVideoPage
+}
 
 
 
