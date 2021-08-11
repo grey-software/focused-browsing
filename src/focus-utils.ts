@@ -12,7 +12,7 @@ const shortcutKeysPressed = (keyPressedStates: KeyPressedStates) => {
 }
 
 const isURLValid = (url: string) => {
-  return url.includes('twitter.com') || url.includes('linkedin.com')
+  return url.includes('twitter.com') || url.includes('linkedin.com') || url.includes('youtube.com')
 }
 
 async function getFromLocalStorage(name: string) {

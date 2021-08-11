@@ -1,6 +1,6 @@
 import { Action, browser, Runtime, Tabs } from 'webextension-polyfill-ts'
 
-let focusState = { twitter: true, linkedin: true }
+let focusState = { twitter: true, linkedin: true, youtube: true }
 
 let activeURL: string | undefined = ''
 

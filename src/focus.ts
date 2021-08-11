@@ -1,12 +1,13 @@
 import LinkedInController from './ts/LinkedIn/LinkedInController'
 import TwitterController from './ts/Twitter/TwitterController'
+import YoutubeController from './ts/Youtube/YouTubeController'
 import FocusUtils from './focus-utils'
 import { browser, Runtime } from 'webextension-polyfill-ts'
 import { FocusState, KeyPressedStates } from './types'
 
 let currentURL = document.URL
 let currentWebsite: string = ''
-let controller: TwitterController | LinkedInController
+let controller: TwitterController | LinkedInController | YoutubeController
 let focusState: FocusState
 let keyPressedStates: KeyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
@@ -73,6 +74,9 @@ async function setUpFocusScript() {
   } else if (currentURL.includes('linkedin.com')) {
     controller = new LinkedInController()
     currentWebsite = 'linkedin'
+  } else if (currentURL.includes('youtube.com')) {
+    controller = new YoutubeController()
+    currentWebsite = 'youtube'
   }
   focusState = await FocusUtils.getFromLocalStorage('focusState')
 }

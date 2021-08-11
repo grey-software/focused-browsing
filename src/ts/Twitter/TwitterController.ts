@@ -77,7 +77,7 @@ export default class TwitterController {
       for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
         panel.append(this.panel_elements[i])
       }
-      utils.clearPanelElements(this.panel_elements)
+      utils.clearElements(this.panel_elements)
     }
   }
 

@@ -6,12 +6,16 @@ function getYoutubeSuggestions(): Element | null {
     return document.getElementById('secondary-inner')
 }
 
+function getYoutubeCommentsOnVideo(): Element | null {
+    return document.getElementById('sections')
+}
+
 
 function hasFeedLoaded(): boolean {
     try {
         let youtubeFeed = getYouTubeFeed()
         if (youtubeFeed) {
-            return youtubeFeed.children.length == 1
+            return youtubeFeed.children.length != 0
         }
     } catch (err) {
         return false
@@ -49,8 +53,33 @@ function areSuggestionsHidden(): boolean {
     return false
 }
 
+
+function hasCommentsLoaded(): boolean {
+    try {
+        let youtubeFeed = getYouTubeFeed()
+        if (youtubeFeed) {
+            return youtubeFeed.children.length != 0
+        }
+    } catch (err) {
+        return false
+    }
+
+    return false
+}
+
+function areCommentsHidden(): boolean {
+    let comments = getYoutubeCommentsOnVideo()
+    if (comments) {
+        return comments.children.length == 0
+    }
+    return false
+}
+
+
+
+
 function isHomePage(url: string): boolean {
-    return (url == "https://www.youtube.com/")
+    return url == "https://www.youtube.com/"
 }
 
 function isVideoPage(url: string): boolean {
@@ -61,7 +90,7 @@ function isVideoPage(url: string): boolean {
 }
 
 export default {
-    getYouTubeFeed, getYoutubeSuggestions, hasFeedLoaded, isFeedHidden, hasSuggestionsLoaded, areSuggestionsHidden, isHomePage, isVideoPage
+    getYouTubeFeed, getYoutubeSuggestions, getYoutubeCommentsOnVideo, hasFeedLoaded, isFeedHidden, hasSuggestionsLoaded, areSuggestionsHidden, isHomePage, isVideoPage, hasCommentsLoaded, areCommentsHidden
 }
 
 
