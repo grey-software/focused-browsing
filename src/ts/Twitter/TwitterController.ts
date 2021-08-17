@@ -30,9 +30,13 @@ export default class TwitterController {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.panelIntervalId)
     utils.removeFocusedBrowsingCards()
-    this.setPanelVisibility(true)
-    if (TwitterUtils.isHomePage(url)) {
-      this.setFeedVisibility(true)
+    try {
+      if (TwitterUtils.isHomePage(url)) {
+        this.setFeedVisibility(true)
+      }
+      this.setPanelVisibility(true)
+    } catch (err) {
+
     }
   }
 
