@@ -21,11 +21,11 @@ function createTwitterFeedIframe(): HTMLIFrameElement {
 
 function setFeedIframeSource(feedIframe: HTMLIFrameElement): void {
   if (document.body.style.backgroundColor == 'rgb(0, 0, 0)') {
-    feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeedDark.html')
+    feedIframe.src = browser.runtime.getURL('www/twitter/twitterFeedDark.html')
   } else if (document.body.style.backgroundColor == 'rgb(21, 32, 43)') {
-    feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeedDim.html')
+    feedIframe.src = browser.runtime.getURL('www/twitter/twitterFeedDim.html')
   } else {
-    feedIframe.src = browser.runtime.getURL('www/twitter/feed/twitterFeed.html')
+    feedIframe.src = browser.runtime.getURL('www/twitter/twitterFeed.html')
   }
 }
 

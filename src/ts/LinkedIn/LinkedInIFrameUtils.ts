@@ -19,7 +19,7 @@ function createLinkedInIframe(): HTMLIFrameElement {
 }
 
 function setIframeSource(feedIframe: HTMLIFrameElement): void {
-  feedIframe.src = browser.runtime.getURL('www/linkedIn/feed/linkedInFeed.html')
+  feedIframe.src = browser.runtime.getURL('www/linkedIn/linkedInFeed.html')
 }
 
 function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {

@@ -1,6 +1,6 @@
 import { browser } from 'webextension-polyfill-ts'
-const YOUTUBE_FEED_FRAME_HEIGHT = '1000px'
-const YOUTUBE_FEED_FRAME_WIDTH = '549px'
+const YOUTUBE_FEED_FRAME_HEIGHT = '100%'
+const YOUTUBE_FEED_FRAME_WIDTH = '100%'
 const IFRAME_ClASS = 'focus-card'
 
 function createYouTubeFeedIframe(): HTMLIFrameElement {
@@ -11,7 +11,7 @@ function createYouTubeFeedIframe(): HTMLIFrameElement {
     feedIframe.className = IFRAME_ClASS
 
     Object.assign(feedIframe.style, {
-        position: 'inherit',
+        position: 'fixed',
         border: 'none',
     })
 
@@ -19,7 +19,7 @@ function createYouTubeFeedIframe(): HTMLIFrameElement {
 }
 
 function setIframeSource(feedIframe: HTMLIFrameElement): void {
-    feedIframe.src = browser.runtime.getURL('www/linkedIn/feed/linkedInFeed.html')
+    feedIframe.src = browser.runtime.getURL('www/youtube/youtubeFeed.html')
 }
 
 function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
