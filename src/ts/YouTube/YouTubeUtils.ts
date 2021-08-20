@@ -7,7 +7,7 @@ function getYoutubeSuggestions(): Element | null {
 }
 
 function getYoutubeCommentsOnVideo(): Element | null {
-    return document.getElementById('sections')
+    return document.getElementById('comments')
 }
 
 

@@ -32,13 +32,13 @@ export default class YouTubeController {
     }
 
     unfocus(url: string) {
-        utils.removeFocusedBrowsingCards()
         if (YouTubeUtils.isHomePage(url)) {
+            utils.removeFocusedBrowsingCards()
             this.setFeedVisibility(true)
             window.clearInterval(this.feedIntervalId)
         }
 
-        if (YouTubeUtils.isVideoPage(url)) {
+        else if (YouTubeUtils.isVideoPage(url)) {
             this.setSuggestionsVisibility(true)
             this.setCommentsVisbility(true)
             window.clearInterval(this.suggestionsIntervalId)
