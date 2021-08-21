@@ -1,6 +1,5 @@
 @import './inter.scss';
 
-// Colors
 $black: rgba(19, 19, 19, 1);
 $black-1: rgba(0, 0, 0, 1);
 $black-2: rgba(20, 20, 20, 1);
@@ -27,7 +26,6 @@ $white: rgba(255, 255, 255, 1);
 $white-2: rgba(254, 254, 254, 1);
 
 // Typographies
-
 @mixin inter-14-bold-line14 {
     font-family: 'Inter';
     font-size: 14px;
@@ -91,7 +89,7 @@ $white-2: rgba(254, 254, 254, 1);
 
 .focus-container {
     width: 470px;
-    background-color: $white;
+    background-color: $black-3;
     border-radius: 16px;
     padding: 40px 52px;
     display: flex;
@@ -111,7 +109,7 @@ $white-2: rgba(254, 254, 254, 1);
 .quote {
     padding-right: 4%;
     padding-left: 4%;
-    color: $gray;
+    color: $light-steel-blue;
     display: flex;
     text-align: center;
     margin-bottom: 8px;
@@ -120,19 +118,19 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .quoter {
-    color: $black;
+    color: $light-steel-blue;
     letter-spacing: -0.21px;
     @include inter-14-medium;
 }
 
 .card-main {
     height: calc(63.44% - 80px);
-    background-color: $white;
+    background-color: $dark-slate-gray-2;
     margin-bottom: 40px;
     overflow: hidden;
     border-radius: 16px;
     padding: 40px 48px;
-    box-shadow: 0 4px 12px 0 $transparent-midnight-blue;
+    box-shadow: 0 4px 12px 0 $transparent-black-2;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -176,7 +174,7 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .heading {
-    color: $primary-1;
+    color: $light-steel-blue;
     letter-spacing: -0.27px;
     @include inter-18-medium;
 }
@@ -184,7 +182,7 @@ $white-2: rgba(254, 254, 254, 1);
 .card-subtitle {
     height: 60px;
     width: 348px;
-    color: $gray;
+    color: $light-steel-blue;
     display: flex;
     text-align: center;
     letter-spacing: -0.21px;
@@ -198,7 +196,7 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .button-support {
-    background-color: $primary-1;
+    background-color: $light-steel-blue;
     margin-bottom: 16px;
     overflow: hidden;
     border-radius: 8px;
@@ -210,7 +208,7 @@ $white-2: rgba(254, 254, 254, 1);
 }
 
 .support-this-project {
-    color: $white-2;
+    color: $black-3;
     letter-spacing: -0.21px;
     @include inter-14-semi-bold;
 }
@@ -223,35 +221,35 @@ $white-2: rgba(254, 254, 254, 1);
     align-items: center;
     height: 21px;
     width: 70px;
-    border: 1px solid $primary-1;
+    border: 1px solid $light-steel-blue;
 }
 
 .show-feed {
-    color: $primary-1;
+    color: $light-steel-blue;
     letter-spacing: -0.21px;
     @include inter-14-semi-bold;
 }
 
 .shortcut-container {
-    margin-top: 8px;
+    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .shortcut-caption {
-    color: $gray;
+    color: $light-steel-blue;
     @include inter-14-semi-bold-line14;
 }
 
 .shortcut-caption-emphasis-1 {
-    color: $gray;
+    color: $light-steel-blue;
     letter-spacing: -0.21px;
     @include inter-14-bold-line14;
 }
 
 .shortcut-caption-emphasis-2 {
-    color: $gray;
+    color: $light-steel-blue;
     letter-spacing: -0.21px;
     @include inter-14-medium-line14;
 }

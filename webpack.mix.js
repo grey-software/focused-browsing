@@ -13,6 +13,7 @@ mix
   .sass('src/sass/twitter-dim.scss', 'extension-build/css')
   .sass('src/sass/twitter-dark.scss', 'extension-build/css')
   .sass('src/sass/youtube.scss', 'extension-build/css')
+  .sass('src/sass/youtube-dark.scss', 'extension-build/css')
   .sass('src/sass/popup.scss', 'extension-build/css')
   .ts('src/ts/LinkedIn/LinkedInController.ts', 'extension-build/js/LinkedIn')
   .ts('src/focus.ts', 'extension-build')
