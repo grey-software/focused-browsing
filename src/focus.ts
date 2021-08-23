@@ -23,6 +23,7 @@ async function toggleFocus() {
 browser.runtime.onMessage.addListener(async (message: { text: string; url: string }, sender: Runtime.MessageSender) => {
   let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
   if (message.text == 'different tab activated') {
+    console.log("I am here on tab change")
     if (newFocusState[currentWebsite] == focusState[currentWebsite]) {
       // state of web page didn't change
       return
@@ -38,6 +39,8 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
     }
     return Promise.resolve({ status: 'tab change confirmed' })
   } else if (message.text == 'new page loaded on website') {
+    console.log("i AM HERE ON load page change")
+    console.log("url on new load is " + message.url)
     if (FocusUtils.isURLValid(message.url)) {
       currentURL = message.url
       focusState = newFocusState
@@ -104,7 +107,10 @@ function initFocus() {
     return
   }
   if (isCurrentlyFocused()) {
+    console.log("I am going to focus here")
     controller.focus(currentURL)
+  } else if (currentURL.includes("youtube.com/watch")) {
+    controller.unfocus(currentURL)
   }
 }
 

@@ -10,6 +10,7 @@ export default class YouTubeController {
     suggestion_elements: Node[]
     comment_elements: Node[]
     commentIntervalId: number
+
     constructor() {
         this.suggestion_elements = []
         this.comment_elements = []
@@ -19,11 +20,30 @@ export default class YouTubeController {
         this.suggestionsIntervalId = 0
         this.commentIntervalId = 0
         this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
+
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            console.log("changed theme")
+            let currentUrl = document.URL
+            if (YouTubeUtils.isHomePage(currentUrl)) {
+                let feed = YouTubeUtils.getYouTubeFeed()
+                if (feed) {
+                    if (YouTubeUtils.isFeedHidden()) {
+                        utils.removeFocusedBrowsingCards()
+                        YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed)
+                    }
+                }
+            }
+        });
     }
 
     focus(url: string) {
         // the panel shows up on every page
+        window.clearInterval(this.feedIntervalId)
+        window.clearInterval(this.suggestionsIntervalId)
+        window.clearInterval(this.commentIntervalId)
         if (YouTubeUtils.isHomePage(url)) {
+            console.log("i am here focusing page")
             this.focusFeed()
         } else if (YouTubeUtils.isVideoPage(url)) {
             this.focusSuggestions()
@@ -32,16 +52,17 @@ export default class YouTubeController {
     }
 
     unfocus(url: string) {
+        window.clearInterval(this.feedIntervalId)
+        window.clearInterval(this.suggestionsIntervalId)
+        window.clearInterval(this.commentIntervalId)
         if (YouTubeUtils.isHomePage(url)) {
             utils.removeFocusedBrowsingCards()
             this.setFeedVisibility(true)
-            window.clearInterval(this.feedIntervalId)
         }
 
         else if (YouTubeUtils.isVideoPage(url)) {
             this.setSuggestionsVisibility(true)
             this.setCommentsVisbility(true)
-            window.clearInterval(this.suggestionsIntervalId)
         }
 
     }
@@ -69,8 +90,11 @@ export default class YouTubeController {
 
     setFeedVisibility(visible: boolean) {
         let feed = YouTubeUtils.getYouTubeFeed()
+        console.log("feed is")
+        console.log(feed)
         if (feed) {
             if (!visible) {
+                console.log("I am here now")
                 this.YouTubeFeedChildNode = feed.children[0]
                 feed.removeChild(feed.childNodes[0])
                 YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed)
@@ -94,6 +118,7 @@ export default class YouTubeController {
                 }
                 this.suggestion_elements = current_suggestion_elements
             } else {
+                console.log("I am here in setting suggestions visibility to true")
                 for (let i = this.suggestion_elements.length - 1; i >= 0; i -= 1) {
                     suggestions.append(this.suggestion_elements[i])
                 }
@@ -117,6 +142,7 @@ export default class YouTubeController {
                 }
                 this.comment_elements = current_comment_elements
             } else {
+                console.log("I am here in setting comments visibility to true")
                 for (let i = this.comment_elements.length - 1; i >= 0; i -= 1) {
                     comments.append(this.comment_elements[i])
                 }
@@ -128,6 +154,7 @@ export default class YouTubeController {
     tryBlockingFeed() {
         try {
             if (YouTubeUtils.isFeedHidden()) {
+                console.log("Feed is hidden")
                 return
             }
             if (YouTubeUtils.hasFeedLoaded()) {
@@ -144,6 +171,7 @@ export default class YouTubeController {
             }
 
             if (YouTubeUtils.hasSuggestionsLoaded()) {
+                console.log("hiding suggestions")
                 this.setSuggestionsVisibility(false)
                 return
             }
@@ -157,6 +185,7 @@ export default class YouTubeController {
             }
 
             if (YouTubeUtils.hasCommentsLoaded()) {
+                console.log("hiding comments")
                 this.setCommentsVisbility(false)
                 return
             }
