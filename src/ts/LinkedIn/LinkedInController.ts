@@ -1,8 +1,10 @@
 import LinkedInUtils from './LinkedInUtils'
 import LinkedInIFrameUtils from './LinkedInIFrameUtils'
 import utils from '../utils'
+import Controller from '../controller'
 
-export default class LinkedInController {
+
+export default class LinkedInController extends Controller {
   panel_elements: Node[]
   feedIntervalId: number
   panelIntervalId: number
@@ -12,6 +14,7 @@ export default class LinkedInController {
   adIntervalId: number
 
   constructor() {
+    super()
     this.panel_elements = []
     this.linkedin_feed_child_node = ''
     this.linkedin_ad_child_node = ''

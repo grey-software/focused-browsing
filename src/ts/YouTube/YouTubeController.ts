@@ -1,8 +1,9 @@
 import YouTubeUtils from './YouTubeUtils'
 import YouTubeIFrameUtils from './YouTubeIFrameUtils'
 import utils from '../utils'
+import Controller from '../controller'
 
-export default class YouTubeController {
+export default class YouTubeController extends Controller {
     YouTubeFeedChildNode: string | Node
     feedIntervalId: number
     suggestionsIntervalId: number
@@ -12,6 +13,7 @@ export default class YouTubeController {
     commentIntervalId: number
 
     constructor() {
+        super()
         this.suggestion_elements = []
         this.comment_elements = []
         this.YouTubeFeedChildNode = ''

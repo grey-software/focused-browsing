@@ -1,14 +1,16 @@
 import TwitterUtils from './TwitterUtils'
 import TwitterIFrameUtils from './TwitterIFrameUtils'
 import utils from '../utils'
+import Controller from '../controller'
 
-export default class TwitterController {
+export default class TwitterController extends Controller {
   panel_elements: Node[]
   twitterFeedChildNode: string | Node
   feedIntervalId: number
   panelIntervalId: number
   feedIframe: HTMLIFrameElement
   constructor() {
+    super()
     this.panel_elements = []
     this.twitterFeedChildNode = ''
 

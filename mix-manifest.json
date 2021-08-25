@@ -1,7 +1,5 @@
 {
-    "/extension-build/js/LinkedIn/LinkedInController.js": "/extension-build/js/LinkedIn/LinkedInController.js",
     "/extension-build/focus.js": "/extension-build/focus.js",
-    "/extension-build/js/Twitter/TwitterController.js": "/extension-build/js/Twitter/TwitterController.js",
     "/extension-build/background.js": "/extension-build/background.js",
     "/extension-build/js/feed-card-controller.js": "/extension-build/js/feed-card-controller.js",
     "/extension-build/js/popup-card-controller.js": "/extension-build/js/popup-card-controller.js",
