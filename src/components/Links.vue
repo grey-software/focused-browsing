@@ -1,29 +1,26 @@
 <template>
   <div class="icon-links-container">
-    <a href="" @click="openFocusedBrowsing" class="link-logo">
+    <a href="https://org.grey.software/focused-browsing/" target="_blank" class="link-logo">
       <div class="icon-info">
         <img alt="" class="vector" src="/html/assets/icons/icon-info.svg" />
       </div>
     </a>
-    <a href="" @click="openFeedback" class="link-logo">
+    <a href="https://github.com/grey-software/focused-browsing/issues/new/choose" target="_blank" class="link-logo">
       <div class="icon-feedback">
         <img alt="" class="vector" src="/html/assets/icons/icon-feedback.svg" />
       </div>
     </a>
-    <a href="" @click="openGrey" class="link-logo"
-      ><div class="icon-logo">
-        <img alt="" class="group-two" src="/html/assets/icons/grey-left.svg" /><img
-          alt=""
-          class="group-two"
-          src="/html/assets/icons/grey-right.svg"
-        /></div
-    ></a>
+    <a href="https://org.grey.software/focused-browsing/" target="_blank" class="link-logo">
+      <div class="icon-logo">
+        <img alt="" class="vector" src="/html/assets/icons/icon-logo.svg" />
+      </div>
+    </a>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CardTextLinks',
+  name: 'Links',
   data() {
     return {}
   },

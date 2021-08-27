@@ -16,10 +16,10 @@
 </template>
 
 <script>
-import CardLinksIcons from './CardLinksIcons/CardLinksIcons.vue'
+import Links from './Links.vue'
 export default {
   name: 'Popup',
-  components: { CardLinksIcons },
+  components: { Links },
 }
 </script>
 

@@ -1,6 +1,6 @@
 import { browser } from 'webextension-polyfill-ts'
 const LINKEDIN_FEED_FRAME_HEIGHT = '1000px'
-const LINKEDIN_FEED_FRAME_WIDTH = '549px'
+const LINKEDIN_FEED_FRAME_WIDTH = '100%'
 const IFRAME_ClASS = 'focus-card'
 
 function createLinkedInIframe(): HTMLIFrameElement {
