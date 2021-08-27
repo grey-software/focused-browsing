@@ -33,15 +33,24 @@ export default class FocusStateManager {
         browser.storage.local.set(obj)
     }
 
+
+
     toggleFocusState(currentWebsite: string) {
         this.focusState[currentWebsite] = !this.focusState[currentWebsite]
+    }
+
+    async getFromLocalStorage(name: string) {
+        let storeObject = await browser.storage.local.get(name)
+        return storeObject[name]
     }
 
     async updateFocusState(currentWebsite: string) {
         let newState = await FocusUtils.getFromLocalStorage('focusState')
         newState[currentWebsite] = this.focusState[currentWebsite]
-        FocusUtils.setFocusStateInLocalStorage('focusState', newState)
+        this.setFocusStateInLocalStorage('focusState', newState)
         this.focusState = newState
     }
+
+
 
 }

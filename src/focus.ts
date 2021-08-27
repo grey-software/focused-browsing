@@ -4,6 +4,7 @@ import YoutubeController from './ts/Youtube/YouTubeController'
 import FocusUtils from './focus-utils'
 import FocusStateManager from './focusStateManager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
+import { FocusState, KeyPressedStates } from './types'
 import Controller from './ts/controller'
 import KeyPressedStateManager from './keyPressStateManager'
 
