@@ -2,7 +2,7 @@ let mix = require('laravel-mix')
 
 mix.copy('src/www', 'extension-build/www')
 mix.copy('src/manifest.json', 'extension-build')
-mix.copy('./icons', 'extension-build/icons')
+mix.copy('src/icons', 'extension-build/icons')
 mix.copy('src/styles/font-files', 'extension-build/css/font-files')
 
 mix
@@ -15,11 +15,11 @@ mix
   .sass('src/styles/youtube.scss', 'extension-build/css')
   .sass('src/styles/youtube-dark.scss', 'extension-build/css')
   .sass('src/styles/popup.scss', 'extension-build/css')
-  .ts('src/focus.ts', 'extension-build')
-  .ts('src/background.ts', 'extension-build')
-  .ts('src/ts/feed-card-controller.ts', 'extension-build/js')
+  .ts('src/ts/focus/focus.ts', 'extension-build')
+  .ts('src/ts/background.ts', 'extension-build')
+  .ts('src/ts/vue/feed-card-controller.ts', 'extension-build/js')
   .vue()
-  .ts('src/ts/popup-card-controller.ts', 'extension-build/js')
+  .ts('src/ts/vue/popup-card-controller.ts', 'extension-build/js')
   .vue()
   .options({
     processCssUrls: false,

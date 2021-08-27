@@ -1,10 +1,10 @@
-import LinkedInController from './ts/linkedin/linkedin-controller'
-import TwitterController from './ts/twitter/twitter-controller'
-import YoutubeController from './ts/youtube/youtube-controller'
+import LinkedInController from '../linkedin/linkedin-controller'
+import TwitterController from '../twitter/twitter-controller'
+import YoutubeController from '../youtube/youtube-controller'
 import FocusUtils from './focus-utils'
 import FocusStateManager from './focus-state-manager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import WebsiteController from './ts/website-controller'
+import WebsiteController from '../website-controller'
 import KeyPressManager from './keypress-manager'
 
 let currentURL = document.URL
@@ -59,7 +59,7 @@ async function handleKeyEvent(e: KeyboardEvent) {
     }
   }
   if (e.type == 'keyup') {
-    keyPressManager.restartKeyPressedStates()
+    keyPressManager.reset()
   }
 }
 
