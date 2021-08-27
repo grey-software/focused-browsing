@@ -1,10 +1,10 @@
-import LinkedInController from '../linkedin/linkedin-controller'
-import TwitterController from '../twitter/twitter-controller'
-import YoutubeController from '../youtube/youtube-controller'
+import LinkedInController from '../websites/linkedin/linkedin-controller'
+import TwitterController from '../websites/twitter/twitter-controller'
+import YoutubeController from '../websites/youtube/youtube-controller'
 import FocusUtils from './focus-utils'
 import FocusStateManager from './focus-state-manager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import WebsiteController from '../website-controller'
+import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
 
 let currentURL = document.URL

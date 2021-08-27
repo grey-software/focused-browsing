@@ -6,7 +6,7 @@
   "browser_action": {
     "default_icon": "icons/logo.png",
     "default_title": "Focused Browsing",
-    "default_popup": "www/popup/popup.html"
+    "default_popup": "html/popup.html"
   },
   "icons": {
     "16": "icons/logox16.png",
@@ -23,6 +23,6 @@
       "description": "Send a 'toggle-feature' event to the extension"
     }
   },
-  "web_accessible_resources": ["www/*", "js/*", "css/*", "<all_urls>"],
+  "web_accessible_resources": ["html/*", "js/*", "css/*", "<all_urls>"],
   "permissions": ["*://*.twitter.com/*", "*://*.linkedin.com/*", "*://*.youtube.com/*", "tabs", "storage"]
 }

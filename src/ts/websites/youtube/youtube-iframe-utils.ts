@@ -24,9 +24,9 @@ function setIframeSource(feedIframe: HTMLIFrameElement): void {
   let backgroundColor = window.getComputedStyle(document.body).backgroundColor
 
   if (backgroundColor == DARK_MODE_COLOUR) {
-    feedIframe.src = browser.runtime.getURL('www/youtube/youtubeFeedDark.html')
+    feedIframe.src = browser.runtime.getURL('html/youtubeFeedDark.html')
   } else {
-    feedIframe.src = browser.runtime.getURL('www/youtube/youtubeFeed.html')
+    feedIframe.src = browser.runtime.getURL('html/youtubeFeed.html')
   }
 }
 
