@@ -2,7 +2,7 @@ let mix = require('laravel-mix')
 
 mix.copy('src/www', 'extension-build/www')
 mix.copy('src/manifest.json', 'extension-build')
-mix.copy('src/icons', 'extension-build/icons')
+mix.copy('./icons', 'extension-build/icons')
 mix.copy('src/styles/font-files', 'extension-build/css/font-files')
 
 mix
