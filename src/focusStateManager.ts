@@ -14,7 +14,7 @@ export default class FocusStateManager {
         return this.focusState[currentWebsite]
     }
 
-    async hasFocusStateChanged(newFocusState: FocusState, currentWebsite: string) {
+    hasFocusStateChanged(newFocusState: FocusState, currentWebsite: string) {
         if (newFocusState[currentWebsite] != this.focusState[currentWebsite]) {
             // state of web page didn't change
             return true

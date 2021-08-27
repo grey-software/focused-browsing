@@ -4,17 +4,17 @@ import YoutubeController from './ts/Youtube/YouTubeController'
 import FocusUtils from './focus-utils'
 import FocusStateManager from './focusStateManager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import { FocusState, KeyPressedStates } from './types'
 import Controller from './ts/controller'
+import KeyPressedStateManager from './keyPressStateManager'
 
 
 let currentURL = document.URL
 let currentWebsite: string = ''
 
 let focusStateManager: FocusStateManager
+let keyPressedStateManager: KeyPressedStateManager
 let controller: Controller
 
-let keyPressedStates: KeyPressedStates = { KeyF: false, Shift: false, KeyB: false }
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
@@ -29,7 +29,6 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
   let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
 
   if (message.text == 'different tab activated') {
-    console.log("I am here on tab change")
     if (!focusStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) { return }
     focusStateManager.setFocusState(newFocusState)
 
@@ -46,7 +45,7 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
     if (FocusUtils.isURLValid(message.url)) {
       currentURL = message.url
       focusStateManager.setFocusState(newFocusState)
-      renderFocusState(focusStateManager.focusState[currentWebsite])
+      if (focusStateManager.focusState[currentWebsite]) { controller.focus(currentURL) }
       return Promise.resolve({ status: 'tab change confirmed' })
     }
   } else if (message.text == 'unfocus from vue') {
@@ -56,32 +55,30 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
 
 async function handleKeyEvent(e: KeyboardEvent) {
   if (e.type == 'keydown') {
-    if (FocusUtils.keyIsShortcutKey(e)) {
+    if (keyPressedStateManager.keyIsShortcutKey(e)) {
       let keyCode = e.code
       if (keyCode.includes('Shift')) {
         keyCode = 'Shift'
       }
-      setKeyPressedState(keyCode, true)
+      keyPressedStateManager.setKeyPressedState(keyCode, true)
     }
-    if (FocusUtils.shortcutKeysPressed(keyPressedStates)) {
+    if (keyPressedStateManager.shortcutKeysPressed()) {
       toggleFocus()
     }
   }
   if (e.type == 'keyup') {
-    keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
+    keyPressedStateManager.restartKeyPressedStates()
   }
 }
 
 
-async function renderFocusState(shouldFocus: boolean) {
+function renderFocusState(shouldFocus: boolean) {
   if (!currentWebsite) { return }
   shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
 }
 
-const setKeyPressedState = (keyCode: string, state: boolean) => (keyPressedStates[keyCode] = state)
 
-
-function setUpController() {
+; (async function () {
   if (currentURL.includes('twitter.com')) {
     controller = new TwitterController()
     currentWebsite = 'twitter'
@@ -92,13 +89,11 @@ function setUpController() {
     controller = new YoutubeController()
     currentWebsite = 'youtube'
   }
-}
 
-; (async function () {
-  setUpController()
   let focusState = await FocusUtils.getFromLocalStorage("focusState")
   if (currentWebsite != '') {
     focusStateManager = new FocusStateManager(focusState)
+    keyPressedStateManager = new KeyPressedStateManager()
     renderFocusState(focusStateManager.focusState[currentWebsite])
   }
 })()
