@@ -86,4 +86,3 @@ browser.runtime.onMessage.addListener((message: { text: string }, sender: Runtim
     })
   }
 })
-

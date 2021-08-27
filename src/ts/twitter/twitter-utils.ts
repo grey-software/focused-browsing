@@ -38,7 +38,7 @@ function isHomePage(url: string): boolean {
   if (url.includes('https://twitter.com/')) {
     return url.includes('/home') || url == 'https://twitter.com/'
   }
-  return false;
+  return false
 }
 
 export default {

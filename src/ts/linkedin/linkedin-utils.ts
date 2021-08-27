@@ -45,7 +45,7 @@ function isHomePage(url: string): boolean {
   if (url.includes('linkedin.com')) {
     return url.includes('/feed') || url == 'https://www.linkedin.com/' || url == 'https://www.linkedin.com/home'
   }
-  return false;
+  return false
 }
 
 export default {

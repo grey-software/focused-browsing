@@ -1,9 +1,9 @@
-import TwitterUtils from './TwitterUtils'
-import TwitterIFrameUtils from './TwitterIFrameUtils'
+import TwitterUtils from './twitter-utils'
+import TwitterIFrameUtils from './twitter-iframe-utils'
 import utils from '../utils'
-import Controller from '../controller'
+import WebsiteController from '../website-controller'
 
-export default class TwitterController extends Controller {
+export default class TwitterController extends WebsiteController {
   panel_elements: Node[]
   twitterFeedChildNode: string | Node
   feedIntervalId: number
@@ -37,9 +37,7 @@ export default class TwitterController extends Controller {
         this.setFeedVisibility(true)
       }
       this.setPanelVisibility(true)
-    } catch (err) {
-
-    }
+    } catch (err) { }
   }
 
   focusPanel() {

@@ -18,5 +18,5 @@ function setInLocalStorage(storageName: string, storageObj: any) {
 export default {
   isURLValid,
   getFromLocalStorage,
-  setInLocalStorage
+  setInLocalStorage,
 }

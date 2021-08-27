@@ -1,20 +1,18 @@
-import LinkedInController from './ts/LinkedIn/LinkedInController'
-import TwitterController from './ts/Twitter/TwitterController'
-import YoutubeController from './ts/Youtube/YouTubeController'
+import LinkedInController from './ts/linkedin/linkedin-controller'
+import TwitterController from './ts/twitter/twitter-controller'
+import YoutubeController from './ts/youtube/youtube-controller'
 import FocusUtils from './focus-utils'
-import FocusStateManager from './focusStateManager'
+import FocusStateManager from './focus-state-manager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import Controller from './ts/controller'
-import KeyPressManager from './keyPressManager'
-
+import WebsiteController from './ts/website-controller'
+import KeyPressManager from './keypress-manager'
 
 let currentURL = document.URL
 let currentWebsite: string = ''
 
 let focusStateManager: FocusStateManager
 let keyPressManager: KeyPressManager
-let controller: Controller
-
+let websiteController: WebsiteController
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
@@ -23,7 +21,9 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
   let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
 
   if (message.text == 'different tab activated') {
-    if (!focusStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) { return }
+    if (!focusStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) {
+      return
+    }
     focusStateManager.setFocusState(newFocusState)
 
     if (currentWebsite != null) {
@@ -32,14 +32,15 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
 
     return Promise.resolve({ status: 'tab change confirmed' })
   } else if (message.text == 'new page loaded on website') {
-
-    console.log("i AM HERE ON load page change")
-    console.log("url on new load is " + message.url)
+    console.log('i AM HERE ON load page change')
+    console.log('url on new load is ' + message.url)
 
     if (FocusUtils.isURLValid(message.url)) {
       currentURL = message.url
       focusStateManager.setFocusState(newFocusState)
-      if (focusStateManager.focusState[currentWebsite]) { controller.focus(currentURL) }
+      if (focusStateManager.focusState[currentWebsite]) {
+        websiteController.focus(currentURL)
+      }
       return Promise.resolve({ status: 'tab change confirmed' })
     }
   } else if (message.text == 'unfocus from vue') {
@@ -62,10 +63,11 @@ async function handleKeyEvent(e: KeyboardEvent) {
   }
 }
 
-
 function renderFocusState(shouldFocus: boolean) {
-  if (!currentWebsite) { return }
-  shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
+  if (!currentWebsite) {
+    return
+  }
+  shouldFocus ? websiteController.focus(currentURL) : websiteController.unfocus(currentURL)
 }
 
 async function toggleFocus() {
@@ -74,20 +76,19 @@ async function toggleFocus() {
   renderFocusState(focusStateManager.focusState[currentWebsite])
 }
 
-
 ; (async function () {
   if (currentURL.includes('twitter.com')) {
-    controller = new TwitterController()
+    websiteController = new TwitterController()
     currentWebsite = 'twitter'
   } else if (currentURL.includes('linkedin.com')) {
-    controller = new LinkedInController()
+    websiteController = new LinkedInController()
     currentWebsite = 'linkedin'
   } else if (currentURL.includes('youtube.com')) {
-    controller = new YoutubeController()
+    websiteController = new YoutubeController()
     currentWebsite = 'youtube'
   }
 
-  let focusState = await FocusUtils.getFromLocalStorage("focusState")
+  let focusState = await FocusUtils.getFromLocalStorage('focusState')
   if (currentWebsite != '') {
     focusStateManager = new FocusStateManager(focusState)
     keyPressManager = new KeyPressManager()

@@ -1,10 +1,9 @@
-import LinkedInUtils from './LinkedInUtils'
-import LinkedInIFrameUtils from './LinkedInIFrameUtils'
+import LinkedInUtils from './linkedin-utils'
+import LinkedInIFrameUtils from './linkedin-iframe-utils'
 import utils from '../utils'
-import Controller from '../controller'
+import WebsiteController from '../website-controller'
 
-
-export default class LinkedInController extends Controller {
+export default class LinkedInController extends WebsiteController {
   panel_elements: Node[]
   feedIntervalId: number
   panelIntervalId: number
