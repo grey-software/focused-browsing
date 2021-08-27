@@ -9,7 +9,14 @@ async function getFromLocalStorage(name: string) {
   return storeObject[name]
 }
 
+function setInLocalStorage(storageName: string, storageObj: any) {
+  var obj: any = {}
+  obj[storageName] = storageObj
+  browser.storage.local.set(obj)
+}
+
 export default {
   isURLValid,
   getFromLocalStorage,
+  setInLocalStorage
 }

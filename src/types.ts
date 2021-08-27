@@ -4,7 +4,6 @@ export interface FocusState extends Record<string, boolean> {
 }
 
 export interface KeyPressedStates extends Record<string, boolean> {
-  KeyF: boolean
-  Shift: boolean
-  KeyB: boolean
+  ShiftLeft: boolean
+  ShiftRight: boolean
 }

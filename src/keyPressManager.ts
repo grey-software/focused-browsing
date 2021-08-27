@@ -1,23 +1,22 @@
 import { KeyPressedStates } from "./types"
 
-export default class KeyPressedStateManager {
+export default class KeyPressManager {
     keyPressedStates: KeyPressedStates
 
     constructor() {
-        this.keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
+        this.keyPressedStates = { ShiftRight: false, ShiftLeft: false }
     }
-
 
     setKeyPressedState(keyCode: string, state: boolean) {
         this.keyPressedStates[keyCode] = state
     }
 
     restartKeyPressedStates() {
-        this.keyPressedStates = { KeyF: false, Shift: false, KeyB: false }
+        this.keyPressedStates = { ShiftRight: false, ShiftLeft: false }
     }
 
     keyIsShortcutKey(e: KeyboardEvent) {
-        return e.key == 'Shift' || e.code == 'KeyB' || e.code == 'KeyF'
+        return e.code == 'ShiftLeft' || e.code == 'ShiftRight'
     }
 
     shortcutKeysPressed() {
@@ -25,6 +24,5 @@ export default class KeyPressedStateManager {
         Object.values(this.keyPressedStates).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
         return allKeysPressed
     }
-
 
 }

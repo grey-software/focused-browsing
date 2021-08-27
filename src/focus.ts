@@ -4,27 +4,20 @@ import YoutubeController from './ts/Youtube/YouTubeController'
 import FocusUtils from './focus-utils'
 import FocusStateManager from './focusStateManager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
-import { FocusState, KeyPressedStates } from './types'
 import Controller from './ts/controller'
-import KeyPressedStateManager from './keyPressStateManager'
+import KeyPressManager from './keyPressManager'
 
 
 let currentURL = document.URL
 let currentWebsite: string = ''
 
 let focusStateManager: FocusStateManager
-let keyPressedStateManager: KeyPressedStateManager
+let keyPressManager: KeyPressManager
 let controller: Controller
 
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
-
-async function toggleFocus() {
-  focusStateManager.toggleFocusState(currentWebsite)
-  await focusStateManager.updateFocusState(currentWebsite)
-  renderFocusState(focusStateManager.focusState[currentWebsite])
-}
 
 browser.runtime.onMessage.addListener(async (message: { text: string; url: string }, sender: Runtime.MessageSender) => {
   let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
@@ -56,19 +49,16 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
 
 async function handleKeyEvent(e: KeyboardEvent) {
   if (e.type == 'keydown') {
-    if (keyPressedStateManager.keyIsShortcutKey(e)) {
+    if (keyPressManager.keyIsShortcutKey(e)) {
       let keyCode = e.code
-      if (keyCode.includes('Shift')) {
-        keyCode = 'Shift'
-      }
-      keyPressedStateManager.setKeyPressedState(keyCode, true)
+      keyPressManager.setKeyPressedState(keyCode, true)
     }
-    if (keyPressedStateManager.shortcutKeysPressed()) {
+    if (keyPressManager.shortcutKeysPressed()) {
       toggleFocus()
     }
   }
   if (e.type == 'keyup') {
-    keyPressedStateManager.restartKeyPressedStates()
+    keyPressManager.restartKeyPressedStates()
   }
 }
 
@@ -76,6 +66,12 @@ async function handleKeyEvent(e: KeyboardEvent) {
 function renderFocusState(shouldFocus: boolean) {
   if (!currentWebsite) { return }
   shouldFocus ? controller.focus(currentURL) : controller.unfocus(currentURL)
+}
+
+async function toggleFocus() {
+  focusStateManager.toggleFocusState(currentWebsite)
+  await focusStateManager.updateFocusState(currentWebsite)
+  renderFocusState(focusStateManager.focusState[currentWebsite])
 }
 
 
@@ -94,7 +90,7 @@ function renderFocusState(shouldFocus: boolean) {
   let focusState = await FocusUtils.getFromLocalStorage("focusState")
   if (currentWebsite != '') {
     focusStateManager = new FocusStateManager(focusState)
-    keyPressedStateManager = new KeyPressedStateManager()
+    keyPressManager = new KeyPressManager()
     renderFocusState(focusStateManager.focusState[currentWebsite])
   }
 })()
