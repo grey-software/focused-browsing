@@ -115,7 +115,7 @@ export default class LinkedInController extends WebsiteController {
         this.setAdVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingFeed() {
@@ -127,7 +127,7 @@ export default class LinkedInController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -139,6 +139,6 @@ export default class LinkedInController extends WebsiteController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }

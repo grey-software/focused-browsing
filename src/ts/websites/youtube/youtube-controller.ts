@@ -26,7 +26,7 @@ export default class YouTubeController extends WebsiteController {
     this.cardChangeIntervalId = 0
     this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
 
-    this.currentColor = ""
+    this.currentColor = ''
 
     setTimeout(() => {
       this.setCardColor()
@@ -58,16 +58,14 @@ export default class YouTubeController extends WebsiteController {
         document.body.style.background = 'var(--yt-spec-general-background-a)'
         this.currentColor = window.getComputedStyle(document.body).backgroundColor
         return
-      } catch (err) {
-        console.log(err)
-      }
+      } catch (err) {}
     }
   }
 
   changeCard() {
     document.body.style.background = 'var(--yt-spec-general-background-a)'
     let backgroundColor = window.getComputedStyle(document.body).backgroundColor
-    if (backgroundColor != this.currentColor && this.currentColor != "") {
+    if (backgroundColor != this.currentColor && this.currentColor != '') {
       this.currentColor = backgroundColor
       let currentUrl = document.URL
       if (YouTubeUtils.isHomePage(currentUrl)) {
@@ -81,7 +79,6 @@ export default class YouTubeController extends WebsiteController {
       }
     }
   }
-
 
   unfocus(url: string) {
     window.clearInterval(this.feedIntervalId)
@@ -189,7 +186,7 @@ export default class YouTubeController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -203,7 +200,7 @@ export default class YouTubeController extends WebsiteController {
         this.setSuggestionsVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingComments() {
@@ -217,6 +214,6 @@ export default class YouTubeController extends WebsiteController {
         this.setCommentsVisbility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }

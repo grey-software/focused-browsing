@@ -37,7 +37,7 @@ export default class TwitterController extends WebsiteController {
         this.setFeedVisibility(true)
       }
       this.setPanelVisibility(true)
-    } catch (err) { }
+    } catch (err) {}
   }
 
   focusPanel() {
@@ -94,7 +94,7 @@ export default class TwitterController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -107,6 +107,6 @@ export default class TwitterController extends WebsiteController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }
