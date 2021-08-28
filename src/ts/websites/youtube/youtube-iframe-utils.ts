@@ -23,7 +23,6 @@ function setIframeSource(feedIframe: HTMLIFrameElement, currentBackgroundColor: 
   if (currentBackgroundColor == DARK_MODE_COLOUR) {
     feedIframe.src = browser.runtime.getURL('html/youtubeFeedDark.html')
   } else {
-    console.log('it is light version')
     feedIframe.src = browser.runtime.getURL('html/youtubeFeed.html')
   }
 }

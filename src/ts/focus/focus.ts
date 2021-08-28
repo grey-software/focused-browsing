@@ -32,9 +32,6 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
 
     return Promise.resolve({ status: 'tab change confirmed' })
   } else if (message.text == 'new page loaded on website') {
-    console.log('i AM HERE ON load page change')
-    console.log('url on new load is ' + message.url)
-
     if (FocusUtils.isURLValid(message.url)) {
       currentURL = message.url
       focusStateManager.setFocusState(newFocusState)
@@ -76,7 +73,7 @@ async function toggleFocus() {
   renderFocusState(focusStateManager.focusState[currentWebsite])
 }
 
-;(async function () {
+; (async function () {
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
     currentWebsite = 'twitter'

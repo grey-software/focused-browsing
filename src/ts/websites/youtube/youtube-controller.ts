@@ -39,8 +39,8 @@ export default class YouTubeController extends WebsiteController {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.suggestionsIntervalId)
     window.clearInterval(this.commentIntervalId)
+    window.clearInterval(this.cardChangeIntervalId)
     if (YouTubeUtils.isHomePage(url)) {
-      console.log('i am here focusing page')
       this.focusFeed()
     } else if (YouTubeUtils.isVideoPage(url)) {
       this.focusSuggestions()
@@ -58,7 +58,7 @@ export default class YouTubeController extends WebsiteController {
         document.body.style.background = 'var(--yt-spec-general-background-a)'
         this.currentColor = window.getComputedStyle(document.body).backgroundColor
         return
-      } catch (err) {}
+      } catch (err) { }
     }
   }
 
@@ -116,11 +116,8 @@ export default class YouTubeController extends WebsiteController {
 
   setFeedVisibility(visible: boolean) {
     let feed = YouTubeUtils.getYouTubeFeed()
-    console.log('feed is')
-    console.log(feed)
     if (feed) {
       if (!visible) {
-        console.log('I am here now')
         this.YouTubeFeedChildNode = feed.children[0]
         feed.removeChild(feed.childNodes[0])
         YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
@@ -144,7 +141,6 @@ export default class YouTubeController extends WebsiteController {
         }
         this.suggestion_elements = current_suggestion_elements
       } else {
-        console.log('I am here in setting suggestions visibility to true')
         for (let i = this.suggestion_elements.length - 1; i >= 0; i -= 1) {
           suggestions.append(this.suggestion_elements[i])
         }
@@ -167,7 +163,6 @@ export default class YouTubeController extends WebsiteController {
         }
         this.comment_elements = current_comment_elements
       } else {
-        console.log('I am here in setting comments visibility to true')
         for (let i = this.comment_elements.length - 1; i >= 0; i -= 1) {
           comments.append(this.comment_elements[i])
         }
@@ -179,14 +174,13 @@ export default class YouTubeController extends WebsiteController {
   tryBlockingFeed() {
     try {
       if (YouTubeUtils.isFeedHidden()) {
-        console.log('Feed is hidden')
         return
       }
       if (YouTubeUtils.hasFeedLoaded()) {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingPanel() {
@@ -196,11 +190,10 @@ export default class YouTubeController extends WebsiteController {
       }
 
       if (YouTubeUtils.hasSuggestionsLoaded()) {
-        console.log('hiding suggestions')
         this.setSuggestionsVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingComments() {
@@ -210,10 +203,9 @@ export default class YouTubeController extends WebsiteController {
       }
 
       if (YouTubeUtils.hasCommentsLoaded()) {
-        console.log('hiding comments')
         this.setCommentsVisbility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 }

@@ -73,13 +73,10 @@ function areCommentsHidden(): boolean {
 }
 
 function isHomePage(url: string): boolean {
-  console.log(url)
   return url == 'https://www.youtube.com/'
 }
 
 function isVideoPage(url: string): boolean {
-  console.log('checking if url is video page')
-  console.log(url)
   if (url.includes('https://www.youtube.com/')) {
     return url.includes('/watch')
   }
