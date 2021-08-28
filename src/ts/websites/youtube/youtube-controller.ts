@@ -58,7 +58,7 @@ export default class YouTubeController extends WebsiteController {
         document.body.style.background = 'var(--yt-spec-general-background-a)'
         this.currentColor = window.getComputedStyle(document.body).backgroundColor
         return
-      } catch (err) { }
+      } catch (err) {}
     }
   }
 
@@ -180,7 +180,7 @@ export default class YouTubeController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -193,7 +193,7 @@ export default class YouTubeController extends WebsiteController {
         this.setSuggestionsVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingComments() {
@@ -206,6 +206,6 @@ export default class YouTubeController extends WebsiteController {
         this.setCommentsVisbility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }
