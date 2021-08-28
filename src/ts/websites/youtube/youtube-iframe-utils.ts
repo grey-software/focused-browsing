@@ -19,19 +19,17 @@ function createYouTubeFeedIframe(): HTMLIFrameElement {
   return feedIframe
 }
 
-function setIframeSource(feedIframe: HTMLIFrameElement): void {
-  document.body.style.background = 'var(--yt-spec-general-background-a)'
-  let backgroundColor = window.getComputedStyle(document.body).backgroundColor
-
-  if (backgroundColor == DARK_MODE_COLOUR) {
+function setIframeSource(feedIframe: HTMLIFrameElement, currentBackgroundColor: string): void {
+  if (currentBackgroundColor == DARK_MODE_COLOUR) {
     feedIframe.src = browser.runtime.getURL('html/youtubeFeedDark.html')
   } else {
+    console.log("it is light version")
     feedIframe.src = browser.runtime.getURL('html/youtubeFeed.html')
   }
 }
 
-function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
-  setIframeSource(feedIframe)
+function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element, currentBackgroundColor: string): void {
+  setIframeSource(feedIframe, currentBackgroundColor)
   feed.append(feedIframe)
 }
 

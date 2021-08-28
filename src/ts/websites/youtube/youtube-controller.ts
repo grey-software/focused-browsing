@@ -7,10 +7,12 @@ export default class YouTubeController extends WebsiteController {
   YouTubeFeedChildNode: string | Node
   feedIntervalId: number
   suggestionsIntervalId: number
+  cardChangeIntervalId: number
   feedIframe: HTMLIFrameElement
   suggestion_elements: Node[]
   comment_elements: Node[]
   commentIntervalId: number
+  currentColor: string
 
   constructor() {
     super()
@@ -21,21 +23,15 @@ export default class YouTubeController extends WebsiteController {
     this.feedIntervalId = 0
     this.suggestionsIntervalId = 0
     this.commentIntervalId = 0
+    this.cardChangeIntervalId = 0
     this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
 
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      console.log('changed theme')
-      let currentUrl = document.URL
-      if (YouTubeUtils.isHomePage(currentUrl)) {
-        let feed = YouTubeUtils.getYouTubeFeed()
-        if (feed) {
-          if (YouTubeUtils.isFeedHidden()) {
-            utils.removeFocusedBrowsingCards()
-            YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed)
-          }
-        }
-      }
-    })
+    this.currentColor = ""
+
+    setTimeout(() => {
+      this.setCardColor()
+      this.listenForCardChange()
+    }, 500)
   }
 
   focus(url: string) {
@@ -51,6 +47,41 @@ export default class YouTubeController extends WebsiteController {
       this.focusComments()
     }
   }
+
+  listenForCardChange() {
+    this.cardChangeIntervalId = window.setInterval(this.changeCard.bind(this), 250)
+  }
+
+  setCardColor() {
+    while (true) {
+      try {
+        document.body.style.background = 'var(--yt-spec-general-background-a)'
+        this.currentColor = window.getComputedStyle(document.body).backgroundColor
+        return
+      } catch (err) {
+        console.log(err)
+      }
+    }
+  }
+
+  changeCard() {
+    document.body.style.background = 'var(--yt-spec-general-background-a)'
+    let backgroundColor = window.getComputedStyle(document.body).backgroundColor
+    if (backgroundColor != this.currentColor && this.currentColor != "") {
+      this.currentColor = backgroundColor
+      let currentUrl = document.URL
+      if (YouTubeUtils.isHomePage(currentUrl)) {
+        let feed = YouTubeUtils.getYouTubeFeed()
+        if (feed) {
+          if (YouTubeUtils.isFeedHidden()) {
+            utils.removeFocusedBrowsingCards()
+            YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
+          }
+        }
+      }
+    }
+  }
+
 
   unfocus(url: string) {
     window.clearInterval(this.feedIntervalId)
@@ -95,7 +126,7 @@ export default class YouTubeController extends WebsiteController {
         console.log('I am here now')
         this.YouTubeFeedChildNode = feed.children[0]
         feed.removeChild(feed.childNodes[0])
-        YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed)
+        YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
       } else {
         feed.append(this.YouTubeFeedChildNode)
       }
