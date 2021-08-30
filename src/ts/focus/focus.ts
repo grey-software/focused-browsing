@@ -73,7 +73,7 @@ async function toggleFocus() {
   renderFocusState(focusStateManager.focusState[currentWebsite])
 }
 
-; (async function () {
+;(async function () {
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
     currentWebsite = 'twitter'

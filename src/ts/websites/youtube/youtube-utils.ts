@@ -1,16 +1,15 @@
 function getYouTubeFeed(): Element | null {
   // return document.querySelector('#primary')
-  let mainPage = document.querySelector("ytd-two-column-browse-results-renderer")
+  let mainPage = document.querySelector('ytd-two-column-browse-results-renderer')
   if (mainPage) {
     return mainPage.children[0]
   }
 
   return null
-
 }
 
 function getYoutubeSuggestions(): Element | null {
-  let suggestions_parent = document.querySelector("ytd-watch-next-secondary-results-renderer")
+  let suggestions_parent = document.querySelector('ytd-watch-next-secondary-results-renderer')
   if (suggestions_parent) {
     return suggestions_parent.children[1]
   }

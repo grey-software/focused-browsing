@@ -52,15 +52,13 @@ export default class YouTubeController extends WebsiteController {
   setCardColorInterval() {
     this.setCardColorIntervalId = window.setInterval(() => {
       try {
-        if (this.currentColor != '') { return }
+        if (this.currentColor != '') {
+          return
+        }
         document.body.style.background = 'var(--yt-spec-general-background-a)'
         this.currentColor = window.getComputedStyle(document.body).backgroundColor
-      } catch (err) { }
+      } catch (err) {}
     }, 250)
-
-
-
-
   }
 
   changeCard() {
@@ -105,7 +103,6 @@ export default class YouTubeController extends WebsiteController {
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
-
 
     this.feedIntervalId = window.setInterval(this.tryBlockingFeed.bind(this), 250)
   }
@@ -181,7 +178,6 @@ export default class YouTubeController extends WebsiteController {
         return
       }
 
-
       if (YouTubeUtils.isFeedHidden()) {
         return
       }
@@ -189,7 +185,7 @@ export default class YouTubeController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingSuggestions() {
@@ -206,7 +202,7 @@ export default class YouTubeController extends WebsiteController {
         this.setSuggestionsVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingComments() {
@@ -224,6 +220,6 @@ export default class YouTubeController extends WebsiteController {
         this.setCommentsVisbility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }
