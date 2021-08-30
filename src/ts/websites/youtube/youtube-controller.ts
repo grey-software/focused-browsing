@@ -13,6 +13,7 @@ export default class YouTubeController extends WebsiteController {
   comment_elements: Node[]
   commentIntervalId: number
   currentColor: string
+  setCardColorIntervalId: number
 
   constructor() {
     super()
@@ -24,42 +25,42 @@ export default class YouTubeController extends WebsiteController {
     this.suggestionsIntervalId = 0
     this.commentIntervalId = 0
     this.cardChangeIntervalId = 0
+    this.setCardColorIntervalId = 0
     this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
 
     this.currentColor = ''
 
-    setTimeout(() => {
-      this.setCardColor()
-      this.listenForCardChange()
-    }, 500)
+    this.setCardColorInterval()
+    this.listenForCardChange()
+
+    // setTimeout(() => {
+    //   this.setCardColorIntervalId()
+    //   this.listenForCardChange()
+    // }, 500)
   }
 
   focus(url: string) {
-    // the panel shows up on every page
-    window.clearInterval(this.feedIntervalId)
-    window.clearInterval(this.suggestionsIntervalId)
-    window.clearInterval(this.commentIntervalId)
-    window.clearInterval(this.cardChangeIntervalId)
-    if (YouTubeUtils.isHomePage(url)) {
-      this.focusFeed()
-    } else if (YouTubeUtils.isVideoPage(url)) {
-      this.focusSuggestions()
-      this.focusComments()
-    }
+    this.focusFeed()
+    this.focusSuggestions()
+    this.focusComments()
   }
 
   listenForCardChange() {
     this.cardChangeIntervalId = window.setInterval(this.changeCard.bind(this), 250)
   }
 
-  setCardColor() {
-    while (true) {
+  setCardColorInterval() {
+    this.setCardColorIntervalId = window.setInterval(() => {
       try {
+        if (this.currentColor != '') { return }
         document.body.style.background = 'var(--yt-spec-general-background-a)'
         this.currentColor = window.getComputedStyle(document.body).backgroundColor
-        return
-      } catch (err) {}
-    }
+      } catch (err) { }
+    }, 250)
+
+
+
+
   }
 
   changeCard() {
@@ -97,13 +98,15 @@ export default class YouTubeController extends WebsiteController {
     if (this.suggestionsIntervalId) {
       window.clearInterval(this.suggestionsIntervalId)
     }
-    this.suggestionsIntervalId = window.setInterval(this.tryBlockingPanel.bind(this), 250)
+    this.suggestionsIntervalId = window.setInterval(this.tryBlockingSuggestions.bind(this), 250)
   }
 
   focusFeed() {
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
+
+
     this.feedIntervalId = window.setInterval(this.tryBlockingFeed.bind(this), 250)
   }
 
@@ -133,7 +136,7 @@ export default class YouTubeController extends WebsiteController {
       if (!visibile) {
         let length = suggestions.children.length
         let current_suggestion_elements = []
-        while (length != 1) {
+        while (length != 0) {
           var currentLastChild = suggestions.children[length - 1]
           current_suggestion_elements.push(currentLastChild)
           suggestions.removeChild(currentLastChild)
@@ -173,6 +176,12 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
+      let url = document.URL
+      if (!YouTubeUtils.isHomePage(url)) {
+        return
+      }
+
+
       if (YouTubeUtils.isFeedHidden()) {
         return
       }
@@ -180,11 +189,15 @@ export default class YouTubeController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
-  tryBlockingPanel() {
+  tryBlockingSuggestions() {
     try {
+      let url = document.URL
+      if (!YouTubeUtils.isVideoPage(url)) {
+        return
+      }
       if (YouTubeUtils.areSuggestionsHidden()) {
         return
       }
@@ -193,11 +206,16 @@ export default class YouTubeController extends WebsiteController {
         this.setSuggestionsVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingComments() {
     try {
+      let url = document.URL
+      if (!YouTubeUtils.isVideoPage(url)) {
+        return
+      }
+
       if (YouTubeUtils.areCommentsHidden()) {
         return
       }
@@ -206,6 +224,6 @@ export default class YouTubeController extends WebsiteController {
         this.setCommentsVisbility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 }

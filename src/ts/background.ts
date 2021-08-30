@@ -12,7 +12,6 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
   if (!isPageLoading) {
     return
   }
-
   const focusScriptInjectedResult = await checkFocusScriptInjected(tabId)
   const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
   if (focusScriptInjected) {

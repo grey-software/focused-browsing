@@ -1,13 +1,28 @@
 function getYouTubeFeed(): Element | null {
-  return document.querySelector('#primary')
+  // return document.querySelector('#primary')
+  let mainPage = document.querySelector("ytd-two-column-browse-results-renderer")
+  if (mainPage) {
+    return mainPage.children[0]
+  }
+
+  return null
+
 }
 
 function getYoutubeSuggestions(): Element | null {
-  return document.getElementById('secondary-inner')
+  let suggestions_parent = document.querySelector("ytd-watch-next-secondary-results-renderer")
+  if (suggestions_parent) {
+    return suggestions_parent.children[1]
+  }
+  return null
 }
 
 function getYoutubeCommentsOnVideo(): Element | null {
-  return document.getElementById('comments')
+  let comment_parent = document.querySelector('ytd-comments')
+  if (comment_parent) {
+    return comment_parent.children[1].children[2]
+  }
+  return null
 }
 
 function hasFeedLoaded(): boolean {
@@ -53,9 +68,9 @@ function areSuggestionsHidden(): boolean {
 
 function hasCommentsLoaded(): boolean {
   try {
-    let youtubeFeed = getYouTubeFeed()
-    if (youtubeFeed) {
-      return youtubeFeed.children.length != 0
+    let youtubeComments = getYoutubeCommentsOnVideo()
+    if (youtubeComments) {
+      return youtubeComments.children.length != 0
     }
   } catch (err) {
     return false
