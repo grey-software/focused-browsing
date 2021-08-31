@@ -32,14 +32,11 @@ export default class YouTubeController extends WebsiteController {
 
     this.setCardColorInterval()
     this.listenForCardChange()
-
-    // setTimeout(() => {
-    //   this.setCardColorIntervalId()
-    //   this.listenForCardChange()
-    // }, 500)
   }
 
-  focus(url: string) {
+  focus() {
+    utils.clearElements(this.suggestion_elements)
+    utils.clearElements(this.comment_elements)
     this.focusFeed()
     this.focusSuggestions()
     this.focusComments()
@@ -79,17 +76,23 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  unfocus(url: string) {
-    window.clearInterval(this.feedIntervalId)
-    window.clearInterval(this.suggestionsIntervalId)
-    window.clearInterval(this.commentIntervalId)
+  unfocus() {
+    let url = document.URL
     if (YouTubeUtils.isHomePage(url)) {
+      this.clearIntervals()
       utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
     } else if (YouTubeUtils.isVideoPage(url)) {
+      this.clearIntervals()
       this.setSuggestionsVisibility(true)
       this.setCommentsVisbility(true)
     }
+  }
+
+  clearIntervals() {
+    window.clearInterval(this.suggestionsIntervalId)
+    window.clearInterval(this.commentIntervalId)
+    window.clearInterval(this.feedIntervalId)
   }
 
   focusSuggestions() {

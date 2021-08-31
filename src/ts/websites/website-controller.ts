@@ -1,5 +1,6 @@
 export default abstract class WebsiteController {
-  abstract focus(url: String): void
+  abstract focus(): void
 
-  abstract unfocus(url: String): void
+  abstract unfocus(): void
+  abstract clearIntervals(): void
 }

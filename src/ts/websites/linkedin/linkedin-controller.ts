@@ -23,24 +23,28 @@ export default class LinkedInController extends WebsiteController {
     this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
   }
 
-  focus(url: string) {
-    if (LinkedInUtils.isHomePage(url)) {
-      this.focusFeed()
-      this.focusPanel()
-      this.focusAd()
-    }
+  focus() {
+    utils.clearElements(this.panel_elements)
+    this.focusFeed()
+    this.focusPanel()
+    this.focusAd()
   }
 
-  unfocus(url: string) {
+  unfocus() {
+    let url = document.URL
     if (LinkedInUtils.isHomePage(url)) {
-      clearInterval(this.feedIntervalId)
-      clearInterval(this.panelIntervalId)
-      clearInterval(this.adIntervalId)
+      this.clearIntervals()
       utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
       this.setPanelVisibility(true)
       this.setAdVisibility(true)
     }
+  }
+
+  clearIntervals() {
+    window.clearInterval(this.feedIntervalId)
+    window.clearInterval(this.panelIntervalId)
+    window.clearInterval(this.adIntervalId)
   }
 
   focusFeed() {
@@ -108,6 +112,10 @@ export default class LinkedInController extends WebsiteController {
 
   tryBlockingAd() {
     try {
+      let url = document.URL
+      if (!LinkedInUtils.isHomePage(url)) {
+        return
+      }
       if (LinkedInUtils.isAdHidden()) {
         return
       }
@@ -120,6 +128,10 @@ export default class LinkedInController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
+      let url = document.URL
+      if (!LinkedInUtils.isHomePage(url)) {
+        return
+      }
       if (LinkedInUtils.isFeedHidden()) {
         return
       }
@@ -132,6 +144,11 @@ export default class LinkedInController extends WebsiteController {
 
   tryBlockingPanel() {
     try {
+      let url = document.URL
+      if (!LinkedInUtils.isHomePage(url)) {
+        return
+      }
+
       if (LinkedInUtils.isPanelHidden()) {
         return
       }
