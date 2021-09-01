@@ -7,7 +7,7 @@
 
     <p class="press-shift-f-b-to-show-or-hide-the">
       Press
-      <strong class="press-shift-f-b-to-show-or-hide-the-emphasis-1">Shift &#43; F &#43; B </strong>
+      <strong class="press-shift-f-b-to-show-or-hide-the-emphasis-1">LeftShift &#43; RightShift</strong>
       to show or hide the feed.
     </p>
     <img alt="" class="vector-3" src="/html/assets/popup/popup-divider.svg" />
