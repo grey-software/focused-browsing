@@ -7,7 +7,6 @@ import { browser, Runtime } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
 
-let currentURL = document.URL
 let currentWebsite: string = ''
 
 let focusStateManager: FocusStateManager
@@ -33,10 +32,9 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
     return Promise.resolve({ status: 'tab change confirmed' })
   } else if (message.text == 'new page loaded on website') {
     if (FocusUtils.isURLValid(message.url)) {
-      currentURL = message.url
       focusStateManager.setFocusState(newFocusState)
       if (focusStateManager.focusState[currentWebsite]) {
-        websiteController.focus(currentURL)
+        websiteController.focus()
       }
       return Promise.resolve({ status: 'tab change confirmed' })
     }
@@ -64,7 +62,7 @@ function renderFocusState(shouldFocus: boolean) {
   if (!currentWebsite) {
     return
   }
-  shouldFocus ? websiteController.focus(currentURL) : websiteController.unfocus(currentURL)
+  shouldFocus ? websiteController.focus() : websiteController.unfocus()
 }
 
 async function toggleFocus() {
@@ -73,7 +71,8 @@ async function toggleFocus() {
   renderFocusState(focusStateManager.focusState[currentWebsite])
 }
 
-;(async function () {
+; (async function () {
+  let currentURL = document.URL
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
     currentWebsite = 'twitter'

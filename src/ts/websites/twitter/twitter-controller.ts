@@ -19,25 +19,31 @@ export default class TwitterController extends WebsiteController {
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
   }
 
-  focus(url: string) {
+  focus() {
     // the panel shows up on every page
-
+    // we should clear our panel elements every time we focus because it can get over populated and we can be rendering extra elements
+    utils.clearElements(this.panel_elements)
     this.focusPanel()
-    if (TwitterUtils.isHomePage(url)) {
-      this.focusFeed()
-    }
+    this.focusFeed()
   }
 
-  unfocus(url: string) {
+  unfocus() {
+    utils.removeFocusedBrowsingCards()
+    let url = document.URL
+    try {
+      if (url.includes('twitter.com')) {
+        if (TwitterUtils.isHomePage(url)) {
+          this.setFeedVisibility(true)
+        }
+        this.setPanelVisibility(true)
+        this.clearIntervals()
+      }
+    } catch (err) {}
+  }
+
+  clearIntervals() {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.panelIntervalId)
-    utils.removeFocusedBrowsingCards()
-    try {
-      if (TwitterUtils.isHomePage(url)) {
-        this.setFeedVisibility(true)
-      }
-      this.setPanelVisibility(true)
-    } catch (err) {}
   }
 
   focusPanel() {
@@ -87,6 +93,10 @@ export default class TwitterController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
+      let url = document.URL
+      if (!TwitterUtils.isHomePage(url)) {
+        return
+      }
       if (TwitterUtils.isFeedHidden()) {
         return
       }

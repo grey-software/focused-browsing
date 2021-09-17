@@ -1,5 +1,4 @@
 function getYouTubeFeed(): Element | null {
-  // return document.querySelector('#primary')
   let mainPage = document.querySelector('ytd-two-column-browse-results-renderer')
   if (mainPage) {
     return mainPage.children[0]
