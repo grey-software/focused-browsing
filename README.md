@@ -1,8 +1,8 @@
 #### A web extension that helps you reclaim your focus by hiding distracting feeds on popular social websites.
 
 <div align="center">
-  <a href="https://org.grey.software/focused-browsing" target="_blank">
-    <img alt="Focused Browsing Icon" height="420" src="https://org.grey.software/focused-browsing/promo.png">
+  <a href="https://grey.software/focused-browsing" target="_blank">
+    <img alt="Focused Browsing Icon" height="420" src="https://grey.software/focused-browsing/promo.png">
   </a>
 </div>
 
@@ -97,7 +97,7 @@ browse what's happening on the Internet.
 That is why we made it easy for you to hide and bring back feeds without leaving your tab.
 
 <div align="center">
-  <img alt="Screenshot showcasing hiding distractions without leaving the tab you're on" height="420" src="https://org.grey.software/focused-browsing/screenshot-1.png">
+  <img alt="Screenshot showcasing hiding distractions without leaving the tab you're on" height="420" src="https://grey.software/focused-browsing/screenshot-1.png">
 </div>
 
 ### Control Distractions using keyboard shortcuts
@@ -108,7 +108,7 @@ We added keyboard shortcuts to make it seamless and intuitive for you to toggle 
 personalize your experience.
 
 <div align="center">
-  <img alt="Screenshot showcasing controlling focus using keyboard shortcuts" height="420" src="https://org.grey.software/focused-browsing/screenshot-2.png">
+  <img alt="Screenshot showcasing controlling focus using keyboard shortcuts" height="420" src="https://grey.software/focused-browsing/screenshot-2.png">
 </div>
 
 ### We support Dim and Dark modes
@@ -117,7 +117,7 @@ We added dim and dark mode support for Twitter because we wanted our extension t
 experience on the site.
 
 <div align="center">
-  <img alt="Screenshot showcasing Dim and Dark mode support" height="420" src="https://org.grey.software/focused-browsing/screenshot-3.png">
+  <img alt="Screenshot showcasing Dim and Dark mode support" height="420" src="https://grey.software/focused-browsing/screenshot-3.png">
 </div>
 
 ## The Story

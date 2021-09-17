@@ -50,7 +50,7 @@ export default {
       })
     },
     openSupport() {
-      window.open('https://github.com/sponsors/grey-software')
+      window.open('https://grey.software/#support')
     },
   },
 }
