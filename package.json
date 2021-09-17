@@ -1,6 +1,6 @@
 {
   "name": "focused-browsing",
-  "version": "0.9.7",
+  "version": "0.9.8",
   "description": "Focused browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
   "scripts": {
     "build": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --env=production --config=node_modules/laravel-mix/setup/webpack.config.js",
