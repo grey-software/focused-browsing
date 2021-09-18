@@ -155,8 +155,9 @@
 }
 
 .shortcut-caption-emphasis-1 {
+  margin: 0 2px;
   color: $gray;
-  letter-spacing: -0.21px;
+  letter-spacing: 1px;
   @include inter-14-bold-line14;
 }
 

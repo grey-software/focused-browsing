@@ -124,7 +124,7 @@
   @include inter-14-semi-bold;
 }
 .shortcut-container {
-  margin-top: 8px;
+  margin: 8px 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -134,8 +134,9 @@
   @include inter-14-semi-bold-line14;
 }
 .shortcut-caption-emphasis-1 {
+  margin: 0 2px;
   color: $gray;
-  letter-spacing: -0.21px;
+  letter-spacing: 1px;
   @include inter-14-bold-line14;
 }
 .shortcut-caption-emphasis-2 {

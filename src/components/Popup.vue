@@ -8,8 +8,8 @@
 
     <p class="shortcut-container">
       Press
-      <strong class="shortcut-container-emphasis-1">LeftShift &#43; RightShift</strong>
-      to show or hide the feed.
+      <strong class="shortcut-caption-emphasis-1">LeftShift &#43; RightShift</strong>
+      to show/hide feeds
     </p>
     <div class="seperator" />
     <Links />

@@ -30,15 +30,15 @@
 
 .shortcut-container {
   text-align: center;
-  margin-bottom: 24px;
   color: $black-1;
   @include inter-14-medium-line14;
-  padding: 0px 48px;
+  margin: 24px 2px;
 }
 
-.shortcut-container-emphasis-1 {
+.shortcut-caption-emphasis-1 {
+  margin: 0 2px;
   color: $primary-1;
-  letter-spacing: -0.21px;
+  letter-spacing: 1px;
   @include inter-14-bold;
 }
 

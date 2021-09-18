@@ -41,18 +41,18 @@ export const quotes = [
   },
   {
     id: 9,
-    text: "Procrastination is like a credit card: it's a lot of fun until you get the bill.",
-    source: 'Christopher Parker',
+    text: 'Our greatest glory is not in never failing, but in rising up every time we fail.',
+    source: 'Ralph Waldo Emerson',
   },
   {
     id: 10,
-    text: 'Someday is not a day of the week.',
-    source: 'Author Unknown',
+    text: 'What lies behind us and what lies before us are tiny matters compared to what lies within us.',
+    source: 'Ralph Waldo Emerson',
   },
   {
     id: 11,
-    text: 'Tomorrow is often the busiest day of the week.',
-    source: 'Spanish Proverb',
+    text: 'Without ambition one starts nothing. Without work one finishes nothing. The prize will not be sent to you. You have to win it.',
+    source: 'Ralph Waldo Emerson',
   },
   {
     id: 12,
@@ -66,13 +66,13 @@ export const quotes = [
   },
   {
     id: 14,
-    text: 'Nothing can stop the man with the right mental attitude from achieving his goal; nothing on earth can help the man with the wrong mental attitude.',
+    text: 'Nothing can stop a person with the right mental attitude from achieving their goal; nothing on earth can help the person with the wrong mental attitude.',
     source: 'Thomas Jefferson',
   },
   {
     id: 15,
-    text: 'There is only one success--to be able to spend your life in your own way.',
-    source: 'Christopher Morley',
+    text: 'Happiness is when what you think, what you say, and what you do are in harmony.',
+    source: 'Mahatma Gandhi',
   },
   {
     id: 16,
@@ -81,8 +81,8 @@ export const quotes = [
   },
   {
     id: 17,
-    text: 'We are still masters of our fate. We are still captains of our souls.',
-    source: 'Winston Churchill',
+    text: 'But, if you have nothing at all to create, then perhaps you create yourself.',
+    source: 'Carl Jung',
   },
   {
     id: 18,
@@ -91,8 +91,8 @@ export const quotes = [
   },
   {
     id: 19,
-    text: 'The best way to make your dreams come true is to wake up.',
-    source: 'Paul Valery',
+    text: 'Your visions will become clear only when you can look into your own heart. Who looks outside, dreams; who looks inside, awakes.',
+    source: 'Carl Jung',
   },
   {
     id: 20,
@@ -106,23 +106,23 @@ export const quotes = [
   },
   {
     id: 22,
-    text: 'By constant self-discipline and self-control, you can develop greatness of character.',
-    source: 'Grenville Kleiser',
+    text: 'Things which matter most must never be at the mercy of things which matter least.',
+    source: 'Goethe',
   },
   {
     id: 23,
-    text: 'The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack in will.',
-    source: 'Vince Lombardi Jr.',
+    text: 'Happiness is not achieved by the conscious pursuit of happiness; it is generally the by-product of other activities.',
+    source: 'Aldous Huxley',
   },
   {
     id: 24,
-    text: 'At the end of the day, let there be no excuses, no explanations, no regrets.',
-    source: 'Steve Maraboli',
+    text: 'You cannot dream yourself into a character: you must hammer and forge yourself into one.',
+    source: 'Henry David Thoreau',
   },
   {
     id: 25,
-    text: 'Inaction will cause a man to sink into the slough of despond and vanish without a trace.',
-    source: 'Farley Mowat',
+    text: 'To live is the rarest thing in the world. Most people exist, that is all.',
+    source: 'Oscar Wilde',
   },
   {
     id: 26,
@@ -131,18 +131,18 @@ export const quotes = [
   },
   {
     id: 27,
-    text: 'The most powerful control we can ever attain, is to be in control of ourselves.',
-    source: 'Chris Page',
+    text: 'No struggle can ever succeed without women participating side by side with men.',
+    source: 'Muhammad Ali Jinnah',
   },
   {
     id: 28,
-    text: 'Idleness is only the refuge of weak minds, and the holiday of fools.',
-    source: 'Philip Dormer Stanhope',
+    text: 'The function of education is to teach one to think intensively and to think critically. Intelligence plus character - that is the goal of true education.',
+    source: 'Martin Luther King Jr.',
   },
   {
     id: 29,
-    text: "This is your life and it's ending one minute at a time.",
-    source: 'Tyler Durden, Fight Club',
+    text: "If you're not careful, the newspapers will have you hating the people who are being oppressed, and loving the people who are doing the oppressing.",
+    source: 'Malcolm X',
   },
   {
     id: 30,
@@ -216,8 +216,8 @@ export const quotes = [
   },
   {
     id: 44,
-    text: 'The superior man is modest in his speech, but exceeds in his actions.',
-    source: 'Confucius',
+    text: 'Knowing what must be done does away with fear',
+    source: 'Rosa Parks',
   },
   {
     id: 45,
@@ -251,13 +251,13 @@ export const quotes = [
   },
   {
     id: 51,
-    text: 'You can’t be that kid standing at the top of the waterslide, overthinking it. You have to go down the chute.',
-    source: 'Tina Fey',
+    text: 'There are two ways of spreading light: to be the candle or the mirror that reflects it.',
+    source: 'Edith Wharton',
   },
   {
     id: 52,
-    text: 'Above all, be the heroine of your life, not the victim.',
-    source: 'Nora Ephron',
+    text: 'Life is not easy for any of us. But what of that? We must have perseverance and above all confidence in ourselves.',
+    source: 'Marie Curie',
   },
   {
     id: 53,
@@ -291,18 +291,18 @@ export const quotes = [
   },
   {
     id: 59,
-    text: 'My philosophy is that not only are you responsible for your life, but doing the best at this moment puts you in the best place for the next moment.',
-    source: 'Oprah Winfrey',
+    text: 'No legacy is so rich as honesty.',
+    source: 'William Shakespeare',
   },
   {
     id: 60,
-    text: 'Don’t be intimidated by what you don’t know. That can be your greatest strength and ensure that you do things differently from everyone else.',
-    source: 'Sara Blakely',
+    text: 'No one is useless in this world who lightens the burden of it to anyone else.',
+    source: 'Charles Dickens',
   },
   {
     id: 61,
-    text: 'If I had to live my life again, I’d make the same mistakes, only sooner.',
-    source: 'Tallulah Bankhead',
+    text: 'Electric communication will never be a substitute for the face of someone who with their soul encourages another person to be brave and true.',
+    source: 'Charles Dickens',
   },
   {
     id: 62,
@@ -311,8 +311,8 @@ export const quotes = [
   },
   {
     id: 63,
-    text: 'If you obey all the rules, you miss all the fun.',
-    source: 'Katharine Hepburn',
+    text: 'We must use time creatively, in the knowledge that the time is always ripe to do right.',
+    source: 'Martin Luther King Jr.',
   },
   {
     id: 64,
@@ -336,17 +336,42 @@ export const quotes = [
   },
   {
     id: 68,
-    text: 'There are still many causes worth sacrificing for, so much history yet to be made.',
-    source: 'Michelle Obama',
+    text: 'You have power over your mind - not outside events. Realize this, and you will find strength.',
+    source: 'Marcus Aurelius',
   },
   {
     id: 69,
-    text: 'Nothing is impossible; the word itself says ‘I’m possible’!',
-    source: 'Audrey Hepburn',
+    text: 'Progress is rarely a straight line. There are always bumps in the road, but you can make the choice to keep looking ahead.',
+    source: 'Kara Goucher',
   },
   {
     id: 70,
     text: 'You only live once, but if you do it right, once is enough.',
     source: 'Mae West',
+  },
+  {
+    id: 71,
+    text: "You don't have to see the whole staircase, just take the first step.",
+    source: 'Martin Luther King Jr.',
+  },
+  {
+    id: 72,
+    text: 'A creative person is motivated by the desire to achieve, not by the desire to beat others.',
+    source: 'Ayn Rand',
+  },
+  {
+    id: 73,
+    text: 'All the technology in the world will never replace a positive attitude.',
+    source: 'Harvey Mackay',
+  },
+  {
+    id: 74,
+    text: 'It is impossible for a person to learn what they think they already know.',
+    source: 'Epictetus',
+  },
+  {
+    id: 75,
+    text: 'Often we look so long at the closed door that we do not see the one that has been opened for us.',
+    source: 'Helen Keller',
   },
 ]
