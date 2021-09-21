@@ -7,7 +7,6 @@
 </div>
 
 ![Chrome User Count](https://www.extensionbadge.com/api/installs/ocbkghddheomencfpdiblibbjhjcojna.svg)
-
 ![Chrome Rating](https://www.extensionbadge.com/api/ratings/ocbkghddheomencfpdiblibbjhjcojna.svg)
 
 ## Project Status
