@@ -1,4 +1,4 @@
-export const quotes = [
+const quotes = [
   {
     id: 1,
     text: 'I have just three things to teach: simplicity, patience, compassion. These three are your greatest treasures.',
@@ -350,3 +350,5 @@ export const quotes = [
     source: 'Mae West',
   },
 ]
+
+export default quotes;
