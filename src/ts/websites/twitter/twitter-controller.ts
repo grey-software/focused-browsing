@@ -38,7 +38,7 @@ export default class TwitterController extends WebsiteController {
         this.setPanelVisibility(true)
         this.clearIntervals()
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   clearIntervals() {
@@ -50,14 +50,14 @@ export default class TwitterController extends WebsiteController {
     if (this.panelIntervalId) {
       window.clearInterval(this.panelIntervalId)
     }
-    this.panelIntervalId = window.setInterval(this.tryBlockingPanel.bind(this), 250)
+    this.panelIntervalId = window.setInterval(() => { this.tryBlockingPanel() }, 250)
   }
 
   focusFeed() {
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
-    this.feedIntervalId = window.setInterval(this.tryBlockingFeed.bind(this), 250)
+    this.feedIntervalId = window.setInterval(() => { this.tryBlockingFeed() }, 250)
   }
 
   setFeedVisibility(visible: boolean) {
@@ -104,7 +104,7 @@ export default class TwitterController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 
   tryBlockingPanel() {
@@ -117,6 +117,6 @@ export default class TwitterController extends WebsiteController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) { }
   }
 }
