@@ -2,14 +2,15 @@ import LinkedInController from '../websites/linkedin/linkedin-controller'
 import TwitterController from '../websites/twitter/twitter-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
 import FocusUtils from './focus-utils'
-import FocusStateManager from './focus-state-manager'
+import AppStateManager from './focus-state-manager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
+import { FocusState, Website } from './types'
 
-let currentWebsite: string = ''
+let currentWebsite: Website = Website.Unsupported
 
-let focusStateManager: FocusStateManager
+let appStateManager: AppStateManager
 let keyPressManager: KeyPressManager
 let websiteController: WebsiteController
 
@@ -17,23 +18,23 @@ document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
 
 browser.runtime.onMessage.addListener(async (message: { text: string; url: string }, sender: Runtime.MessageSender) => {
-  let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
+  let newFocusState = await FocusUtils.getFromLocalStorage('appState')
 
   if (message.text == 'different tab activated') {
-    if (!focusStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) {
+    if (!appStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) {
       return
     }
-    focusStateManager.setFocusState(newFocusState)
+    appStateManager.setFocusState(newFocusState)
 
-    if (currentWebsite != null) {
-      renderFocusState(focusStateManager.focusState[currentWebsite])
+    if (currentWebsite) {
+      renderFocusState(appStateManager.appState[currentWebsite])
     }
 
     return Promise.resolve({ status: 'tab change confirmed' })
   } else if (message.text == 'new page loaded on website') {
     if (FocusUtils.isURLValid(message.url)) {
-      focusStateManager.setFocusState(newFocusState)
-      if (focusStateManager.focusState[currentWebsite]) {
+      appStateManager.setFocusState(newFocusState)
+      if (appStateManager.appState[currentWebsite]) {
         websiteController.focus()
       }
       return Promise.resolve({ status: 'tab change confirmed' })
@@ -58,36 +59,36 @@ async function handleKeyEvent(e: KeyboardEvent) {
   }
 }
 
-function renderFocusState(shouldFocus: boolean) {
+function renderFocusState(focusState: FocusState) {
   if (!currentWebsite) {
     return
   }
-  shouldFocus ? websiteController.focus() : websiteController.unfocus()
+  websiteController.renderFocusState(focusState)
 }
 
 async function toggleFocus() {
-  focusStateManager.toggleFocusState(currentWebsite)
-  await focusStateManager.updateFocusState(currentWebsite)
-  renderFocusState(focusStateManager.focusState[currentWebsite])
+  appStateManager.toggleFocusState(currentWebsite)
+  await appStateManager.updateFocusState(currentWebsite)
+  renderFocusState(appStateManager.appState[currentWebsite])
 }
 
 ;(async function () {
   let currentURL = document.URL
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
-    currentWebsite = 'twitter'
+    currentWebsite = Website.Twitter
   } else if (currentURL.includes('linkedin.com')) {
     websiteController = new LinkedInController()
-    currentWebsite = 'linkedin'
+    currentWebsite = Website.LinkedIn
   } else if (currentURL.includes('youtube.com')) {
     websiteController = new YoutubeController()
-    currentWebsite = 'youtube'
+    currentWebsite = Website.Youtube
   }
 
-  let focusState = await FocusUtils.getFromLocalStorage('focusState')
-  if (currentWebsite != '') {
-    focusStateManager = new FocusStateManager(focusState)
+  let appState = await FocusUtils.getFromLocalStorage('appState')
+  if (currentWebsite != Website.Unsupported) {
+    appStateManager = new AppStateManager(appState)
     keyPressManager = new KeyPressManager()
-    renderFocusState(focusStateManager.focusState[currentWebsite])
+    renderFocusState(appStateManager.appState[currentWebsite])
   }
 })()

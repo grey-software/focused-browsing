@@ -1,10 +1,16 @@
+import { AppState, Website, FocusState } from './focus/types'
 import { Action, browser, Runtime, Tabs } from 'webextension-polyfill-ts'
 
-let focusState = { twitter: true, linkedin: true, youtube: true }
+let appState: AppState = {
+  Twitter: FocusState.Focused,
+  LinkedIn: FocusState.Focused,
+  Youtube: FocusState.Focused,
+  Unsupported: FocusState.Unfocused,
+}
 
 let activeURL: string | undefined = ''
 
-browser.storage.local.set({ focusState: focusState })
+browser.storage.local.set({ appState: appState })
 
 async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUpdatedChangeInfoType, tab: Tabs.Tab) {
   let url: string | undefined = tab.url

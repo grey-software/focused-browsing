@@ -1,43 +1,36 @@
 import { browser } from 'webextension-polyfill-ts'
-import { FocusState } from './types'
+import { AppState, FocusState, Website } from './types'
 import FocusUtils from './focus-utils'
 
-export default class FocusStateManager {
-  focusState: FocusState
+export default class AppStateManager {
+  appState: AppState
 
-  constructor(focusState: FocusState) {
-    this.focusState = focusState
+  constructor(appState: AppState) {
+    this.appState = appState
   }
 
-  isCurrentlyFocused(currentWebsite: string) {
-    return this.focusState[currentWebsite]
+  isCurrentlyFocused(currentWebsite: Website): FocusState {
+    return this.appState[currentWebsite]
   }
 
-  hasFocusStateChanged(newFocusState: FocusState, currentWebsite: string) {
-    if (newFocusState[currentWebsite] != this.focusState[currentWebsite]) {
-      // state of web page didn't change
-      return true
-    }
-    return false
+  hasFocusStateChanged(newFocusState: AppState, currentWebsite: Website) {
+    return newFocusState[currentWebsite] != this.appState[currentWebsite]
   }
 
-  setFocusState(newFocusState: FocusState) {
-    this.focusState = newFocusState
+  setFocusState(newFocusState: AppState) {
+    this.appState = newFocusState
   }
 
-  toggleFocusState(currentWebsite: string) {
-    this.focusState[currentWebsite] = !this.focusState[currentWebsite]
+  toggleFocusState(currentWebsite: Website) {
+    this.appState[currentWebsite] = (this.appState[currentWebsite] + 1) % 3
   }
 
-  async getFromLocalStorage(name: string) {
-    let storeObject = await browser.storage.local.get(name)
-    return storeObject[name]
-  }
-
-  async updateFocusState(currentWebsite: string) {
-    let newState = await FocusUtils.getFromLocalStorage('focusState')
-    newState[currentWebsite] = this.focusState[currentWebsite]
-    FocusUtils.setInLocalStorage('focusState', newState)
-    this.focusState = newState
+  async updateFocusState(currentWebsite: Website) {
+    let newState = await FocusUtils.getFromLocalStorage('appState')
+    console.log(newState)
+    newState[currentWebsite] = this.appState[currentWebsite]
+    console.log(newState)
+    FocusUtils.setInLocalStorage('appState', newState)
+    this.appState = newState
   }
 }

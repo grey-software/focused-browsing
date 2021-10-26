@@ -4,6 +4,9 @@ import utils from '../utils'
 import WebsiteController from '../website-controller'
 
 export default class LinkedInController extends WebsiteController {
+  premiumFocus(): void {
+    throw new Error('Method not implemented.')
+  }
   panel_elements: Node[]
   feedIntervalId: number
   panelIntervalId: number
@@ -51,21 +54,27 @@ export default class LinkedInController extends WebsiteController {
     if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
-    this.feedIntervalId = window.setInterval(() => { this.tryBlockingFeed() }, 250)
+    this.feedIntervalId = window.setInterval(() => {
+      this.tryBlockingFeed()
+    }, 250)
   }
 
   focusPanel() {
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
-    this.panelIntervalId = window.setInterval(() => { this.tryBlockingPanel() }, 250)
+    this.panelIntervalId = window.setInterval(() => {
+      this.tryBlockingPanel()
+    }, 250)
   }
 
   focusAd() {
     if (this.adIntervalId) {
       clearInterval(this.adIntervalId)
     }
-    this.adIntervalId = window.setInterval(() => { this.tryBlockingAd() }, 250)
+    this.adIntervalId = window.setInterval(() => {
+      this.tryBlockingAd()
+    }, 250)
   }
 
   setAdVisibility(visibile: boolean) {
@@ -123,7 +132,7 @@ export default class LinkedInController extends WebsiteController {
         this.setAdVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingFeed() {
@@ -139,7 +148,7 @@ export default class LinkedInController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -156,6 +165,6 @@ export default class LinkedInController extends WebsiteController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }

@@ -41,6 +41,14 @@ function isHomePage(url: string): boolean {
   return false
 }
 
+function getAdElements(): HTMLElement[] {
+  let spanElements = document.querySelectorAll('span')
+  let targetSpanElements: HTMLElement[] = Array.from(spanElements).filter((element) => element.innerHTML === 'Promoted')
+  return targetSpanElements
+    .map((promotedSpanElement) => promotedSpanElement.closest('article'))
+    .filter((it): it is HTMLElement => it !== null)
+}
+
 export default {
   getTwitterFeed,
   getTwitterPanel,
@@ -49,4 +57,5 @@ export default {
   isFeedHidden,
   isPanelHidden,
   isHomePage,
+  getAdElements,
 }

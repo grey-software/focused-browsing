@@ -2,12 +2,14 @@ import TwitterUtils from './twitter-utils'
 import TwitterIFrameUtils from './twitter-iframe-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
+import twitterUtils from './twitter-utils'
 
 export default class TwitterController extends WebsiteController {
   panel_elements: Node[]
   twitterFeedChildNode: string | Node
   feedIntervalId: number
   panelIntervalId: number
+  adIntervalId: number
   feedIframe: HTMLIFrameElement
   constructor() {
     super()
@@ -16,6 +18,7 @@ export default class TwitterController extends WebsiteController {
 
     this.feedIntervalId = 0
     this.panelIntervalId = 0
+    this.adIntervalId = 0
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
   }
 
@@ -38,26 +41,46 @@ export default class TwitterController extends WebsiteController {
         this.setPanelVisibility(true)
         this.clearIntervals()
       }
-    } catch (err) { }
+    } catch (err) {}
+  }
+
+  premiumFocus() {
+    utils.clearElements(this.panel_elements)
+    this.focusPanel()
+    this.focusAds()
   }
 
   clearIntervals() {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.panelIntervalId)
+    window.clearInterval(this.adIntervalId)
   }
 
   focusPanel() {
     if (this.panelIntervalId) {
       window.clearInterval(this.panelIntervalId)
     }
-    this.panelIntervalId = window.setInterval(() => { this.tryBlockingPanel() }, 250)
+    this.panelIntervalId = window.setInterval(() => {
+      this.tryBlockingPanel()
+    }, 250)
   }
 
   focusFeed() {
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
-    this.feedIntervalId = window.setInterval(() => { this.tryBlockingFeed() }, 250)
+    this.feedIntervalId = window.setInterval(() => {
+      this.tryBlockingFeed()
+    }, 250)
+  }
+
+  focusAds() {
+    if (this.adIntervalId) {
+      window.clearInterval(this.adIntervalId)
+    }
+    this.adIntervalId = window.setInterval(() => {
+      this.hideAds()
+    }, 250)
   }
 
   setFeedVisibility(visible: boolean) {
@@ -104,7 +127,7 @@ export default class TwitterController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingPanel() {
@@ -117,6 +140,13 @@ export default class TwitterController extends WebsiteController {
         this.setPanelVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
+  }
+
+  hideAds() {
+    twitterUtils.getAdElements().forEach((ad) => {
+      console.log('hiding ad')
+      ad.style.display = 'none'
+    })
   }
 }

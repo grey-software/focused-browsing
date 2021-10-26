@@ -4,6 +4,9 @@ import utils from '../utils'
 import WebsiteController from '../website-controller'
 
 export default class YouTubeController extends WebsiteController {
+  premiumFocus(): void {
+    throw new Error('Method not implemented.')
+  }
   YouTubeFeedChildNode: string | Node
   feedIntervalId: number
   suggestionsIntervalId: number
@@ -43,7 +46,9 @@ export default class YouTubeController extends WebsiteController {
   }
 
   listenForCardChange() {
-    this.cardChangeIntervalId = window.setInterval(() => { this.changeCard() }, 250)
+    this.cardChangeIntervalId = window.setInterval(() => {
+      this.changeCard()
+    }, 250)
   }
 
   setCardColorInterval() {
@@ -54,7 +59,7 @@ export default class YouTubeController extends WebsiteController {
         }
         document.body.style.background = 'var(--yt-spec-general-background-a)'
         this.currentColor = window.getComputedStyle(document.body).backgroundColor
-      } catch (err) { }
+      } catch (err) {}
     }, 250)
   }
 
@@ -99,7 +104,9 @@ export default class YouTubeController extends WebsiteController {
     if (this.suggestionsIntervalId) {
       window.clearInterval(this.suggestionsIntervalId)
     }
-    this.suggestionsIntervalId = window.setInterval(() => { this.tryBlockingSuggestions() }, 250)
+    this.suggestionsIntervalId = window.setInterval(() => {
+      this.tryBlockingSuggestions()
+    }, 250)
   }
 
   focusFeed() {
@@ -107,14 +114,18 @@ export default class YouTubeController extends WebsiteController {
       window.clearInterval(this.feedIntervalId)
     }
 
-    this.feedIntervalId = window.setInterval(() => { this.tryBlockingFeed() }, 250)
+    this.feedIntervalId = window.setInterval(() => {
+      this.tryBlockingFeed()
+    }, 250)
   }
 
   focusComments() {
     if (this.commentIntervalId) {
       window.clearInterval(this.commentIntervalId)
     }
-    this.commentIntervalId = window.setInterval(() => { this.tryBlockingComments() }, 250)
+    this.commentIntervalId = window.setInterval(() => {
+      this.tryBlockingComments()
+    }, 250)
   }
 
   setFeedVisibility(visible: boolean) {
@@ -188,7 +199,7 @@ export default class YouTubeController extends WebsiteController {
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingSuggestions() {
@@ -205,7 +216,7 @@ export default class YouTubeController extends WebsiteController {
         this.setSuggestionsVisibility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   tryBlockingComments() {
@@ -223,6 +234,6 @@ export default class YouTubeController extends WebsiteController {
         this.setCommentsVisbility(false)
         return
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 }
