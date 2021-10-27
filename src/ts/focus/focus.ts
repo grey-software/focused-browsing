@@ -1,6 +1,7 @@
 import LinkedInController from '../websites/linkedin/linkedin-controller'
 import TwitterController from '../websites/twitter/twitter-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
+import GithubController from '../websites/github/github-controller'
 import FocusUtils from './focus-utils'
 import FocusStateManager from './focus-state-manager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
@@ -82,6 +83,9 @@ async function toggleFocus() {
   } else if (currentURL.includes('youtube.com')) {
     websiteController = new YoutubeController()
     currentWebsite = 'youtube'
+  } else if (currentURL.includes('github.com')) {
+    websiteController = new GithubController()
+    currentWebsite = 'github'
   }
 
   let focusState = await FocusUtils.getFromLocalStorage('focusState')

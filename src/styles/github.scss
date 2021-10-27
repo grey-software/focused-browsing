@@ -1,0 +1,178 @@
+@import './inter.scss';
+@import './global.scss';
+
+html {
+  background-color: $white-1;
+}
+
+.focus-container {
+  background-color: $white;
+  border-radius: 16px 16px 0px 0px;
+  padding: 32px 48px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.quote-container {
+  margin-bottom: 28px;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.quote {
+  color: $gray;
+  display: flex;
+  text-align: center;
+  margin-bottom: 8px;
+  letter-spacing: -0.27px;
+  @include inter-16-regular;
+}
+.quoter {
+  color: $black;
+  letter-spacing: -0.21px;
+  @include inter-14-medium;
+}
+.card-main {
+  background-color: $white;
+  margin-bottom: 40px;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 48px 42px;
+  box-shadow: 0 8px 24px -4px $transparent-midnight-blue, 0 6px 12px -6px $transparent-midnight-blue-2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+.card-content {
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.title-container {
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.card-heading {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+}
+.card-icon {
+  margin-right: 7px;
+  padding: 1.54px 1px 1.53px;
+  display: flex;
+  align-items: center;
+}
+.vector {
+  flex: 1;
+  align-self: stretch;
+  object-fit: cover;
+}
+.heading {
+  color: $primary-1;
+  letter-spacing: -0.27px;
+  @include inter-18-medium;
+}
+.card-subtitle {
+  height: 60px;
+  width: 348px;
+  color: $gray;
+  display: flex;
+  text-align: center;
+  letter-spacing: -0.21px;
+  @include inter-14-regular;
+}
+.buttons-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.button-support {
+  background-color: $primary-1;
+  margin-bottom: 16px;
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 14px 87px 13px;
+  display: flex;
+  align-items: center;
+  height: 21px;
+  width: 132px;
+}
+.support-this-project {
+  color: $white-2;
+  letter-spacing: -0.21px;
+  @include inter-14-semi-bold;
+}
+.button-show-feed {
+  overflow: hidden;
+  border-radius: 8px;
+  padding: 13px 117px 12px;
+  display: flex;
+  align-items: center;
+  height: 21px;
+  width: 70px;
+  border: 1px solid $primary-1;
+}
+.show-feed {
+  color: $primary-1;
+  letter-spacing: -0.21px;
+  @include inter-14-semi-bold;
+}
+.shortcut-container {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shortcut-caption {
+  color: $gray;
+  @include inter-14-semi-bold-line14;
+}
+.shortcut-caption-emphasis-1 {
+  color: $gray;
+  letter-spacing: -0.21px;
+  @include inter-14-bold-line14;
+  margin: 0px 2px;
+}
+.shortcut-caption-emphasis-2 {
+  color: $gray;
+  letter-spacing: -0.21px;
+  @include inter-14-medium-line14;
+}
+
+.icon-info {
+  margin-right: 48px;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+}
+.vector {
+  flex: 1;
+  align-self: stretch;
+  object-fit: cover;
+}
+.icon-feedback {
+  margin-right: 48px;
+  padding: 2px 4px 2px 3px;
+  display: flex;
+  align-items: center;
+}
+
+.icon-logo {
+  display: flex;
+  align-items: flex-start;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
