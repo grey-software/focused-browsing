@@ -1,6 +1,7 @@
 import LinkedInController from '../websites/linkedin/linkedin-controller'
 import TwitterController from '../websites/twitter/twitter-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
+import GithubController from '../websites/github/github-controller'
 import FocusUtils from './focus-utils'
 import AppStateManager from './focus-state-manager'
 import { browser, Runtime } from 'webextension-polyfill-ts'
@@ -17,7 +18,7 @@ let websiteController: WebsiteController
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
 
-browser.runtime.onMessage.addListener(async (message: { text: string; url: string }, sender: Runtime.MessageSender) => {
+browser.runtime.onMessage.addListener(async (message: { text: string; url: string }) => {
   let newFocusState = await FocusUtils.getFromLocalStorage('appState')
 
   if (message.text == 'different tab activated') {
@@ -83,6 +84,9 @@ async function toggleFocus() {
   } else if (currentURL.includes('youtube.com')) {
     websiteController = new YoutubeController()
     currentWebsite = Website.Youtube
+  } else if (currentURL.includes('github.com')) {
+    websiteController = new GithubController()
+    currentWebsite = Website.Github
   }
 
   let appState = await FocusUtils.getFromLocalStorage('appState')

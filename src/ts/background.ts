@@ -5,6 +5,7 @@ let appState: AppState = {
   Twitter: FocusState.Focused,
   LinkedIn: FocusState.Focused,
   Youtube: FocusState.Focused,
+  Github: FocusState.Focused,
   Unsupported: FocusState.Unfocused,
 }
 
@@ -66,6 +67,8 @@ const isHomeURLLoad = (currentUrl: string, newUrl: string) => {
     return newUrl == 'https://twitter.com/home' && currentUrl == 'https://twitter.com/'
   } else if (newUrl.includes('linkedin.com')) {
     return newUrl.includes('/feed') && currentUrl == 'https://www.linkedin.com/'
+  } else if (newUrl.includes('github.com')) {
+    return currentUrl == 'https://github.com/'
   }
 }
 

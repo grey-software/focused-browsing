@@ -24,5 +24,12 @@
     }
   },
   "web_accessible_resources": ["html/*", "js/*", "css/*", "<all_urls>"],
-  "permissions": ["*://*.twitter.com/*", "*://*.linkedin.com/*", "*://*.youtube.com/*", "tabs", "storage"]
+  "permissions": [
+    "*://*.twitter.com/*",
+    "*://*.linkedin.com/*",
+    "*://*.youtube.com/*",
+    "*://*.github.com/*",
+    "tabs",
+    "storage"
+  ]
 }

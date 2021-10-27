@@ -1,7 +1,12 @@
 import { browser } from 'webextension-polyfill-ts'
 
 const isURLValid = (url: string) => {
-  return url.includes('twitter.com') || url.includes('linkedin.com') || url.includes('youtube.com')
+  return (
+    url.includes('twitter.com') ||
+    url.includes('linkedin.com') ||
+    url.includes('youtube.com') ||
+    url.includes('github.com')
+  )
 }
 
 async function getFromLocalStorage(name: string) {
