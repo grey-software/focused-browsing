@@ -75,7 +75,7 @@ export default class GithubController extends WebsiteController {
       let length = explore.childElementCount
       let current_explore_elements = []
 
-      while (length != 1) {
+      while (length != 0) {
         let currentLastChild = explore.children[length - 1]
         current_explore_elements.push(currentLastChild)
         explore.removeChild(currentLastChild)
