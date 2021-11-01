@@ -21,17 +21,6 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
   }
   const isFocusScriptInjected = await checkFocusScriptInjected(tabId)
   if (isFocusScriptInjected) {
-    if (url != activeURL && activeURL && url && !isHomeURLLoad(activeURL, url)) {
-      activeURL = url
-      browser.tabs
-        .sendMessage(tabId, { text: 'new-page-same-website', url: activeURL })
-        .then((response: { status?: string }) => {
-          response = response || {}
-          if (response.status == 'success') {
-            return //Success
-          }
-        })
-    }
     return
   }
 
