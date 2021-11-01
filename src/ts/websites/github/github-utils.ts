@@ -10,7 +10,7 @@ function getGithubExplore(): Element {
 }
 
 function hasGithubExploreLoaded(): boolean {
-  return getGithubExplore().childElementCount >= 6
+  return getGithubExplore().childElementCount > 0
 }
 
 function hasGithubActivityLoaded(): boolean {
