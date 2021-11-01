@@ -55,7 +55,7 @@ async function toggleFocusMode() {
 
 function render() {
   if (currentWebsite != Website.Unsupported) {
-    let mode = stateManager.appState[currentWebsite]
+    let mode = stateManager.getFocusMode(currentWebsite)
     websiteController.renderFocusMode(mode)
   }
 }
@@ -84,6 +84,6 @@ async function initialize() {
 }
 
 ;(async function () {
-  initialize()
+  await initialize()
   render()
 })()

@@ -8,6 +8,10 @@ export default class AppStateManager {
     this.appState = appState
   }
 
+  getFocusMode(currentWebsite: Website): FocusMode {
+    return this.appState[currentWebsite]
+  }
+
   async loadLatestState() {
     this.appState = await FocusUtils.getFromLocalStorage('appState')
   }
