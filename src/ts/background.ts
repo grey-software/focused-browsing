@@ -1,12 +1,12 @@
-import { AppState, Website, FocusState } from './focus/types'
-import { Action, browser, Runtime, Tabs } from 'webextension-polyfill-ts'
+import { AppState, FocusMode } from './focus/types'
+import { browser, Runtime, Tabs } from 'webextension-polyfill-ts'
 
-let appState: AppState = {
-  Twitter: FocusState.Focused,
-  LinkedIn: FocusState.Focused,
-  Youtube: FocusState.Focused,
-  Github: FocusState.Focused,
-  Unsupported: FocusState.Unfocused,
+const appState: AppState = {
+  Twitter: FocusMode.Focused,
+  LinkedIn: FocusMode.Focused,
+  Youtube: FocusMode.Focused,
+  Github: FocusMode.Focused,
+  Unsupported: FocusMode.Unfocused,
 }
 
 let activeURL: string | undefined = ''
@@ -19,21 +19,19 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
   if (!isPageLoading) {
     return
   }
-  const focusScriptInjectedResult = await checkFocusScriptInjected(tabId)
-  const focusScriptInjected = focusScriptInjectedResult && focusScriptInjectedResult[0]
-  if (focusScriptInjected) {
+  const isFocusScriptInjected = await checkFocusScriptInjected(tabId)
+  if (isFocusScriptInjected) {
     if (url != activeURL && activeURL && url && !isHomeURLLoad(activeURL, url)) {
       activeURL = url
       browser.tabs
-        .sendMessage(tabId, { text: 'new page loaded on website', url: activeURL })
+        .sendMessage(tabId, { text: 'new-page-same-website', url: activeURL })
         .then((response: { status?: string }) => {
           response = response || {}
-          if (response.status == 'tab change within website confirmed') {
-            return
+          if (response.status == 'success') {
+            return //Success
           }
         })
     }
-
     return
   }
 
@@ -59,7 +57,7 @@ async function checkFocusScriptInjected(tabId: number) {
     code: 'var isFocusScriptInjected = document.isFocusScriptInjected || false; isFocusScriptInjected;',
     runAt: 'document_start',
   })
-  return focusScriptInjectedResult
+  return focusScriptInjectedResult && focusScriptInjectedResult[0]
 }
 
 const isHomeURLLoad = (currentUrl: string, newUrl: string) => {
@@ -77,18 +75,18 @@ browser.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
 browser.tabs.onActivated.addListener(async function (activeInfo: { tabId: number }) {
   let tabId = activeInfo.tabId
 
-  browser.tabs.sendMessage(tabId, { text: 'different tab activated' }).then((response: { status?: string }) => {
+  browser.tabs.sendMessage(tabId, { text: 'new-tab-activated' }).then((response: { status?: string }) => {
     response = response || {}
-    if (response.status == 'tab change confirmed') {
-      return
+    if (response.status == 'success') {
+      return //Success
     }
   })
 })
 
 browser.runtime.onMessage.addListener((message: { text: string }, sender: Runtime.MessageSender) => {
-  if (message.text == 'unfocus from vue') {
+  if (message.text == 'unfocus-from-ui') {
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs: Tabs.Tab[]) => {
-      var activeTab = tabs[0]
+      let activeTab = tabs[0]
       browser.tabs.sendMessage(activeTab.id!, { text: message.text })
     })
   }

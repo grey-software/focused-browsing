@@ -19,7 +19,7 @@ export default class KeyPressManager {
     return e.code == 'ShiftLeft' || e.code == 'ShiftRight'
   }
 
-  shortcutKeysPressed() {
+  isShortcutPressed() {
     let allKeysPressed = true
     Object.values(this.keyPressedState).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
     return allKeysPressed

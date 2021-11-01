@@ -145,7 +145,6 @@ export default class TwitterController extends WebsiteController {
 
   hideAds() {
     twitterUtils.getAdElements().forEach((ad) => {
-      console.log('hiding ad')
       ad.style.display = 'none'
     })
   }

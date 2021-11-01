@@ -1,4 +1,4 @@
-export enum FocusState {
+export enum FocusMode {
   Focused = 0,
   Unfocused = 1,
   Premium = 2,
@@ -12,11 +12,11 @@ export enum Website {
   Unsupported = 'Unsupported',
 }
 
-export interface AppState extends Record<Website, FocusState> {
-  Twitter: FocusState
-  LinkedIn: FocusState
-  Youtube: FocusState
-  Github: FocusState
+export interface AppState extends Record<Website, FocusMode> {
+  Twitter: FocusMode
+  LinkedIn: FocusMode
+  Youtube: FocusMode
+  Github: FocusMode
 }
 
 export interface KeyPressedState extends Record<string, boolean> {

@@ -3,15 +3,14 @@ import TwitterController from '../websites/twitter/twitter-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
 import GithubController from '../websites/github/github-controller'
 import FocusUtils from './focus-utils'
-import AppStateManager from './focus-state-manager'
-import { browser, Runtime } from 'webextension-polyfill-ts'
+import AppStateManager from './app-state-manager'
+import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
-import { FocusState, Website } from './types'
+import { FocusMode, Website } from './types'
 
 let currentWebsite: Website = Website.Unsupported
-
-let appStateManager: AppStateManager
+let stateManager: AppStateManager
 let keyPressManager: KeyPressManager
 let websiteController: WebsiteController
 
@@ -19,29 +18,18 @@ document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
 
 browser.runtime.onMessage.addListener(async (message: { text: string; url: string }) => {
-  let newFocusState = await FocusUtils.getFromLocalStorage('appState')
-
-  if (message.text == 'different tab activated') {
-    if (!appStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) {
-      return
-    }
-    appStateManager.setFocusState(newFocusState)
-
-    if (currentWebsite) {
-      renderFocusState(appStateManager.appState[currentWebsite])
-    }
-
-    return Promise.resolve({ status: 'tab change confirmed' })
-  } else if (message.text == 'new page loaded on website') {
+  // We load the latest appState from localStorage
+  await stateManager.loadLatestState()
+  if (message.text == 'new-tab-activated') {
+    render()
+    return Promise.resolve({ status: 'success' })
+  } else if (message.text == 'new-page-same-website') {
     if (FocusUtils.isURLValid(message.url)) {
-      appStateManager.setFocusState(newFocusState)
-      if (appStateManager.appState[currentWebsite]) {
-        websiteController.focus()
-      }
-      return Promise.resolve({ status: 'tab change confirmed' })
+      render()
+      return Promise.resolve({ status: 'success' })
     }
-  } else if (message.text == 'unfocus from vue') {
-    toggleFocus()
+  } else if (message.text == 'unfocus-from-ui') {
+    toggleFocusMode()
   }
 })
 
@@ -51,8 +39,8 @@ async function handleKeyEvent(e: KeyboardEvent) {
       let keyCode = e.code
       keyPressManager.setKeyPressedState(keyCode, true)
     }
-    if (keyPressManager.shortcutKeysPressed()) {
-      toggleFocus()
+    if (keyPressManager.isShortcutPressed()) {
+      toggleFocusMode()
     }
   }
   if (e.type == 'keyup') {
@@ -60,20 +48,19 @@ async function handleKeyEvent(e: KeyboardEvent) {
   }
 }
 
-function renderFocusState(focusState: FocusState) {
-  if (!currentWebsite) {
-    return
+async function toggleFocusMode() {
+  await stateManager.updateFocusMode(currentWebsite)
+  render()
+}
+
+function render() {
+  if (currentWebsite != Website.Unsupported) {
+    let mode = stateManager.appState[currentWebsite]
+    websiteController.renderFocusMode(mode)
   }
-  websiteController.renderFocusState(focusState)
 }
 
-async function toggleFocus() {
-  appStateManager.toggleFocusState(currentWebsite)
-  await appStateManager.updateFocusState(currentWebsite)
-  renderFocusState(appStateManager.appState[currentWebsite])
-}
-
-;(async function () {
+async function initialize() {
   let currentURL = document.URL
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
@@ -89,10 +76,14 @@ async function toggleFocus() {
     currentWebsite = Website.Github
   }
 
-  let appState = await FocusUtils.getFromLocalStorage('appState')
   if (currentWebsite != Website.Unsupported) {
-    appStateManager = new AppStateManager(appState)
+    let appState = await FocusUtils.getFromLocalStorage('appState')
+    stateManager = new AppStateManager(appState)
     keyPressManager = new KeyPressManager()
-    renderFocusState(appStateManager.appState[currentWebsite])
   }
+}
+
+;(async function () {
+  initialize()
+  render()
 })()

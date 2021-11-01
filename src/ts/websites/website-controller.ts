@@ -1,17 +1,17 @@
-import { FocusState } from './../focus/types'
+import { FocusMode } from './../focus/types'
 
 export default abstract class WebsiteController {
-  renderFocusState(focusState: FocusState) {
-    switch (focusState) {
-      case FocusState.Focused: {
+  renderFocusMode(focusMode: FocusMode) {
+    switch (focusMode) {
+      case FocusMode.Focused: {
         this.focus()
         return
       }
-      case FocusState.Unfocused: {
+      case FocusMode.Unfocused: {
         this.unfocus()
         return
       }
-      case FocusState.Premium: {
+      case FocusMode.Premium: {
         this.premiumFocus()
         return
       }
