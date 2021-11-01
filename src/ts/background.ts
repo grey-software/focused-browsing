@@ -49,16 +49,6 @@ async function checkFocusScriptInjected(tabId: number) {
   return focusScriptInjectedResult && focusScriptInjectedResult[0]
 }
 
-const isHomeURLLoad = (currentUrl: string, newUrl: string) => {
-  if (newUrl.includes('twitter.com')) {
-    return newUrl == 'https://twitter.com/home' && currentUrl == 'https://twitter.com/'
-  } else if (newUrl.includes('linkedin.com')) {
-    return newUrl.includes('/feed') && currentUrl == 'https://www.linkedin.com/'
-  } else if (newUrl.includes('github.com')) {
-    return currentUrl == 'https://github.com/'
-  }
-}
-
 browser.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
 
 browser.tabs.onActivated.addListener(async function (activeInfo: { tabId: number }) {
