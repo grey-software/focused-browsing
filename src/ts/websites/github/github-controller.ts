@@ -4,6 +4,9 @@ import utils from '../utils'
 import WebsiteController from '../website-controller'
 
 export default class GithubController extends WebsiteController {
+  premiumFocus(): void {
+    throw new Error('Method not implemented.')
+  }
   explore_elements: Node[]
   activityIntervalId: number
   exploreIntervalId: number

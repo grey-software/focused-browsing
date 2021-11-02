@@ -46,7 +46,7 @@ export default {
   methods: {
     showFeed() {
       browser.runtime.sendMessage({
-        text: 'unfocus from vue',
+        text: 'unfocus-from-ui',
       })
     },
     openSupport() {

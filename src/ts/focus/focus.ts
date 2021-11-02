@@ -3,44 +3,28 @@ import TwitterController from '../websites/twitter/twitter-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
 import GithubController from '../websites/github/github-controller'
 import FocusUtils from './focus-utils'
-import FocusStateManager from './focus-state-manager'
-import { browser, Runtime } from 'webextension-polyfill-ts'
+import AppStateManager from './app-state-manager'
+import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
+import { FocusMode, Website } from './types'
 
-let currentWebsite: string = ''
-
-let focusStateManager: FocusStateManager
+let currentWebsite: Website = Website.Unsupported
+let stateManager: AppStateManager
 let keyPressManager: KeyPressManager
 let websiteController: WebsiteController
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
 
-browser.runtime.onMessage.addListener(async (message: { text: string; url: string }, sender: Runtime.MessageSender) => {
-  let newFocusState = await FocusUtils.getFromLocalStorage('focusState')
-
-  if (message.text == 'different tab activated') {
-    if (!focusStateManager.hasFocusStateChanged(newFocusState, currentWebsite)) {
-      return
-    }
-    focusStateManager.setFocusState(newFocusState)
-
-    if (currentWebsite != null) {
-      renderFocusState(focusStateManager.focusState[currentWebsite])
-    }
-
-    return Promise.resolve({ status: 'tab change confirmed' })
-  } else if (message.text == 'new page loaded on website') {
-    if (FocusUtils.isURLValid(message.url)) {
-      focusStateManager.setFocusState(newFocusState)
-      if (focusStateManager.focusState[currentWebsite]) {
-        websiteController.focus()
-      }
-      return Promise.resolve({ status: 'tab change confirmed' })
-    }
-  } else if (message.text == 'unfocus from vue') {
-    toggleFocus()
+browser.runtime.onMessage.addListener(async (message: { text: string; url: string }) => {
+  // We load the latest appState from localStorage
+  await stateManager.loadLatestState()
+  if (message.text == 'new-tab-activated') {
+    render()
+    return Promise.resolve({ status: 'success' })
+  } else if (message.text == 'unfocus-from-ui') {
+    toggleFocusMode()
   }
 })
 
@@ -50,8 +34,8 @@ async function handleKeyEvent(e: KeyboardEvent) {
       let keyCode = e.code
       keyPressManager.setKeyPressedState(keyCode, true)
     }
-    if (keyPressManager.shortcutKeysPressed()) {
-      toggleFocus()
+    if (keyPressManager.isShortcutPressed()) {
+      toggleFocusMode()
     }
   }
   if (e.type == 'keyup') {
@@ -59,39 +43,42 @@ async function handleKeyEvent(e: KeyboardEvent) {
   }
 }
 
-function renderFocusState(shouldFocus: boolean) {
-  if (!currentWebsite) {
-    return
+async function toggleFocusMode() {
+  await stateManager.updateFocusMode(currentWebsite)
+  render()
+}
+
+function render() {
+  if (currentWebsite != Website.Unsupported) {
+    let mode = stateManager.getFocusMode(currentWebsite)
+    websiteController.renderFocusMode(mode)
   }
-  shouldFocus ? websiteController.focus() : websiteController.unfocus()
 }
 
-async function toggleFocus() {
-  focusStateManager.toggleFocusState(currentWebsite)
-  await focusStateManager.updateFocusState(currentWebsite)
-  renderFocusState(focusStateManager.focusState[currentWebsite])
-}
-
-;(async function () {
+async function initialize() {
   let currentURL = document.URL
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
-    currentWebsite = 'twitter'
+    currentWebsite = Website.Twitter
   } else if (currentURL.includes('linkedin.com')) {
     websiteController = new LinkedInController()
-    currentWebsite = 'linkedin'
+    currentWebsite = Website.LinkedIn
   } else if (currentURL.includes('youtube.com')) {
     websiteController = new YoutubeController()
-    currentWebsite = 'youtube'
+    currentWebsite = Website.Youtube
   } else if (currentURL.includes('github.com')) {
     websiteController = new GithubController()
-    currentWebsite = 'github'
+    currentWebsite = Website.Github
   }
 
-  let focusState = await FocusUtils.getFromLocalStorage('focusState')
-  if (currentWebsite != '') {
-    focusStateManager = new FocusStateManager(focusState)
+  if (currentWebsite != Website.Unsupported) {
+    let appState = await FocusUtils.getFromLocalStorage('appState')
+    stateManager = new AppStateManager(appState)
     keyPressManager = new KeyPressManager()
-    renderFocusState(focusStateManager.focusState[currentWebsite])
   }
+}
+
+;(async function () {
+  await initialize()
+  render()
 })()

@@ -48,6 +48,14 @@ function isHomePage(url: string): boolean {
   return false
 }
 
+function getFeedAdElements(): HTMLElement[] {
+  let spanElements: HTMLElement[] = Array.from(document.querySelectorAll('.feed-shared-actor__sub-description'))
+  let targetSpanElements: HTMLElement[] = spanElements.filter((element) => element.innerText === 'Promoted')
+  return targetSpanElements
+    .map((promotedSpanElement) => promotedSpanElement.closest('.occludable-update'))
+    .filter((it): it is HTMLElement => it !== null)
+}
+
 export default {
   getLinkedInFeed,
   getLinkedInPanel,
@@ -59,4 +67,5 @@ export default {
   hasPanelLoaded,
   hasAdLoaded,
   isHomePage,
+  getFeedAdElements,
 }
