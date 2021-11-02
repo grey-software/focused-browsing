@@ -15,7 +15,6 @@ export default class TwitterController extends WebsiteController {
     super()
     this.panel_elements = []
     this.twitterFeedChildNode = ''
-
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
@@ -47,7 +46,7 @@ export default class TwitterController extends WebsiteController {
   premiumFocus() {
     utils.clearElements(this.panel_elements)
     this.focusPanel()
-    this.focusAds()
+    this.focusFeedAds()
   }
 
   clearIntervals() {
@@ -74,12 +73,12 @@ export default class TwitterController extends WebsiteController {
     }, 250)
   }
 
-  focusAds() {
+  focusFeedAds() {
     if (this.adIntervalId) {
       window.clearInterval(this.adIntervalId)
     }
     this.adIntervalId = window.setInterval(() => {
-      this.hideAds()
+      this.hideFeedAds()
     }, 250)
   }
 
@@ -143,8 +142,8 @@ export default class TwitterController extends WebsiteController {
     } catch (err) {}
   }
 
-  hideAds() {
-    twitterUtils.getAdElements().forEach((ad) => {
+  hideFeedAds() {
+    twitterUtils.getFeedAdElements().forEach((ad) => {
       ad.style.display = 'none'
     })
   }

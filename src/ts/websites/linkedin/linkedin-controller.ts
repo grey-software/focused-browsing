@@ -2,27 +2,27 @@ import LinkedInUtils from './linkedin-utils'
 import LinkedInIFrameUtils from './linkedin-iframe-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
+import linkedinUtils from './linkedin-utils'
 
 export default class LinkedInController extends WebsiteController {
-  premiumFocus(): void {
-    throw new Error('Method not implemented.')
-  }
   panel_elements: Node[]
   feedIntervalId: number
   panelIntervalId: number
   feedIframe: HTMLIFrameElement
-  linkedin_feed_child_node: string | Node
-  linkedin_ad_child_node: string | Node
+  feedChildNode: string | Node
+  adChildNode: string | Node
   adIntervalId: number
+  feedAdsIntervalId: number
 
   constructor() {
     super()
     this.panel_elements = []
-    this.linkedin_feed_child_node = ''
-    this.linkedin_ad_child_node = ''
+    this.feedChildNode = ''
+    this.adChildNode = ''
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
+    this.feedAdsIntervalId = 0
     this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
   }
 
@@ -44,10 +44,18 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
+  premiumFocus() {
+    utils.clearElements(this.panel_elements)
+    this.focusPanel()
+    this.focusAd()
+    this.focusFeedAds()
+  }
+
   clearIntervals() {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.panelIntervalId)
     window.clearInterval(this.adIntervalId)
+    window.clearInterval(this.feedAdsIntervalId)
   }
 
   focusFeed() {
@@ -77,24 +85,33 @@ export default class LinkedInController extends WebsiteController {
     }, 250)
   }
 
+  focusFeedAds() {
+    if (this.feedAdsIntervalId) {
+      window.clearInterval(this.feedAdsIntervalId)
+    }
+    this.adIntervalId = window.setInterval(() => {
+      this.hideFeedAds()
+    }, 250)
+  }
+
   setAdVisibility(visibile: boolean) {
     var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
     if (!visibile) {
-      this.linkedin_ad_child_node = linkedin_ad_parent_node.children[0]
-      linkedin_ad_parent_node.removeChild(this.linkedin_ad_child_node)
+      this.adChildNode = linkedin_ad_parent_node.children[0]
+      linkedin_ad_parent_node.removeChild(this.adChildNode)
     } else {
-      linkedin_ad_parent_node.append(this.linkedin_ad_child_node)
+      linkedin_ad_parent_node.append(this.adChildNode)
     }
   }
 
   setFeedVisibility(visibile: boolean) {
-    var linkedin_feed_parent_node = LinkedInUtils.getLinkedInFeed()
+    let feedParentNode = LinkedInUtils.getLinkedInFeed()
     if (!visibile) {
-      this.linkedin_feed_child_node = linkedin_feed_parent_node.children[1]
-      linkedin_feed_parent_node.removeChild(this.linkedin_feed_child_node)
-      LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, linkedin_feed_parent_node)
+      this.feedChildNode = feedParentNode.children[1]
+      feedParentNode.removeChild(this.feedChildNode)
+      LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, feedParentNode)
     } else {
-      linkedin_feed_parent_node.append(this.linkedin_feed_child_node)
+      feedParentNode.append(this.feedChildNode)
     }
   }
 
@@ -166,5 +183,12 @@ export default class LinkedInController extends WebsiteController {
         return
       }
     } catch (err) {}
+  }
+
+  hideFeedAds() {
+    linkedinUtils.getFeedAdElements().forEach((ad) => {
+      console.log('hiding ad')
+      ad.style.display = 'none'
+    })
   }
 }
