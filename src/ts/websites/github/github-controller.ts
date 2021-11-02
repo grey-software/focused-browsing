@@ -7,23 +7,23 @@ export default class GithubController extends WebsiteController {
   premiumFocus(): void {
     throw new Error('Method not implemented.')
   }
-  explore_elements: Node[]
+  exploreElements: Node[]
   activityIntervalId: number
   exploreIntervalId: number
   activityIframe: HTMLIFrameElement
-  github_activity_child_node: string | Node
+  activityChildNode: string | Node
 
   constructor() {
     super()
-    this.explore_elements = []
-    this.github_activity_child_node = ''
+    this.exploreElements = []
+    this.activityChildNode = ''
     this.activityIntervalId = 0
     this.exploreIntervalId = 0
     this.activityIframe = GithubIFrameUtils.createGithubIframe()
   }
 
   focus() {
-    utils.clearElements(this.explore_elements)
+    utils.clearElements(this.exploreElements)
     this.focusActivity()
     this.focusExplore()
   }
@@ -62,35 +62,35 @@ export default class GithubController extends WebsiteController {
   }
 
   setActivityVisibility(visibile: boolean) {
-    var github_activity_parent_node = GithubUtils.getGithubActivity()
+    let activityParentNode = GithubUtils.getActivityContainer()
     if (!visibile) {
-      this.github_activity_child_node = github_activity_parent_node.children[1]
-      github_activity_parent_node.removeChild(this.github_activity_child_node)
-      GithubIFrameUtils.injectActivityIframe(this.activityIframe, github_activity_parent_node)
+      this.activityChildNode = activityParentNode.children[1]
+      activityParentNode.removeChild(this.activityChildNode)
+      GithubIFrameUtils.injectActivityIframe(this.activityIframe, activityParentNode)
     } else {
-      github_activity_parent_node.append(this.github_activity_child_node)
+      activityParentNode.append(this.activityChildNode)
     }
   }
 
   setExploreVisibility(visible: boolean) {
-    let explore = GithubUtils.getGithubExplore()
+    let exploreElement = GithubUtils.getExploreContainer()
     if (!visible) {
-      let length = explore.childElementCount
-      let current_explore_elements = []
+      let length = exploreElement.childElementCount
+      let exploreChildElements = []
 
       while (length != 0) {
-        let currentLastChild = explore.children[length - 1]
-        current_explore_elements.push(currentLastChild)
-        explore.removeChild(currentLastChild)
+        let currentLastChild = exploreElement.children[length - 1]
+        exploreChildElements.push(currentLastChild)
+        exploreElement.removeChild(currentLastChild)
         length -= 1
       }
 
-      this.explore_elements = current_explore_elements
+      this.exploreElements = exploreChildElements
     } else {
-      for (let i = this.explore_elements.length - 1; i >= 0; i -= 1) {
-        explore.append(this.explore_elements[i])
+      for (let i = this.exploreElements.length - 1; i >= 0; i -= 1) {
+        exploreElement.append(this.exploreElements[i])
       }
-      utils.clearElements(this.explore_elements)
+      utils.clearElements(this.exploreElements)
     }
   }
 
@@ -104,7 +104,7 @@ export default class GithubController extends WebsiteController {
       if (GithubUtils.isAcitivityHidden()) {
         return
       }
-      if (GithubUtils.hasGithubActivityLoaded()) {
+      if (GithubUtils.hasActivityLoaded()) {
         this.setActivityVisibility(false)
         return
       }
@@ -121,7 +121,7 @@ export default class GithubController extends WebsiteController {
       if (GithubUtils.isExploreHidden()) {
         return
       }
-      if (GithubUtils.hasGithubExploreLoaded()) {
+      if (GithubUtils.hasExploreLoaded()) {
         this.setExploreVisibility(false)
         return
       }

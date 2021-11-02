@@ -1,20 +1,20 @@
 const GITHUB_EXPLORE_TAG_NAME = 'aside'
 const GITHUB_ACTIVITY_ID = 'dashboard'
 
-function getGithubActivity(): Element {
+function getActivityContainer(): Element {
   return document.getElementById(GITHUB_ACTIVITY_ID) as HTMLElement
 }
 
-function getGithubExplore(): Element {
+function getExploreContainer(): Element {
   return document.getElementsByTagName(GITHUB_EXPLORE_TAG_NAME)[2]
 }
 
-function hasGithubExploreLoaded(): boolean {
-  return getGithubExplore().childElementCount > 0
+function hasExploreLoaded(): boolean {
+  return getExploreContainer().childElementCount > 0
 }
 
-function hasGithubActivityLoaded(): boolean {
-  return getGithubActivity().childElementCount >= 2
+function hasActivityLoaded(): boolean {
+  return getActivityContainer().childElementCount >= 2
 }
 
 function isHomePage(url: string): boolean {
@@ -25,12 +25,12 @@ function isHomePage(url: string): boolean {
 }
 
 function isAcitivityHidden(): boolean {
-  let activity = getGithubActivity()
+  let activity = getActivityContainer()
   return activity.children[1].nodeName === 'IFRAME'
 }
 
 function isExploreHidden(): boolean {
-  let explore = getGithubExplore()
+  let explore = getExploreContainer()
   return explore.childElementCount === 0
 }
 
@@ -38,8 +38,8 @@ export default {
   isHomePage,
   isAcitivityHidden,
   isExploreHidden,
-  getGithubActivity,
-  getGithubExplore,
-  hasGithubActivityLoaded,
-  hasGithubExploreLoaded,
+  getActivityContainer,
+  getExploreContainer,
+  hasActivityLoaded,
+  hasExploreLoaded,
 }

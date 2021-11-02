@@ -5,7 +5,7 @@ import WebsiteController from '../website-controller'
 import twitterUtils from './twitter-utils'
 
 export default class TwitterController extends WebsiteController {
-  panel_elements: Node[]
+  panelElements: Node[]
   twitterFeedChildNode: string | Node
   feedIntervalId: number
   panelIntervalId: number
@@ -13,7 +13,7 @@ export default class TwitterController extends WebsiteController {
   feedIframe: HTMLIFrameElement
   constructor() {
     super()
-    this.panel_elements = []
+    this.panelElements = []
     this.twitterFeedChildNode = ''
     this.feedIntervalId = 0
     this.panelIntervalId = 0
@@ -24,7 +24,7 @@ export default class TwitterController extends WebsiteController {
   focus() {
     // the panel shows up on every page
     // we should clear our panel elements every time we focus because it can get over populated and we can be rendering extra elements
-    utils.clearElements(this.panel_elements)
+    utils.clearElements(this.panelElements)
     this.focusPanel()
     this.focusFeed()
   }
@@ -44,7 +44,7 @@ export default class TwitterController extends WebsiteController {
   }
 
   premiumFocus() {
-    utils.clearElements(this.panel_elements)
+    utils.clearElements(this.panelElements)
     this.focusPanel()
     this.focusFeedAds()
   }
@@ -97,19 +97,19 @@ export default class TwitterController extends WebsiteController {
     let panel = TwitterUtils.getTwitterPanel()
     if (!visibile) {
       let length = panel.children.length
-      let current_panel_elements = []
+      let currentPanelElements = []
       while (length != 1) {
         var currentLastChild = panel.children[length - 1]
-        current_panel_elements.push(currentLastChild)
+        currentPanelElements.push(currentLastChild)
         panel.removeChild(currentLastChild)
         length -= 1
       }
-      this.panel_elements = current_panel_elements
+      this.panelElements = currentPanelElements
     } else {
-      for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
-        panel.append(this.panel_elements[i])
+      for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
+        panel.append(this.panelElements[i])
       }
-      utils.clearElements(this.panel_elements)
+      utils.clearElements(this.panelElements)
     }
   }
 
