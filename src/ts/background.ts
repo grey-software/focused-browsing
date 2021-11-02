@@ -21,17 +21,6 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
   }
   const isFocusScriptInjected = await checkFocusScriptInjected(tabId)
   if (isFocusScriptInjected) {
-    if (url != activeURL && activeURL && url && !isHomeURLLoad(activeURL, url)) {
-      activeURL = url
-      browser.tabs
-        .sendMessage(tabId, { text: 'new-page-same-website', url: activeURL })
-        .then((response: { status?: string }) => {
-          response = response || {}
-          if (response.status == 'success') {
-            return //Success
-          }
-        })
-    }
     return
   }
 
@@ -58,16 +47,6 @@ async function checkFocusScriptInjected(tabId: number) {
     runAt: 'document_start',
   })
   return focusScriptInjectedResult && focusScriptInjectedResult[0]
-}
-
-const isHomeURLLoad = (currentUrl: string, newUrl: string) => {
-  if (newUrl.includes('twitter.com')) {
-    return newUrl == 'https://twitter.com/home' && currentUrl == 'https://twitter.com/'
-  } else if (newUrl.includes('linkedin.com')) {
-    return newUrl.includes('/feed') && currentUrl == 'https://www.linkedin.com/'
-  } else if (newUrl.includes('github.com')) {
-    return currentUrl == 'https://github.com/'
-  }
 }
 
 browser.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)

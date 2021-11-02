@@ -23,11 +23,6 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
   if (message.text == 'new-tab-activated') {
     render()
     return Promise.resolve({ status: 'success' })
-  } else if (message.text == 'new-page-same-website') {
-    if (FocusUtils.isURLValid(message.url)) {
-      render()
-      return Promise.resolve({ status: 'success' })
-    }
   } else if (message.text == 'unfocus-from-ui') {
     toggleFocusMode()
   }
