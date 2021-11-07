@@ -12,16 +12,16 @@ export default class YouTubeController extends WebsiteController {
   suggestionsIntervalId: number
   cardChangeIntervalId: number
   feedIframe: HTMLIFrameElement
-  suggestion_elements: Node[]
-  comment_elements: Node[]
+  suggestionElements: Node[]
+  commentElements: Node[]
   commentIntervalId: number
   currentColor: string
   setCardColorIntervalId: number
 
   constructor() {
     super()
-    this.suggestion_elements = []
-    this.comment_elements = []
+    this.suggestionElements = []
+    this.commentElements = []
     this.YouTubeFeedChildNode = ''
 
     this.feedIntervalId = 0
@@ -38,8 +38,8 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focus() {
-    utils.clearElements(this.suggestion_elements)
-    utils.clearElements(this.comment_elements)
+    utils.clearElements(this.suggestionElements)
+    utils.clearElements(this.commentElements)
     this.focusFeed()
     this.focusSuggestions()
     this.focusComments()
@@ -70,7 +70,7 @@ export default class YouTubeController extends WebsiteController {
       this.currentColor = backgroundColor
       let currentUrl = document.URL
       if (YouTubeUtils.isHomePage(currentUrl)) {
-        let feed = YouTubeUtils.getYouTubeFeed()
+        let feed = YouTubeUtils.getFeed()
         if (feed) {
           if (YouTubeUtils.isFeedHidden()) {
             utils.removeFocusedBrowsingCards()
@@ -129,7 +129,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   setFeedVisibility(visible: boolean) {
-    let feed = YouTubeUtils.getYouTubeFeed()
+    let feed = YouTubeUtils.getFeed()
     if (feed) {
       if (!visible) {
         this.YouTubeFeedChildNode = feed.children[0]
@@ -142,45 +142,45 @@ export default class YouTubeController extends WebsiteController {
   }
 
   setSuggestionsVisibility(visibile: boolean) {
-    let suggestions = YouTubeUtils.getYoutubeSuggestions()
+    let suggestions = YouTubeUtils.getSuggestions()
     if (suggestions) {
       if (!visibile) {
         let length = suggestions.children.length
-        let current_suggestion_elements = []
+        let currentSuggestionElements = []
         while (length != 0) {
           var currentLastChild = suggestions.children[length - 1]
-          current_suggestion_elements.push(currentLastChild)
+          currentSuggestionElements.push(currentLastChild)
           suggestions.removeChild(currentLastChild)
           length -= 1
         }
-        this.suggestion_elements = current_suggestion_elements
+        this.suggestionElements = currentSuggestionElements
       } else {
-        for (let i = this.suggestion_elements.length - 1; i >= 0; i -= 1) {
-          suggestions.append(this.suggestion_elements[i])
+        for (let i = this.suggestionElements.length - 1; i >= 0; i -= 1) {
+          suggestions.append(this.suggestionElements[i])
         }
-        utils.clearElements(this.suggestion_elements)
+        utils.clearElements(this.suggestionElements)
       }
     }
   }
 
   setCommentsVisbility(visibile: boolean) {
-    let comments = YouTubeUtils.getYoutubeCommentsOnVideo()
+    let comments = YouTubeUtils.getVideoComments()
     if (comments) {
       if (!visibile) {
         let length = comments.children.length
-        let current_comment_elements = []
+        let currentCommentElements = []
         while (length != 0) {
           var currentLastChild = comments.children[length - 1]
-          current_comment_elements.push(currentLastChild)
+          currentCommentElements.push(currentLastChild)
           comments.removeChild(currentLastChild)
           length -= 1
         }
-        this.comment_elements = current_comment_elements
+        this.commentElements = currentCommentElements
       } else {
-        for (let i = this.comment_elements.length - 1; i >= 0; i -= 1) {
-          comments.append(this.comment_elements[i])
+        for (let i = this.commentElements.length - 1; i >= 0; i -= 1) {
+          comments.append(this.commentElements[i])
         }
-        utils.clearElements(this.comment_elements)
+        utils.clearElements(this.commentElements)
       }
     }
   }
@@ -212,7 +212,7 @@ export default class YouTubeController extends WebsiteController {
         return
       }
 
-      if (YouTubeUtils.hasSuggestionsLoaded()) {
+      if (YouTubeUtils.haveSuggestionsLoaded()) {
         this.setSuggestionsVisibility(false)
         return
       }
@@ -230,7 +230,7 @@ export default class YouTubeController extends WebsiteController {
         return
       }
 
-      if (YouTubeUtils.hasCommentsLoaded()) {
+      if (YouTubeUtils.haveCommentsLoaded()) {
         this.setCommentsVisbility(false)
         return
       }

@@ -1,4 +1,4 @@
-function getYouTubeFeed(): Element | null {
+function getFeed(): Element | null {
   let mainPage = document.querySelector('ytd-two-column-browse-results-renderer')
   if (mainPage) {
     return mainPage.children[0]
@@ -7,46 +7,45 @@ function getYouTubeFeed(): Element | null {
   return null
 }
 
-function getYoutubeSuggestions(): Element | null {
-  let suggestions_parent = document.querySelector('ytd-watch-next-secondary-results-renderer')
-  if (suggestions_parent) {
-    return suggestions_parent.children[1]
+function getSuggestions(): Element | null {
+  let suggestionsParent = document.querySelector('ytd-watch-next-secondary-results-renderer')
+  if (suggestionsParent) {
+    return suggestionsParent.children[1]
   }
   return null
 }
 
-function getYoutubeCommentsOnVideo(): Element | null {
-  let comment_parent = document.querySelector('ytd-comments')
-  if (comment_parent) {
-    return comment_parent.children[1].children[2]
+function getVideoComments(): Element | null {
+  let commentParent = document.querySelector('ytd-comments')
+  if (commentParent) {
+    return commentParent.children[1].children[2]
   }
   return null
 }
 
 function hasFeedLoaded(): boolean {
   try {
-    let youtubeFeed = getYouTubeFeed()
+    let youtubeFeed = getFeed()
     if (youtubeFeed) {
       return youtubeFeed.children.length != 0
     }
   } catch (err) {
     return false
   }
-
   return false
 }
 
 function isFeedHidden(): boolean {
-  let feed = getYouTubeFeed()
+  let feed = getFeed()
   if (feed) {
     return feed.children[0].nodeName == 'IFRAME'
   }
   return false
 }
 
-function hasSuggestionsLoaded(): boolean {
+function haveSuggestionsLoaded(): boolean {
   try {
-    let suggestions = getYoutubeSuggestions()
+    let suggestions = getSuggestions()
     if (suggestions) {
       return suggestions.children.length != 0
     }
@@ -57,16 +56,16 @@ function hasSuggestionsLoaded(): boolean {
 }
 
 function areSuggestionsHidden(): boolean {
-  let suggestions = getYoutubeSuggestions()
+  let suggestions = getSuggestions()
   if (suggestions) {
     return suggestions.children.length == 1
   }
   return false
 }
 
-function hasCommentsLoaded(): boolean {
+function haveCommentsLoaded(): boolean {
   try {
-    let youtubeComments = getYoutubeCommentsOnVideo()
+    let youtubeComments = getVideoComments()
     if (youtubeComments) {
       return youtubeComments.children.length != 0
     }
@@ -78,7 +77,7 @@ function hasCommentsLoaded(): boolean {
 }
 
 function areCommentsHidden(): boolean {
-  let comments = getYoutubeCommentsOnVideo()
+  let comments = getVideoComments()
   if (comments) {
     return comments.children.length == 0
   }
@@ -97,15 +96,15 @@ function isVideoPage(url: string): boolean {
 }
 
 export default {
-  getYouTubeFeed,
-  getYoutubeSuggestions,
-  getYoutubeCommentsOnVideo,
+  getFeed,
+  getSuggestions,
+  getVideoComments,
   hasFeedLoaded,
   isFeedHidden,
-  hasSuggestionsLoaded,
+  haveSuggestionsLoaded,
   areSuggestionsHidden,
   isHomePage,
   isVideoPage,
-  hasCommentsLoaded,
+  haveCommentsLoaded,
   areCommentsHidden,
 }

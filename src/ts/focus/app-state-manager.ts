@@ -8,12 +8,19 @@ export default class AppStateManager {
     this.appState = appState
   }
 
+  async loadLatestState() {
+    this.appState = await FocusUtils.getFromLocalStorage('appState')
+  }
+
   getFocusMode(currentWebsite: Website): FocusMode {
     return this.appState[currentWebsite]
   }
 
-  async loadLatestState() {
-    this.appState = await FocusUtils.getFromLocalStorage('appState')
+  async updateAppState(currentWebsite: Website) {
+    let updatedState = await FocusUtils.getFromLocalStorage('appState')
+    updatedState[currentWebsite] = this.appState[currentWebsite]
+    FocusUtils.setInLocalStorage('appState', updatedState)
+    this.appState = updatedState
   }
 
   async updateFocusMode(currentWebsite: Website) {
@@ -26,12 +33,5 @@ export default class AppStateManager {
     }
     this.appState[currentWebsite] = (this.appState[currentWebsite] + 1) % focusModeCount
     await this.updateAppState(currentWebsite)
-  }
-
-  async updateAppState(currentWebsite: Website) {
-    let updatedState = await FocusUtils.getFromLocalStorage('appState')
-    updatedState[currentWebsite] = this.appState[currentWebsite]
-    FocusUtils.setInLocalStorage('appState', updatedState)
-    this.appState = updatedState
   }
 }
