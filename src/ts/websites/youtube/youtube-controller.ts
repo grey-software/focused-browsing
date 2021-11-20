@@ -1,10 +1,10 @@
 import YouTubeUtils from './youtube-utils'
 import YouTubeIFrameUtils from './youtube-iframe-utils'
-import utils from '../utils'
+import utils from '../../utils'
 import WebsiteController from '../website-controller'
 
 export default class YouTubeController extends WebsiteController {
-  premiumFocus(): void {
+  customFocus(): void {
     throw new Error('Method not implemented.')
   }
   YouTubeFeedChildNode: string | Node
@@ -38,8 +38,8 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focus() {
-    utils.clearElements(this.suggestion_elements)
-    utils.clearElements(this.comment_elements)
+    this.suggestion_elements = []
+    this.comment_elements = []
     this.focusFeed()
     this.focusSuggestions()
     this.focusComments()
@@ -158,7 +158,7 @@ export default class YouTubeController extends WebsiteController {
         for (let i = this.suggestion_elements.length - 1; i >= 0; i -= 1) {
           suggestions.append(this.suggestion_elements[i])
         }
-        utils.clearElements(this.suggestion_elements)
+        this.suggestion_elements = []
       }
     }
   }
@@ -180,7 +180,7 @@ export default class YouTubeController extends WebsiteController {
         for (let i = this.comment_elements.length - 1; i >= 0; i -= 1) {
           comments.append(this.comment_elements[i])
         }
-        utils.clearElements(this.comment_elements)
+        this.comment_elements = []
       }
     }
   }

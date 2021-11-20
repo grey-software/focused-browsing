@@ -1,6 +1,6 @@
 import LinkedInUtils from './linkedin-utils'
 import LinkedInIFrameUtils from './linkedin-iframe-utils'
-import utils from '../utils'
+import utils from '../../utils'
 import WebsiteController from '../website-controller'
 import linkedinUtils from './linkedin-utils'
 
@@ -27,7 +27,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focus() {
-    utils.clearElements(this.panel_elements)
+    this.panel_elements = []
     this.focusFeed()
     this.focusPanel()
     this.focusAd()
@@ -44,8 +44,8 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  premiumFocus() {
-    utils.clearElements(this.panel_elements)
+  customFocus() {
+    this.panel_elements = []
     this.focusPanel()
     this.focusAd()
     this.focusFeedAds()
@@ -132,7 +132,7 @@ export default class LinkedInController extends WebsiteController {
       for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
         panel.append(this.panel_elements[i])
       }
-      utils.clearElements(this.panel_elements)
+      this.panel_elements = []
     }
   }
 

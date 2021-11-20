@@ -46,7 +46,24 @@ function getFeedAdElements(): HTMLElement[] {
   let targetSpanElements: HTMLElement[] = Array.from(spanElements).filter((element) => element.innerHTML === 'Promoted')
   return targetSpanElements
     .map((promotedSpanElement) => promotedSpanElement.closest('article'))
-    .filter((it): it is HTMLElement => it !== null)
+    .filter((it, index): it is HTMLElement => it !== null && index < 2)
+}
+
+function getFeedItemCount() {
+  const feedItemCount = document
+    .querySelectorAll('[role="main"]')[0]
+    .children[0].children[0].children[0].children[0].children[0].children[3].querySelectorAll('article').length
+  console.log(`Number of items in feed: ${feedItemCount}`)
+  return feedItemCount
+}
+
+function getPanelItemCount() {
+  const panelItemCount =
+    document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[1].children[0]
+      .children[1].children[0].children[0].children[0].children[2].children[0].children[0].children[0].children[1]
+      .children[0].children[0].children[0].children.length - 2
+  console.log(`Number of items in panel: ${panelItemCount}`)
+  return panelItemCount
 }
 
 export default {
@@ -58,4 +75,6 @@ export default {
   isPanelHidden,
   isHomePage,
   getFeedAdElements,
+  getFeedItemCount,
+  getPanelItemCount,
 }

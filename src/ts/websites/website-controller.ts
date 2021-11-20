@@ -1,4 +1,4 @@
-import { FocusMode } from './../focus/types'
+import { FocusMode } from '../types'
 
 export default abstract class WebsiteController {
   renderFocusMode(focusMode: FocusMode) {
@@ -11,8 +11,8 @@ export default abstract class WebsiteController {
         this.unfocus()
         return
       }
-      case FocusMode.Premium: {
-        this.premiumFocus()
+      case FocusMode.Custom: {
+        this.customFocus()
         return
       }
     }
@@ -20,6 +20,6 @@ export default abstract class WebsiteController {
 
   abstract focus(): void
   abstract unfocus(): void
-  abstract premiumFocus(): void
+  abstract customFocus(): void
   abstract clearIntervals(): void
 }

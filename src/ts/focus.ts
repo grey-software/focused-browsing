@@ -1,13 +1,13 @@
-import LinkedInController from '../websites/linkedin/linkedin-controller'
-import TwitterController from '../websites/twitter/twitter-controller'
-import YoutubeController from '../websites/youtube/youtube-controller'
-import GithubController from '../websites/github/github-controller'
-import FocusUtils from './focus-utils'
+import LinkedInController from './websites/linkedin/linkedin-controller'
+import TwitterController from './websites/twitter/twitter-controller'
+import YoutubeController from './websites/youtube/youtube-controller'
+import GithubController from './websites/github/github-controller'
+import FocusUtils from './utils'
 import AppStateManager from './app-state-manager'
 import { browser } from 'webextension-polyfill-ts'
-import WebsiteController from '../websites/website-controller'
+import WebsiteController from './websites/website-controller'
 import KeyPressManager from './keypress-manager'
-import { FocusMode, Website } from './types'
+import { Website } from './types'
 
 let currentWebsite: Website = Website.Unsupported
 let stateManager: AppStateManager

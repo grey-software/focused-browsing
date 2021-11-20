@@ -18,11 +18,11 @@ mix
   .sass('src/styles/github-dark.scss', 'extension-build/css')
   .sass('src/styles/github-dim.scss', 'extension-build/css')
   .sass('src/styles/popup.scss', 'extension-build/css')
-  .ts('src/ts/focus/focus.ts', 'extension-build')
+  .ts('src/ts/focus.ts', 'extension-build')
   .ts('src/ts/background.ts', 'extension-build')
-  .ts('src/ts/vue/feed-card-controller.ts', 'extension-build/js')
+  .ts('src/ts/ui/feed-card-controller.ts', 'extension-build/js')
   .vue()
-  .ts('src/ts/vue/popup-card-controller.ts', 'extension-build/js')
+  .ts('src/ts/ui/popup-card-controller.ts', 'extension-build/js')
   .vue()
   .options({
     processCssUrls: false,

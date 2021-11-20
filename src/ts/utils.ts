@@ -1,4 +1,16 @@
 import { browser } from 'webextension-polyfill-ts'
+const IFRAME_ClASS = 'focus-card'
+
+function removeFocusedBrowsingCards() {
+  try {
+    let cards = document.getElementsByClassName(IFRAME_ClASS)
+    Array.from(cards).forEach(function (el) {
+      el.remove()
+    })
+  } catch (err) {
+    //   sendLogToBackground(port,"CURRENTLY NO IFRAMES ON THE SCREEN")
+  }
+}
 
 const isURLValid = (url: string) => {
   return (
@@ -24,4 +36,5 @@ export default {
   isURLValid,
   getFromLocalStorage,
   setInLocalStorage,
+  removeFocusedBrowsingCards,
 }

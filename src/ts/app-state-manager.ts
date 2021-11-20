@@ -1,5 +1,5 @@
 import { AppState, FocusMode, Website } from './types'
-import FocusUtils from './focus-utils'
+import utils from './utils'
 
 export default class AppStateManager {
   appState: AppState
@@ -13,7 +13,7 @@ export default class AppStateManager {
   }
 
   async loadLatestState() {
-    this.appState = await FocusUtils.getFromLocalStorage('appState')
+    this.appState = await utils.getFromLocalStorage('appState')
   }
 
   async updateFocusMode(currentWebsite: Website) {
@@ -29,9 +29,9 @@ export default class AppStateManager {
   }
 
   async updateAppState(currentWebsite: Website) {
-    let updatedState = await FocusUtils.getFromLocalStorage('appState')
+    let updatedState = await utils.getFromLocalStorage('appState')
     updatedState[currentWebsite] = this.appState[currentWebsite]
-    FocusUtils.setInLocalStorage('appState', updatedState)
+    utils.setInLocalStorage('appState', updatedState)
     this.appState = updatedState
   }
 }

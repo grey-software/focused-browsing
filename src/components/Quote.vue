@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import { quotes } from '../ts/vue/quotes.ts'
+import { quotes } from '../ts/ui/quotes.ts'
 export default {
   name: 'Quote',
   data() {

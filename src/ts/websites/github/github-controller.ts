@@ -1,10 +1,10 @@
 import GithubUtils from './github-utils'
 import GithubIFrameUtils from './github-iframe-utils'
-import utils from '../utils'
+import utils from '../../utils'
 import WebsiteController from '../website-controller'
 
 export default class GithubController extends WebsiteController {
-  premiumFocus(): void {
+  customFocus(): void {
     throw new Error('Method not implemented.')
   }
   explore_elements: Node[]
@@ -23,7 +23,7 @@ export default class GithubController extends WebsiteController {
   }
 
   focus() {
-    utils.clearElements(this.explore_elements)
+    this.explore_elements = []
     this.focusActivity()
     this.focusExplore()
   }
@@ -90,7 +90,7 @@ export default class GithubController extends WebsiteController {
       for (let i = this.explore_elements.length - 1; i >= 0; i -= 1) {
         explore.append(this.explore_elements[i])
       }
-      utils.clearElements(this.explore_elements)
+      this.explore_elements = []
     }
   }
 

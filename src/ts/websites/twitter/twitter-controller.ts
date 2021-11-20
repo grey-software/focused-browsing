@@ -1,6 +1,6 @@
 import TwitterUtils from './twitter-utils'
 import TwitterIFrameUtils from './twitter-iframe-utils'
-import utils from '../utils'
+import utils from '../../utils'
 import WebsiteController from '../website-controller'
 import twitterUtils from './twitter-utils'
 
@@ -11,6 +11,8 @@ export default class TwitterController extends WebsiteController {
   panelIntervalId: number
   adIntervalId: number
   feedIframe: HTMLIFrameElement
+  hiddenAdCount: number
+
   constructor() {
     super()
     this.panel_elements = []
@@ -18,33 +20,35 @@ export default class TwitterController extends WebsiteController {
     this.feedIntervalId = 0
     this.panelIntervalId = 0
     this.adIntervalId = 0
+    this.hiddenAdCount = 0
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
   }
 
   focus() {
     // the panel shows up on every page
     // we should clear our panel elements every time we focus because it can get over populated and we can be rendering extra elements
-    utils.clearElements(this.panel_elements)
+    this.panel_elements = []
     this.focusPanel()
     this.focusFeed()
   }
 
   unfocus() {
     utils.removeFocusedBrowsingCards()
-    let url = document.URL
+    this.clearIntervals()
     try {
-      if (url.includes('twitter.com')) {
-        if (TwitterUtils.isHomePage(url)) {
-          this.setFeedVisibility(true)
-        }
-        this.setPanelVisibility(true)
-        this.clearIntervals()
+      this.setPanelVisibility(true)
+      if (TwitterUtils.isHomePage(document.URL)) {
+        this.setFeedVisibility(true)
       }
     } catch (err) {}
   }
 
-  premiumFocus() {
-    utils.clearElements(this.panel_elements)
+  customFocus() {
+    utils.removeFocusedBrowsingCards()
+    this.clearIntervals()
+    if (TwitterUtils.isHomePage(document.URL)) {
+      this.setFeedVisibility(true)
+    }
     this.focusPanel()
     this.focusFeedAds()
   }
@@ -95,6 +99,7 @@ export default class TwitterController extends WebsiteController {
 
   setPanelVisibility(visibile: boolean) {
     let panel = TwitterUtils.getTwitterPanel()
+    console.log(panel)
     if (!visibile) {
       let length = panel.children.length
       let current_panel_elements = []
@@ -109,7 +114,7 @@ export default class TwitterController extends WebsiteController {
       for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
         panel.append(this.panel_elements[i])
       }
-      utils.clearElements(this.panel_elements)
+      this.panel_elements = []
     }
   }
 
@@ -144,6 +149,7 @@ export default class TwitterController extends WebsiteController {
 
   hideFeedAds() {
     twitterUtils.getFeedAdElements().forEach((ad) => {
+      console.log('hiding ad')
       ad.style.display = 'none'
     })
   }

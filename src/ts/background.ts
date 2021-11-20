@@ -1,4 +1,4 @@
-import { AppState, FocusMode } from './focus/types'
+import { AppState, FocusMode } from './types'
 import { browser, Runtime, Tabs } from 'webextension-polyfill-ts'
 
 const appState: AppState = {
