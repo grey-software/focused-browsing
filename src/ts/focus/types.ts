@@ -9,6 +9,7 @@ export enum Website {
   LinkedIn = 'LinkedIn',
   Youtube = 'Youtube',
   Github = 'Github',
+  FaceBook = 'FaceBook',
   Unsupported = 'Unsupported',
 }
 
@@ -17,6 +18,7 @@ export interface AppState extends Record<Website, FocusMode> {
   LinkedIn: FocusMode
   Youtube: FocusMode
   Github: FocusMode
+  FaceBook: FocusMode
 }
 
 export interface KeyPressedState extends Record<string, boolean> {

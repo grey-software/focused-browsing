@@ -29,6 +29,7 @@
     "*://*.linkedin.com/*",
     "*://*.youtube.com/*",
     "*://*.github.com/*",
+    "*://*.facebook.com/*",
     "tabs",
     "storage"
   ]

@@ -1,0 +1,37 @@
+import { browser } from 'webextension-polyfill-ts'
+
+const FACEBOOK_FEED_FRAME_HEIGHT = '766px'
+const FACEBOOK_FEED_FRAME_WIDTH = '598px'
+const IFRAME_ClASS = 'focus-card'
+
+function createFaceBookFeedIframe(): HTMLIFrameElement {
+  let feedIframe = document.createElement('iframe')
+
+  feedIframe.width = FACEBOOK_FEED_FRAME_WIDTH
+  feedIframe.height = FACEBOOK_FEED_FRAME_HEIGHT
+  feedIframe.className = IFRAME_ClASS
+
+  Object.assign(feedIframe.style, {
+    position: 'inherit',
+    border: 'none',
+  })
+
+  return feedIframe
+}
+
+function setFeedIframeSource(feedIframe: HTMLIFrameElement): void {
+  if (document.body.style.backgroundColor == 'rgb(0, 0, 0)') {
+    feedIframe.src = browser.runtime.getURL('html/faceBookFeed.html')
+  } else if (document.body.style.backgroundColor == 'rgb(21, 32, 43)') {
+    feedIframe.src = browser.runtime.getURL('html/faceBookFeed.html')
+  } else {
+    feedIframe.src = browser.runtime.getURL('html/faceBookFeed.html')
+  }
+}
+
+function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
+  setFeedIframeSource(feedIframe)
+  feed.append(feedIframe)
+}
+
+export default { createFaceBookFeedIframe, setFeedIframeSource, injectFeedIframe }

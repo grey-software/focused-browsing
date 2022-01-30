@@ -5,6 +5,7 @@ const isURLValid = (url: string) => {
     url.includes('twitter.com') ||
     url.includes('linkedin.com') ||
     url.includes('youtube.com') ||
+    url.includes('facebook.com') ||
     url.includes('github.com')
   )
 }
