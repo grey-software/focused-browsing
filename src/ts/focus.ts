@@ -8,6 +8,7 @@ import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from './websites/website-controller'
 import KeyPressManager from './keypress-manager'
 import { Website } from './types'
+import FacebookController from './websites/facebook/facebook-controller'
 
 let currentWebsite: Website = Website.Unsupported
 let stateManager: AppStateManager
@@ -69,6 +70,9 @@ async function initialize() {
   } else if (currentURL.includes('github.com')) {
     websiteController = new GithubController()
     currentWebsite = Website.Github
+  } else if (currentURL.includes('facebook.com')) {
+    websiteController = new FacebookController()
+    currentWebsite = Website.Facebook
   }
 
   if (currentWebsite != Website.Unsupported) {
