@@ -12,16 +12,16 @@ export default class YouTubeController extends WebsiteController {
   suggestionsIntervalId: number
   cardChangeIntervalId: number
   feedIframe: HTMLIFrameElement
-  suggestion_elements: Node[]
-  comment_elements: Node[]
+  suggestionElements: Node[]
+  commentElements: Node[]
   commentIntervalId: number
   currentColor: string
   setCardColorIntervalId: number
 
   constructor() {
     super()
-    this.suggestion_elements = []
-    this.comment_elements = []
+    this.suggestionElements = []
+    this.commentElements = []
     this.YouTubeFeedChildNode = ''
 
     this.feedIntervalId = 0
@@ -38,8 +38,8 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focus() {
-    this.suggestion_elements = []
-    this.comment_elements = []
+    this.suggestionElements = []
+    this.commentElements = []
     this.focusFeed()
     this.focusSuggestions()
     this.focusComments()
@@ -153,12 +153,12 @@ export default class YouTubeController extends WebsiteController {
           suggestions.removeChild(currentLastChild)
           length -= 1
         }
-        this.suggestion_elements = current_suggestion_elements
+        this.suggestionElements = current_suggestion_elements
       } else {
-        for (let i = this.suggestion_elements.length - 1; i >= 0; i -= 1) {
-          suggestions.append(this.suggestion_elements[i])
+        for (let i = this.suggestionElements.length - 1; i >= 0; i -= 1) {
+          suggestions.append(this.suggestionElements[i])
         }
-        this.suggestion_elements = []
+        this.suggestionElements = []
       }
     }
   }
@@ -175,12 +175,12 @@ export default class YouTubeController extends WebsiteController {
           comments.removeChild(currentLastChild)
           length -= 1
         }
-        this.comment_elements = current_comment_elements
+        this.commentElements = current_comment_elements
       } else {
-        for (let i = this.comment_elements.length - 1; i >= 0; i -= 1) {
-          comments.append(this.comment_elements[i])
+        for (let i = this.commentElements.length - 1; i >= 0; i -= 1) {
+          comments.append(this.commentElements[i])
         }
-        this.comment_elements = []
+        this.commentElements = []
       }
     }
   }

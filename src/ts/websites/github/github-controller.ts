@@ -7,23 +7,23 @@ export default class GithubController extends WebsiteController {
   customFocus(): void {
     throw new Error('Method not implemented.')
   }
-  explore_elements: Node[]
+  exploreElements: Node[]
   activityIntervalId: number
   exploreIntervalId: number
   activityIframe: HTMLIFrameElement
-  github_activity_child_node: string | Node
+  githubActivityChildNode: string | Node
 
   constructor() {
     super()
-    this.explore_elements = []
-    this.github_activity_child_node = ''
+    this.exploreElements = []
+    this.githubActivityChildNode = ''
     this.activityIntervalId = 0
     this.exploreIntervalId = 0
     this.activityIframe = GithubIFrameUtils.createGithubIframe()
   }
 
   focus() {
-    this.explore_elements = []
+    this.exploreElements = []
     this.focusActivity()
     this.focusExplore()
   }
@@ -64,11 +64,11 @@ export default class GithubController extends WebsiteController {
   setActivityVisibility(visibile: boolean) {
     var github_activity_parent_node = GithubUtils.getGithubActivity()
     if (!visibile) {
-      this.github_activity_child_node = github_activity_parent_node.children[1]
-      github_activity_parent_node.removeChild(this.github_activity_child_node)
+      this.githubActivityChildNode = github_activity_parent_node.children[1]
+      github_activity_parent_node.removeChild(this.githubActivityChildNode)
       GithubIFrameUtils.injectActivityIframe(this.activityIframe, github_activity_parent_node)
     } else {
-      github_activity_parent_node.append(this.github_activity_child_node)
+      github_activity_parent_node.append(this.githubActivityChildNode)
     }
   }
 
@@ -76,21 +76,21 @@ export default class GithubController extends WebsiteController {
     let explore = GithubUtils.getGithubExplore()
     if (!visible) {
       let length = explore.childElementCount
-      let current_explore_elements = []
+      let currentExploreElements = []
 
       while (length != 1) {
         let currentLastChild = explore.children[length - 1]
-        current_explore_elements.push(currentLastChild)
+        currentExploreElements.push(currentLastChild)
         explore.removeChild(currentLastChild)
         length -= 1
       }
 
-      this.explore_elements = current_explore_elements
+      this.exploreElements = currentExploreElements
     } else {
-      for (let i = this.explore_elements.length - 1; i >= 0; i -= 1) {
-        explore.append(this.explore_elements[i])
+      for (let i = this.exploreElements.length - 1; i >= 0; i -= 1) {
+        explore.append(this.exploreElements[i])
       }
-      this.explore_elements = []
+      this.exploreElements = []
     }
   }
 

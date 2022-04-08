@@ -78,6 +78,11 @@ async function initialize() {
   }
 }
 
+/**
+ * This is the main focus script.
+ * We initialize the necessary components based on
+ * the current website and render the current focus mode
+ */
 ;(async function () {
   await initialize()
   render()

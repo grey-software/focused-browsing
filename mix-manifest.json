@@ -14,6 +14,8 @@
     "/extension-build/css/youtube.css": "/extension-build/css/youtube.css",
     "/extension-build/css/twitter-dark.css": "/extension-build/css/twitter-dark.css",
     "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
+    "/extension-build/html/facebook.html": "/extension-build/html/facebook.html",
+    "/extension-build/html/facebookDark.html": "/extension-build/html/facebookDark.html",
     "/extension-build/html/githubFeed.html": "/extension-build/html/githubFeed.html",
     "/extension-build/html/githubFeedDark.html": "/extension-build/html/githubFeedDark.html",
     "/extension-build/html/githubFeedDim.html": "/extension-build/html/githubFeedDim.html",

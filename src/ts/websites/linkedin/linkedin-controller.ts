@@ -5,7 +5,7 @@ import WebsiteController from '../website-controller'
 import linkedinUtils from './linkedin-utils'
 
 export default class LinkedInController extends WebsiteController {
-  panel_elements: Node[]
+  panelElements: Node[]
   feedIntervalId: number
   panelIntervalId: number
   feedIframe: HTMLIFrameElement
@@ -16,7 +16,7 @@ export default class LinkedInController extends WebsiteController {
 
   constructor() {
     super()
-    this.panel_elements = []
+    this.panelElements = []
     this.feedChildNode = ''
     this.adChildNode = ''
     this.feedIntervalId = 0
@@ -27,7 +27,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focus() {
-    this.panel_elements = []
+    this.panelElements = []
     this.focusFeed()
     this.focusPanel()
     this.focusAd()
@@ -45,7 +45,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   customFocus() {
-    this.panel_elements = []
+    this.panelElements = []
     this.focusPanel()
     this.focusAd()
     this.focusFeedAds()
@@ -127,12 +127,12 @@ export default class LinkedInController extends WebsiteController {
         panel.removeChild(currentLastChild)
         length -= 1
       }
-      this.panel_elements = current_panel_elements
+      this.panelElements = current_panel_elements
     } else {
-      for (let i = this.panel_elements.length - 1; i >= 0; i -= 1) {
-        panel.append(this.panel_elements[i])
+      for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
+        panel.append(this.panelElements[i])
       }
-      this.panel_elements = []
+      this.panelElements = []
     }
   }
 
