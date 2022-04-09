@@ -1,5 +1,5 @@
 function getFeed() {
-  return document.querySelector('[data-pagelet="FeedUnit_0"]')
+  return document.getElementById('ssrb_feed_start')?.parentElement
 }
 
 function getStoriesContainer() {
@@ -11,14 +11,11 @@ function hasFeedLoaded(): boolean {
 }
 
 function haveStoriesLoaded(): boolean {
-  return getStoriesContainer != null
+  return getStoriesContainer() != null
 }
 
 function isHomePage(url: string): boolean {
-  if (url.includes('github.com')) {
-    return url == 'https://github.com/'
-  }
-  return false
+  return url.endsWith('facebook.com/')
 }
 
 function isFeedHidden(): boolean {

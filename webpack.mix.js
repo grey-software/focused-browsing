@@ -9,6 +9,7 @@ mix
   .setPublicPath('./')
   .sass('src/styles/inter.scss', 'extension-build/css')
   .sass('src/styles/linkedin.scss', 'extension-build/css')
+  .sass('src/styles/facebook.scss', 'extension-build/css')
   .sass('src/styles/twitter.scss', 'extension-build/css')
   .sass('src/styles/twitter-dim.scss', 'extension-build/css')
   .sass('src/styles/twitter-dark.scss', 'extension-build/css')

@@ -64,8 +64,8 @@ export default class FacebookController extends WebsiteController {
   setFeedVisibility(visible: boolean) {
     let feed = FacebookUtils.getFeed() as HTMLElement
     if (!visible) {
-      this.feedChildNode = feed.children[0]
-      feed.removeChild(feed.childNodes[0])
+      this.feedChildNode = feed.children[1]
+      feed.removeChild(feed.childNodes[1])
       FacebookIFrameUtils.injectFeedIframe(this.feedIframe, feed)
     } else {
       feed.append(this.feedChildNode)
@@ -78,11 +78,10 @@ export default class FacebookController extends WebsiteController {
       let length = stories?.children.length
       let currentStoryElements = []
 
-      while (length != 1) {
-        let currentLastChild = stories.children[length - 1]
+      for (let i = 0; i < stories.children.length; i++) {
+        let currentLastChild = stories.children[i]
         currentStoryElements.push(currentLastChild)
         stories.removeChild(currentLastChild)
-        length -= 1
       }
 
       this.storyElements = currentStoryElements
@@ -97,14 +96,15 @@ export default class FacebookController extends WebsiteController {
   tryBlockingFeed() {
     try {
       let url = document.URL
-
       if (!FacebookUtils.isHomePage(url)) {
         return
       }
       if (FacebookUtils.isFeedHidden()) {
+        console.log('home confirmed')
         return
       }
       if (FacebookUtils.hasFeedLoaded()) {
+        console.log('loaded')
         this.setFeedVisibility(false)
         return
       }
