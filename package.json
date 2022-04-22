@@ -7,9 +7,12 @@
     "build:dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js",
     "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch",
     "generate-release-zip": "$npm_execpath run build;node generate-release-zip.js",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "cypress:open": "cypress open",
+    "test": "cypress run --spec cypress/integration/sample_spec.js"
   },
   "dependencies": {
+    "cypress": "^9.5.4",
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {

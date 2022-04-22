@@ -30,6 +30,7 @@
     "*://*.youtube.com/*",
     "*://*.github.com/*",
     "*://*.facebook.com/*",
+    "*://localhost:*/__/#/tests/integration/*.js/",
     "tabs",
     "storage"
   ]

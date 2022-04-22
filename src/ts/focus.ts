@@ -91,3 +91,5 @@ async function initialize() {
   await initialize()
   render()
 })()
+
+export default { initialize }
