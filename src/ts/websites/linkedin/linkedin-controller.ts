@@ -45,10 +45,13 @@ export default class LinkedInController extends WebsiteController {
   }
 
   customFocus() {
-    this.panelElements = []
-    this.focusPanel()
-    this.focusAd()
-    this.focusFeedAds()
+    window.clearInterval(this.feedIntervalId)
+    utils.removeFocusedBrowsingCards()
+    this.setFeedVisibility(true)
+    document.body.scrollTop = 0 // For Safari
+    document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
+    // We give the feed a second to populate so ads can be targeted
+    setTimeout(this.focusFeedAds, 1000)
   }
 
   clearIntervals() {
@@ -59,6 +62,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focusFeed() {
+    this.tryBlockingFeed()
     if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
@@ -68,6 +72,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focusPanel() {
+    this.tryBlockingPanel()
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
@@ -77,6 +82,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focusAd() {
+    this.tryBlockingAd()
     if (this.adIntervalId) {
       clearInterval(this.adIntervalId)
     }
@@ -95,12 +101,12 @@ export default class LinkedInController extends WebsiteController {
   }
 
   setAdVisibility(visibile: boolean) {
-    var linkedin_ad_parent_node = LinkedInUtils.getAdHeader()
+    var adParentNode = LinkedInUtils.getAdHeader()
     if (!visibile) {
-      this.adChildNode = linkedin_ad_parent_node.children[0]
-      linkedin_ad_parent_node.removeChild(this.adChildNode)
+      this.adChildNode = adParentNode.children[0]
+      adParentNode.removeChild(this.adChildNode)
     } else {
-      linkedin_ad_parent_node.append(this.adChildNode)
+      adParentNode.append(this.adChildNode)
     }
   }
 
@@ -120,14 +126,14 @@ export default class LinkedInController extends WebsiteController {
     if (!visible) {
       let length = panel.children.length
 
-      let current_panel_elements = []
+      let currentPanelElements = []
       while (length != 1) {
         var currentLastChild = panel.children[length - 1]
-        current_panel_elements.push(currentLastChild)
+        currentPanelElements.push(currentLastChild)
         panel.removeChild(currentLastChild)
         length -= 1
       }
-      this.panelElements = current_panel_elements
+      this.panelElements = currentPanelElements
     } else {
       for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
         panel.append(this.panelElements[i])

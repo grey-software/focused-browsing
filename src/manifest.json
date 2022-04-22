@@ -30,6 +30,8 @@
     "*://*.youtube.com/*",
     "*://*.github.com/*",
     "*://*.facebook.com/*",
+    "*://*.instagram.com/*",
+    "*://*.google.com/search*",
     "tabs",
     "storage"
   ]

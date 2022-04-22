@@ -73,6 +73,12 @@ async function initialize() {
   } else if (currentURL.includes('facebook.com')) {
     websiteController = new FacebookController()
     currentWebsite = Website.Facebook
+  } else if (currentURL.includes('instagram.com')) {
+    websiteController = new FacebookController()
+    currentWebsite = Website.Facebook
+  } else if (currentURL.includes('google.com/search')) {
+    websiteController = new FacebookController()
+    currentWebsite = Website.Facebook
   }
 
   if (currentWebsite != Website.Unsupported) {

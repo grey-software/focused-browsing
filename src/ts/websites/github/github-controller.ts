@@ -44,6 +44,7 @@ export default class GithubController extends WebsiteController {
   }
 
   focusActivity() {
+    this.tryBlockingActivity()
     if (this.activityIntervalId) {
       clearInterval(this.activityIntervalId)
     }
@@ -53,6 +54,7 @@ export default class GithubController extends WebsiteController {
   }
 
   focusExplore() {
+    this.tryBlockingExplore()
     if (this.exploreIntervalId) {
       clearInterval(this.exploreIntervalId)
     }
@@ -62,13 +64,13 @@ export default class GithubController extends WebsiteController {
   }
 
   setActivityVisibility(visibile: boolean) {
-    var github_activity_parent_node = GithubUtils.getGithubActivity()
+    var activityParentNode = GithubUtils.getGithubActivity()
     if (!visibile) {
-      this.githubActivityChildNode = github_activity_parent_node.children[1]
-      github_activity_parent_node.removeChild(this.githubActivityChildNode)
-      GithubIFrameUtils.injectActivityIframe(this.activityIframe, github_activity_parent_node)
+      this.githubActivityChildNode = activityParentNode.children[1]
+      activityParentNode.removeChild(this.githubActivityChildNode)
+      GithubIFrameUtils.injectActivityIframe(this.activityIframe, activityParentNode)
     } else {
-      github_activity_parent_node.append(this.githubActivityChildNode)
+      activityParentNode.append(this.githubActivityChildNode)
     }
   }
 

@@ -32,7 +32,6 @@ export default class YouTubeController extends WebsiteController {
     this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
 
     this.currentColor = ''
-
     this.setCardColorInterval()
     this.listenForCardChange()
   }
@@ -43,6 +42,19 @@ export default class YouTubeController extends WebsiteController {
     this.focusFeed()
     this.focusSuggestions()
     this.focusComments()
+  }
+
+  unfocus() {
+    let url = document.URL
+    if (YouTubeUtils.isHomePage(url)) {
+      this.clearIntervals()
+      utils.removeFocusedBrowsingCards()
+      this.setFeedVisibility(true)
+    } else if (YouTubeUtils.isVideoPage(url)) {
+      this.clearIntervals()
+      this.setSuggestionsVisibility(true)
+      this.setCommentsVisbility(true)
+    }
   }
 
   listenForCardChange() {
@@ -81,19 +93,6 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  unfocus() {
-    let url = document.URL
-    if (YouTubeUtils.isHomePage(url)) {
-      this.clearIntervals()
-      utils.removeFocusedBrowsingCards()
-      this.setFeedVisibility(true)
-    } else if (YouTubeUtils.isVideoPage(url)) {
-      this.clearIntervals()
-      this.setSuggestionsVisibility(true)
-      this.setCommentsVisbility(true)
-    }
-  }
-
   clearIntervals() {
     window.clearInterval(this.suggestionsIntervalId)
     window.clearInterval(this.commentIntervalId)
@@ -101,6 +100,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focusSuggestions() {
+    this.tryBlockingSuggestions()
     if (this.suggestionsIntervalId) {
       window.clearInterval(this.suggestionsIntervalId)
     }
@@ -110,16 +110,17 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focusFeed() {
+    this.tryBlockingFeed()
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
-
     this.feedIntervalId = window.setInterval(() => {
       this.tryBlockingFeed()
     }, 250)
   }
 
   focusComments() {
+    this.tryBlockingComments()
     if (this.commentIntervalId) {
       window.clearInterval(this.commentIntervalId)
     }

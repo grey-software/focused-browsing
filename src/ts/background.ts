@@ -7,6 +7,8 @@ const appState: AppState = {
   Youtube: FocusMode.Focused,
   Github: FocusMode.Focused,
   Facebook: FocusMode.Focused,
+  Instagram: FocusMode.Focused,
+  Google: FocusMode.Focused,
   Unsupported: FocusMode.Unfocused,
 }
 

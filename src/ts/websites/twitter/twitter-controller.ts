@@ -25,8 +25,7 @@ export default class TwitterController extends WebsiteController {
   }
 
   focus() {
-    // the panel shows up on every page
-    // we should clear our panel elements every time we focus because it can get over populated and we can be rendering extra elements
+    // Since the panel shows up on every page, we clear our panel elements every time we focus because it gets overpopulated with extra elements
     this.panelElements = []
     this.focusPanel()
     this.focusFeed()
@@ -50,7 +49,10 @@ export default class TwitterController extends WebsiteController {
       this.setFeedVisibility(true)
     }
     this.focusPanel()
-    this.focusFeedAds()
+    document.body.scrollTop = 0 // For Safari
+    document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
+    // We give the feed a second to populate so ads can be targeted
+    setTimeout(this.focusFeedAds, 1000)
   }
 
   clearIntervals() {
@@ -60,6 +62,7 @@ export default class TwitterController extends WebsiteController {
   }
 
   focusPanel() {
+    this.tryBlockingPanel()
     if (this.panelIntervalId) {
       window.clearInterval(this.panelIntervalId)
     }
@@ -69,6 +72,7 @@ export default class TwitterController extends WebsiteController {
   }
 
   focusFeed() {
+    this.tryBlockingFeed()
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
@@ -78,12 +82,14 @@ export default class TwitterController extends WebsiteController {
   }
 
   focusFeedAds() {
+    this.hideFeedAds()
     if (this.adIntervalId) {
       window.clearInterval(this.adIntervalId)
     }
+    // We set a longer timeout for ads to prevent the feed from infinitely loading new items
     this.adIntervalId = window.setInterval(() => {
       this.hideFeedAds()
-    }, 250)
+    }, 10000)
   }
 
   setFeedVisibility(visible: boolean) {
@@ -148,7 +154,6 @@ export default class TwitterController extends WebsiteController {
 
   hideFeedAds() {
     twitterUtils.getFeedAdElements().forEach((ad) => {
-      console.log('hiding ad')
       ad.style.display = 'none'
     })
   }

@@ -8,17 +8,17 @@ function getYouTubeFeed(): Element | null {
 }
 
 function getYoutubeSuggestions(): Element | null {
-  let suggestions_parent = document.querySelector('ytd-watch-next-secondary-results-renderer')
-  if (suggestions_parent) {
-    return suggestions_parent.children[1]
+  let suggestionsParent = document.querySelector('ytd-watch-next-secondary-results-renderer')
+  if (suggestionsParent) {
+    return suggestionsParent.children[1]
   }
   return null
 }
 
 function getYoutubeCommentsOnVideo(): Element | null {
-  let comment_parent = document.querySelector('ytd-comments')
-  if (comment_parent) {
-    return comment_parent.children[1].children[2]
+  let commentParent = document.querySelector('ytd-comments')
+  if (commentParent) {
+    return commentParent.children[1].children[2]
   }
   return null
 }
