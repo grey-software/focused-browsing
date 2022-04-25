@@ -7,65 +7,20 @@ html {
 
 .focus-container {
   background-color: $black-5;
-  border-radius: 16px 16px 0px 0px;
-  padding: 32px 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 }
-.quote-container {
-  margin-bottom: 28px;
-  width: 500px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+
 .quote {
   color: $light-steel-blue;
-  display: flex;
-  text-align: center;
-  margin-bottom: 8px;
-  letter-spacing: -0.27px;
-  @include inter-16-regular;
 }
 .quoter {
   color: $light-steel-blue;
-  letter-spacing: -0.21px;
-  @include inter-14-medium;
 }
 .card-main {
   background-color: $dark-slate-gray-5;
-  margin-bottom: 40px;
-  overflow: hidden;
-  border-radius: 16px;
   padding: 48px 42px;
   box-shadow: 0 8px 24px -4px $transparent-black-2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  align-self: stretch;
 }
-.card-content {
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.title-container {
-  margin-bottom: 8px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-.card-heading {
-  margin-bottom: 16px;
-  display: flex;
-  align-items: center;
-}
+
 .card-icon {
   margin-right: 7px;
   padding: 1.54px 1px 1.53px;
