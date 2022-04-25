@@ -21,5 +21,5 @@ export default abstract class WebsiteController {
   abstract focus(): void
   abstract unfocus(): void
   abstract customFocus(): void
-  abstract clearIntervals(): void
+  abstract reset(): void
 }

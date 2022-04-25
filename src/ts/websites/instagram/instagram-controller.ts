@@ -2,15 +2,15 @@ import WebsiteController from '../website-controller'
 
 export default class InstagramController extends WebsiteController {
   focus(): void {
-    throw new Error('Method not implemented.')
+    return
   }
   unfocus(): void {
-    throw new Error('Method not implemented.')
+    return
   }
   customFocus(): void {
-    throw new Error('Method not implemented.')
+    return
   }
-  clearIntervals(): void {
-    throw new Error('Method not implemented.')
+  reset(): void {
+    return
   }
 }

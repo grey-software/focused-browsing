@@ -5,30 +5,23 @@ import WebsiteController from '../website-controller'
 
 export default class YouTubeController extends WebsiteController {
   customFocus(): void {
-    throw new Error('Method not implemented.')
+    return
   }
-  YouTubeFeedChildNode: string | Node
-  feedIntervalId: number
-  suggestionsIntervalId: number
-  cardChangeIntervalId: number
-  feedIframe: HTMLIFrameElement
-  suggestionElements: Node[]
-  commentElements: Node[]
-  commentIntervalId: number
+  youTubeFeedChildNode: string | Node = ''
+  feedIntervalId: number = 0
+  suggestionsIntervalId: number = 0
+  cardChangeIntervalId: number = 0
+  commentIntervalId: number = 0
+  setCardColorIntervalId: number = 0
+  suggestionElements: Node[] = []
+  commentElements: Node[] = []
   currentColor: string
-  setCardColorIntervalId: number
+  feedIframe: HTMLIFrameElement
 
   constructor() {
     super()
     this.suggestionElements = []
     this.commentElements = []
-    this.YouTubeFeedChildNode = ''
-
-    this.feedIntervalId = 0
-    this.suggestionsIntervalId = 0
-    this.commentIntervalId = 0
-    this.cardChangeIntervalId = 0
-    this.setCardColorIntervalId = 0
     this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
 
     this.currentColor = ''
@@ -47,11 +40,11 @@ export default class YouTubeController extends WebsiteController {
   unfocus() {
     let url = document.URL
     if (YouTubeUtils.isHomePage(url)) {
-      this.clearIntervals()
+      this.reset()
       utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
     } else if (YouTubeUtils.isVideoPage(url)) {
-      this.clearIntervals()
+      this.reset()
       this.setSuggestionsVisibility(true)
       this.setCommentsVisbility(true)
     }
@@ -93,7 +86,7 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  clearIntervals() {
+  reset() {
     window.clearInterval(this.suggestionsIntervalId)
     window.clearInterval(this.commentIntervalId)
     window.clearInterval(this.feedIntervalId)
@@ -133,11 +126,11 @@ export default class YouTubeController extends WebsiteController {
     let feed = YouTubeUtils.getYouTubeFeed()
     if (feed) {
       if (!visible) {
-        this.YouTubeFeedChildNode = feed.children[0]
+        this.youTubeFeedChildNode = feed.children[0]
         feed.removeChild(feed.childNodes[0])
         YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
       } else {
-        feed.append(this.YouTubeFeedChildNode)
+        feed.append(this.youTubeFeedChildNode)
       }
     }
   }

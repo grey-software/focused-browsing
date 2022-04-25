@@ -5,24 +5,17 @@ import WebsiteController from '../website-controller'
 import linkedinUtils from './linkedin-utils'
 
 export default class LinkedInController extends WebsiteController {
-  panelElements: Node[]
-  feedIntervalId: number
-  panelIntervalId: number
+  panelElements: Node[] = []
+  feedIntervalId: number = 0
+  panelIntervalId: number = 0
+  adIntervalId: number = 0
+  feedAdsIntervalId: number = 0
+  feedChildNode: string | Node = ''
+  adChildNode: string | Node = ''
   feedIframe: HTMLIFrameElement
-  feedChildNode: string | Node
-  adChildNode: string | Node
-  adIntervalId: number
-  feedAdsIntervalId: number
 
   constructor() {
     super()
-    this.panelElements = []
-    this.feedChildNode = ''
-    this.adChildNode = ''
-    this.feedIntervalId = 0
-    this.panelIntervalId = 0
-    this.adIntervalId = 0
-    this.feedAdsIntervalId = 0
     this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
   }
 
@@ -36,7 +29,7 @@ export default class LinkedInController extends WebsiteController {
   unfocus() {
     let url = document.URL
     if (LinkedInUtils.isHomePage(url)) {
-      this.clearIntervals()
+      this.reset()
       utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
       this.setPanelVisibility(true)
@@ -54,7 +47,7 @@ export default class LinkedInController extends WebsiteController {
     setTimeout(this.focusFeedAds, 1000)
   }
 
-  clearIntervals() {
+  reset() {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.panelIntervalId)
     window.clearInterval(this.adIntervalId)

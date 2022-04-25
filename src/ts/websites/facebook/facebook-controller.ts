@@ -5,7 +5,7 @@ import WebsiteController from '../website-controller'
 
 export default class FacebookController extends WebsiteController {
   customFocus(): void {
-    throw new Error('Method not implemented.')
+    return
   }
   storyElements: Node[]
   feedChildNode: string | Node
@@ -31,14 +31,14 @@ export default class FacebookController extends WebsiteController {
   unfocus() {
     let url = document.URL
     if (FacebookUtils.isHomePage(url)) {
-      this.clearIntervals()
+      this.reset()
       utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
       this.setStoriesVisibility(true)
     }
   }
 
-  clearIntervals() {
+  reset() {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.storiesIntervalId)
   }

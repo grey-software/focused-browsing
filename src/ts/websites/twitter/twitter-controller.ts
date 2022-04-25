@@ -5,22 +5,16 @@ import WebsiteController from '../website-controller'
 import twitterUtils from './twitter-utils'
 
 export default class TwitterController extends WebsiteController {
-  panelElements: Node[]
-  feedChildNode: string | Node
-  feedIntervalId: number
-  panelIntervalId: number
-  adIntervalId: number
+  panelElements: Node[] = []
+  feedChildNode: string | Node = ''
+  feedIntervalId: number = 0
+  panelIntervalId: number = 0
+  adIntervalId: number = 0
+  hiddenAdCount: number = 0
   feedIframe: HTMLIFrameElement
-  hiddenAdCount: number
 
   constructor() {
     super()
-    this.panelElements = []
-    this.feedChildNode = ''
-    this.feedIntervalId = 0
-    this.panelIntervalId = 0
-    this.adIntervalId = 0
-    this.hiddenAdCount = 0
     this.feedIframe = TwitterIFrameUtils.createTwitterFeedIframe()
   }
 
@@ -33,7 +27,7 @@ export default class TwitterController extends WebsiteController {
 
   unfocus() {
     utils.removeFocusedBrowsingCards()
-    this.clearIntervals()
+    this.reset()
     try {
       this.setPanelVisibility(true)
       if (TwitterUtils.isHomePage(document.URL)) {
@@ -44,7 +38,7 @@ export default class TwitterController extends WebsiteController {
 
   customFocus() {
     utils.removeFocusedBrowsingCards()
-    this.clearIntervals()
+    this.reset()
     if (TwitterUtils.isHomePage(document.URL)) {
       this.setFeedVisibility(true)
     }
@@ -55,7 +49,7 @@ export default class TwitterController extends WebsiteController {
     setTimeout(this.focusFeedAds, 1000)
   }
 
-  clearIntervals() {
+  reset() {
     window.clearInterval(this.feedIntervalId)
     window.clearInterval(this.panelIntervalId)
     window.clearInterval(this.adIntervalId)

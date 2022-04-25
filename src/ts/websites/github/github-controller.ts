@@ -4,21 +4,14 @@ import utils from '../../utils'
 import WebsiteController from '../website-controller'
 
 export default class GithubController extends WebsiteController {
-  customFocus(): void {
-    throw new Error('Method not implemented.')
-  }
-  exploreElements: Node[]
-  activityIntervalId: number
-  exploreIntervalId: number
+  exploreElements: Node[] = []
+  activityIntervalId: number = 0
+  exploreIntervalId: number = 0
   activityIframe: HTMLIFrameElement
-  githubActivityChildNode: string | Node
+  githubActivityChildNode: string | Node = ''
 
   constructor() {
     super()
-    this.exploreElements = []
-    this.githubActivityChildNode = ''
-    this.activityIntervalId = 0
-    this.exploreIntervalId = 0
     this.activityIframe = GithubIFrameUtils.createGithubIframe()
   }
 
@@ -31,14 +24,18 @@ export default class GithubController extends WebsiteController {
   unfocus() {
     let url = document.URL
     if (GithubUtils.isHomePage(url)) {
-      this.clearIntervals()
+      this.reset()
       utils.removeFocusedBrowsingCards()
       this.setActivityVisibility(true)
       this.setExploreVisibility(true)
     }
   }
 
-  clearIntervals() {
+  customFocus(): void {
+    return
+  }
+
+  reset() {
     window.clearInterval(this.activityIntervalId)
     window.clearInterval(this.exploreIntervalId)
   }

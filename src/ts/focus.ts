@@ -9,6 +9,7 @@ import WebsiteController from './websites/website-controller'
 import KeyPressManager from './keypress-manager'
 import { Website } from './types'
 import FacebookController from './websites/facebook/facebook-controller'
+import GoogleController from './websites/google/google-controller'
 
 let currentWebsite: Website = Website.Unsupported
 let stateManager: AppStateManager
@@ -77,8 +78,8 @@ async function initialize() {
     websiteController = new FacebookController()
     currentWebsite = Website.Facebook
   } else if (currentURL.includes('google.com/search')) {
-    websiteController = new FacebookController()
-    currentWebsite = Website.Facebook
+    websiteController = new GoogleController()
+    currentWebsite = Website.Google
   }
 
   if (currentWebsite != Website.Unsupported) {
