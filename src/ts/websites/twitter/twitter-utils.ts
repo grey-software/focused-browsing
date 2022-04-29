@@ -1,16 +1,16 @@
-function getTwitterFeed(): Element {
+function getFeedContainer(): Element {
   return document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[0].children[0]
     .children[3]
 }
 
-function getTwitterPanel(): Element {
+function getPanelContainer(): Element {
   return document.querySelectorAll('[role="main"]')[0].children[0].children[0].children[0].children[1].children[0]
     .children[1].children[0].children[0].children[0]
 }
 
 function hasFeedLoaded(): boolean {
   try {
-    return getTwitterFeed().children.length == 1
+    return getFeedContainer().children.length == 1
   } catch (err) {
     return false
   }
@@ -18,19 +18,19 @@ function hasFeedLoaded(): boolean {
 
 function hasPanelLoaded(): boolean {
   try {
-    return getTwitterPanel().children.length != 0
+    return getPanelContainer().children.length != 0
   } catch (err) {
     return false
   }
 }
 
 function isFeedHidden(): boolean {
-  let feed = getTwitterFeed()
+  let feed = getFeedContainer()
   return feed.children[0].nodeName == 'IFRAME'
 }
 
 function isPanelHidden(): boolean {
-  let panel = getTwitterPanel()
+  let panel = getPanelContainer()
   return panel.children.length == 1
 }
 
@@ -67,8 +67,8 @@ function getPanelItemCount() {
 }
 
 export default {
-  getTwitterFeed,
-  getTwitterPanel,
+  getFeedContainer,
+  getPanelContainer,
   hasFeedLoaded,
   hasPanelLoaded,
   isFeedHidden,

@@ -6,12 +6,13 @@ import twitterUtils from './twitter-utils'
 
 export default class TwitterController extends WebsiteController {
   panelElements: Node[] = []
-  feedChildNode: string | Node = ''
+  feed: null | Element = null
+  feedIframe: HTMLIFrameElement
+
   feedIntervalId: number = 0
   panelIntervalId: number = 0
   adIntervalId: number = 0
   hiddenAdCount: number = 0
-  feedIframe: HTMLIFrameElement
 
   constructor() {
     super()
@@ -56,22 +57,22 @@ export default class TwitterController extends WebsiteController {
   }
 
   focusPanel() {
-    this.tryBlockingPanel()
+    this.tryHidingPanel()
     if (this.panelIntervalId) {
       window.clearInterval(this.panelIntervalId)
     }
     this.panelIntervalId = window.setInterval(() => {
-      this.tryBlockingPanel()
+      this.tryHidingPanel()
     }, 250)
   }
 
   focusFeed() {
-    this.tryBlockingFeed()
+    this.tryHidingFeed()
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
     this.feedIntervalId = window.setInterval(() => {
-      this.tryBlockingFeed()
+      this.tryHidingFeed()
     }, 250)
   }
 
@@ -87,37 +88,39 @@ export default class TwitterController extends WebsiteController {
   }
 
   setFeedVisibility(visible: boolean) {
-    let feed = TwitterUtils.getTwitterFeed()
+    let feedContainer = TwitterUtils.getFeedContainer()
     if (!visible) {
-      this.feedChildNode = feed.children[0]
-      feed.removeChild(feed.childNodes[0])
-      TwitterIFrameUtils.injectFeedIframe(this.feedIframe, feed)
+      this.feed = feedContainer.children[0]
+      feedContainer.removeChild(feedContainer.childNodes[0])
+      TwitterIFrameUtils.injectFeedIframe(this.feedIframe, feedContainer)
     } else {
-      feed.append(this.feedChildNode)
+      if (this.feed) {
+        feedContainer.append(this.feed)
+      }
     }
   }
 
   setPanelVisibility(visibile: boolean) {
-    let panel = TwitterUtils.getTwitterPanel()
+    let panelContainer = TwitterUtils.getPanelContainer()
     if (!visibile) {
-      let length = panel.children.length
+      let length = panelContainer.children.length
       let currentPanelElements = []
       while (length != 1) {
-        var currentLastChild = panel.children[length - 1]
+        var currentLastChild = panelContainer.children[length - 1]
         currentPanelElements.push(currentLastChild)
-        panel.removeChild(currentLastChild)
+        panelContainer.removeChild(currentLastChild)
         length -= 1
       }
       this.panelElements = currentPanelElements
     } else {
       for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
-        panel.append(this.panelElements[i])
+        panelContainer.append(this.panelElements[i])
       }
       this.panelElements = []
     }
   }
 
-  tryBlockingFeed() {
+  tryHidingFeed() {
     try {
       let url = document.URL
       if (!TwitterUtils.isHomePage(url)) {
@@ -133,7 +136,7 @@ export default class TwitterController extends WebsiteController {
     } catch (err) {}
   }
 
-  tryBlockingPanel() {
+  tryHidingPanel() {
     try {
       if (TwitterUtils.isPanelHidden()) {
         return

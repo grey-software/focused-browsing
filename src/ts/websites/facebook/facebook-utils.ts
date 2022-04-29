@@ -1,4 +1,4 @@
-function getFeed() {
+function getFeedContainer() {
   return document.getElementById('ssrb_feed_start')?.parentElement
 }
 
@@ -7,7 +7,7 @@ function getStoriesContainer() {
 }
 
 function hasFeedLoaded(): boolean {
-  return getFeed() != null
+  return getFeedContainer() != null
 }
 
 function haveStoriesLoaded(): boolean {
@@ -19,7 +19,7 @@ function isHomePage(url: string): boolean {
 }
 
 function isFeedHidden(): boolean {
-  return getFeed()?.children[1].nodeName === 'IFRAME'
+  return getFeedContainer()?.children[1].nodeName === 'IFRAME'
 }
 
 function areStoriesHidden(): boolean {
@@ -32,6 +32,6 @@ export default {
   areStoriesHidden,
   hasFeedLoaded,
   haveStoriesLoaded,
-  getFeed,
+  getFeedContainer,
   getStoriesContainer,
 }

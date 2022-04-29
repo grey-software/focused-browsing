@@ -41,22 +41,22 @@ export default class GithubController extends WebsiteController {
   }
 
   focusActivity() {
-    this.tryBlockingActivity()
+    this.tryHidingActivity()
     if (this.activityIntervalId) {
       clearInterval(this.activityIntervalId)
     }
     this.activityIntervalId = window.setInterval(() => {
-      this.tryBlockingActivity()
+      this.tryHidingActivity()
     }, 250)
   }
 
   focusExplore() {
-    this.tryBlockingExplore()
+    this.tryHidingExplore()
     if (this.exploreIntervalId) {
       clearInterval(this.exploreIntervalId)
     }
     this.exploreIntervalId = window.setInterval(() => {
-      this.tryBlockingExplore()
+      this.tryHidingExplore()
     }, 250)
   }
 
@@ -93,7 +93,7 @@ export default class GithubController extends WebsiteController {
     }
   }
 
-  tryBlockingActivity() {
+  tryHidingActivity() {
     try {
       let url = document.URL
 
@@ -110,7 +110,7 @@ export default class GithubController extends WebsiteController {
     } catch (err) {}
   }
 
-  tryBlockingExplore() {
+  tryHidingExplore() {
     try {
       let url = document.URL
 

@@ -5,13 +5,14 @@ import WebsiteController from '../website-controller'
 import linkedinUtils from './linkedin-utils'
 
 export default class LinkedInController extends WebsiteController {
-  panelElements: Node[] = []
   feedIntervalId: number = 0
   panelIntervalId: number = 0
   adIntervalId: number = 0
   feedAdsIntervalId: number = 0
-  feedChildNode: string | Node = ''
-  adChildNode: string | Node = ''
+
+  panelElements: Element[] = []
+  feed: null | Element = null
+  bannerAd: null | Element = null
   feedIframe: HTMLIFrameElement
 
   constructor() {
@@ -31,16 +32,16 @@ export default class LinkedInController extends WebsiteController {
     if (LinkedInUtils.isHomePage(url)) {
       this.reset()
       utils.removeFocusedBrowsingCards()
-      this.setFeedVisibility(true)
-      this.setPanelVisibility(true)
-      this.setAdVisibility(true)
+      this.showFeed()
+      this.showPanel()
+      this.showBannerAd()
     }
   }
 
   customFocus() {
     window.clearInterval(this.feedIntervalId)
     utils.removeFocusedBrowsingCards()
-    this.setFeedVisibility(true)
+    this.showFeed()
     document.body.scrollTop = 0 // For Safari
     document.documentElement.scrollTop = 0 // For Chrome, Firefox, IE and Opera
     // We give the feed a second to populate so ads can be targeted
@@ -55,32 +56,32 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focusFeed() {
-    this.tryBlockingFeed()
+    this.tryHidingFeed()
     if (this.feedIntervalId) {
       clearInterval(this.feedIntervalId)
     }
     this.feedIntervalId = window.setInterval(() => {
-      this.tryBlockingFeed()
+      this.tryHidingFeed()
     }, 250)
   }
 
   focusPanel() {
-    this.tryBlockingPanel()
+    this.tryHidingPanel()
     if (this.panelIntervalId) {
       clearInterval(this.panelIntervalId)
     }
     this.panelIntervalId = window.setInterval(() => {
-      this.tryBlockingPanel()
+      this.tryHidingPanel()
     }, 250)
   }
 
   focusAd() {
-    this.tryBlockingAd()
+    this.tryHidingAd()
     if (this.adIntervalId) {
       clearInterval(this.adIntervalId)
     }
     this.adIntervalId = window.setInterval(() => {
-      this.tryBlockingAd()
+      this.tryHidingAd()
     }, 250)
   }
 
@@ -93,49 +94,7 @@ export default class LinkedInController extends WebsiteController {
     }, 250)
   }
 
-  setAdVisibility(visibile: boolean) {
-    var adParentNode = LinkedInUtils.getAdHeader()
-    if (!visibile) {
-      this.adChildNode = adParentNode.children[0]
-      adParentNode.removeChild(this.adChildNode)
-    } else {
-      adParentNode.append(this.adChildNode)
-    }
-  }
-
-  setFeedVisibility(visibile: boolean) {
-    let feedParentNode = LinkedInUtils.getLinkedInFeed()
-    if (!visibile) {
-      this.feedChildNode = feedParentNode.children[1]
-      feedParentNode.removeChild(this.feedChildNode)
-      LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, feedParentNode)
-    } else {
-      feedParentNode.append(this.feedChildNode)
-    }
-  }
-
-  setPanelVisibility(visible: boolean) {
-    let panel = LinkedInUtils.getLinkedInPanel()
-    if (!visible) {
-      let length = panel.children.length
-
-      let currentPanelElements = []
-      while (length != 1) {
-        var currentLastChild = panel.children[length - 1]
-        currentPanelElements.push(currentLastChild)
-        panel.removeChild(currentLastChild)
-        length -= 1
-      }
-      this.panelElements = currentPanelElements
-    } else {
-      for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
-        panel.append(this.panelElements[i])
-      }
-      this.panelElements = []
-    }
-  }
-
-  tryBlockingAd() {
+  tryHidingAd() {
     try {
       let url = document.URL
       if (!LinkedInUtils.isHomePage(url)) {
@@ -145,13 +104,13 @@ export default class LinkedInController extends WebsiteController {
         return
       }
       if (LinkedInUtils.hasAdLoaded()) {
-        this.setAdVisibility(false)
+        this.hideBannerAd()
         return
       }
     } catch (err) {}
   }
 
-  tryBlockingFeed() {
+  tryHidingFeed() {
     try {
       let url = document.URL
       if (!LinkedInUtils.isHomePage(url)) {
@@ -161,13 +120,13 @@ export default class LinkedInController extends WebsiteController {
         return
       }
       if (LinkedInUtils.hasFeedLoaded()) {
-        this.setFeedVisibility(false)
+        this.hideFeed()
         return
       }
     } catch (err) {}
   }
 
-  tryBlockingPanel() {
+  tryHidingPanel() {
     try {
       let url = document.URL
       if (!LinkedInUtils.isHomePage(url)) {
@@ -178,10 +137,59 @@ export default class LinkedInController extends WebsiteController {
         return
       }
       if (LinkedInUtils.hasPanelLoaded()) {
-        this.setPanelVisibility(false)
+        this.hidePanel()
         return
       }
     } catch (err) {}
+  }
+
+  hideFeed() {
+    let feedParentNode = LinkedInUtils.getLinkedInFeed()
+    this.feed = feedParentNode.children[1]
+    feedParentNode.removeChild(this.feed)
+    LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, feedParentNode)
+  }
+
+  showFeed() {
+    let feedParentNode = LinkedInUtils.getLinkedInFeed()
+    if (this.feed) {
+      feedParentNode.append(this.feed)
+    }
+  }
+
+  hidePanel() {
+    let panel = LinkedInUtils.getLinkedInPanel()
+    let length = panel.children.length
+
+    let currentPanelElements = []
+    while (length != 1) {
+      var currentLastChild = panel.children[length - 1]
+      currentPanelElements.push(currentLastChild)
+      panel.removeChild(currentLastChild)
+      length -= 1
+    }
+    this.panelElements = currentPanelElements
+  }
+
+  showPanel() {
+    let panel = LinkedInUtils.getLinkedInPanel()
+    for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
+      panel.append(this.panelElements[i])
+    }
+    this.panelElements = []
+  }
+
+  showBannerAd() {
+    let adParentNode = LinkedInUtils.getAdHeader()
+    this.bannerAd = adParentNode.children[0]
+    adParentNode.removeChild(this.bannerAd)
+  }
+
+  hideBannerAd() {
+    let adParentNode = LinkedInUtils.getAdHeader()
+    if (this.bannerAd) {
+      adParentNode.append(this.bannerAd)
+    }
   }
 
   hideFeedAds() {

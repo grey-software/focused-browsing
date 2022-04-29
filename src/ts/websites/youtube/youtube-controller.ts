@@ -93,32 +93,32 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focusSuggestions() {
-    this.tryBlockingSuggestions()
+    this.tryHidingSuggestions()
     if (this.suggestionsIntervalId) {
       window.clearInterval(this.suggestionsIntervalId)
     }
     this.suggestionsIntervalId = window.setInterval(() => {
-      this.tryBlockingSuggestions()
+      this.tryHidingSuggestions()
     }, 250)
   }
 
   focusFeed() {
-    this.tryBlockingFeed()
+    this.tryHidingFeed()
     if (this.feedIntervalId) {
       window.clearInterval(this.feedIntervalId)
     }
     this.feedIntervalId = window.setInterval(() => {
-      this.tryBlockingFeed()
+      this.tryHidingFeed()
     }, 250)
   }
 
   focusComments() {
-    this.tryBlockingComments()
+    this.tryHidingComments()
     if (this.commentIntervalId) {
       window.clearInterval(this.commentIntervalId)
     }
     this.commentIntervalId = window.setInterval(() => {
-      this.tryBlockingComments()
+      this.tryHidingComments()
     }, 250)
   }
 
@@ -179,7 +179,7 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  tryBlockingFeed() {
+  tryHidingFeed() {
     try {
       let url = document.URL
       if (!YouTubeUtils.isHomePage(url)) {
@@ -196,7 +196,7 @@ export default class YouTubeController extends WebsiteController {
     } catch (err) {}
   }
 
-  tryBlockingSuggestions() {
+  tryHidingSuggestions() {
     try {
       let url = document.URL
       if (!YouTubeUtils.isVideoPage(url)) {
@@ -213,7 +213,7 @@ export default class YouTubeController extends WebsiteController {
     } catch (err) {}
   }
 
-  tryBlockingComments() {
+  tryHidingComments() {
     try {
       let url = document.URL
       if (!YouTubeUtils.isVideoPage(url)) {
