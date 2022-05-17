@@ -4,9 +4,9 @@
       <div class="title-container">
         <div class="card-heading">
           <div class="card-icon">
-            <img alt="" class="vector" src="/html/assets/heading-logo.svg" />
+            <img alt="" class="vector" src="/html/assets/heading-icon.svg" />
           </div>
-          <p class="heading">Focused Browsing is active</p>
+          <p class="heading-text">Focused Browsing is active</p>
         </div>
         <p class="card-subtitle">
           We&#039;ve hidden this website&#039;s distracting elements so you can focus on your creative and professional
@@ -16,7 +16,7 @@
       <div class="buttons-container">
         <a href="" @click="openSupport">
           <div class="button-support">
-            <p class="support-this-project">Support this project</p>
+            <p class="support-text">Support this project</p>
           </div>
         </a>
         <a href="" @click="showFeed">
@@ -29,8 +29,8 @@
     <div class="shortcut-container">
       <p class="shortcut-caption">
         Or
-        <strong class="shortcut-caption-emphasis-1">LeftShift &#43; RightShift</strong
-        ><strong class="shortcut-caption-emphasis-2"> </strong> to show/hide feeds
+        <strong class="shortcut-caption-emphasis-1">LeftShift &#43; RightShift</strong><strong
+          class="shortcut-caption-emphasis-2"> </strong> to show/hide feeds
       </p>
     </div>
   </div>

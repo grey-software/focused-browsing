@@ -20,6 +20,8 @@
     "/extension-build/html/githubFeed.html": "/extension-build/html/githubFeed.html",
     "/extension-build/html/githubFeedDark.html": "/extension-build/html/githubFeedDark.html",
     "/extension-build/html/githubFeedDim.html": "/extension-build/html/githubFeedDim.html",
+    "/extension-build/html/instagram.html": "/extension-build/html/instagram.html",
+    "/extension-build/html/instagramDark.html": "/extension-build/html/instagramDark.html",
     "/extension-build/html/linkedinFeed.html": "/extension-build/html/linkedinFeed.html",
     "/extension-build/html/popup.html": "/extension-build/html/popup.html",
     "/extension-build/html/twitterFeed.html": "/extension-build/html/twitterFeed.html",
@@ -40,7 +42,5 @@
     "/extension-build/css/font-files/Inter-Regular.woff": "/extension-build/css/font-files/Inter-Regular.woff",
     "/extension-build/css/font-files/Inter-Regular.woff2": "/extension-build/css/font-files/Inter-Regular.woff2",
     "/extension-build/css/font-files/Inter-SemiBold.woff": "/extension-build/css/font-files/Inter-SemiBold.woff",
-    "/extension-build/css/font-files/Inter-SemiBold.woff2": "/extension-build/css/font-files/Inter-SemiBold.woff2",
-    "/extension-build/html/instagram.html": "/extension-build/html/instagram.html",
-    "/extension-build/html/instagramDark.html": "/extension-build/html/instagramDark.html"
+    "/extension-build/css/font-files/Inter-SemiBold.woff2": "/extension-build/css/font-files/Inter-SemiBold.woff2"
 }
