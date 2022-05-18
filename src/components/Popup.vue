@@ -12,8 +12,11 @@
       to show/hide feeds
     </p>
     <div class="seperator" />
-    <a id="github-button" target="_blank"
-      :href="`https://github.com/login/oauth/authorize?scope=user:arsala@grey.software&client_id=65615d22012f89567536`">
+    <a
+      id="github-button"
+      target="_blank"
+      :href="`https://github.com/login/oauth/authorize?scope=user:arsala@grey.software&client_id=65615d22012f89567536`"
+    >
       Sign in with Github
     </a>
     <Links />
@@ -28,5 +31,4 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

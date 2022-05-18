@@ -14,6 +14,7 @@ function createFacebookIframe(): HTMLIFrameElement {
     position: 'inherit',
     border: 'none',
   })
+  setIframeSource(feedIframe)
 
   return feedIframe
 }
@@ -30,7 +31,6 @@ function setIframeSource(feedIframe: HTMLIFrameElement): void {
 }
 
 function injectFeedIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
-  setIframeSource(feedIframe)
   feed.append(feedIframe)
 }
 

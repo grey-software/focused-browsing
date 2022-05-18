@@ -14,6 +14,7 @@ function createGithubIframe(): HTMLIFrameElement {
     position: 'inherit',
     border: 'none',
   })
+  setIframeSource(feedIframe)
 
   return feedIframe
 }
@@ -35,7 +36,6 @@ function setIframeSource(feedIframe: HTMLIFrameElement): void {
 }
 
 function injectActivityIframe(feedIframe: HTMLIFrameElement, feed: Element): void {
-  setIframeSource(feedIframe)
   feed.append(feedIframe)
 }
 

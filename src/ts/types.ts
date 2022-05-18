@@ -15,6 +15,12 @@ export enum Website {
   Unsupported = 'Unsupported',
 }
 
+export enum ColorMode {
+  Light,
+  Dim,
+  Dark,
+}
+
 export interface AppState extends Record<Website, FocusMode> {
   Twitter: FocusMode
   LinkedIn: FocusMode

@@ -29,8 +29,8 @@
     <div class="shortcut-container">
       <p class="shortcut-caption">
         Or
-        <strong class="shortcut-caption-emphasis-1">LeftShift &#43; RightShift</strong><strong
-          class="shortcut-caption-emphasis-2"> </strong> to show/hide feeds
+        <strong class="shortcut-caption-emphasis-1">LeftShift &#43; RightShift</strong
+        ><strong class="shortcut-caption-emphasis-2"> </strong> to show/hide feeds
       </p>
     </div>
   </div>
