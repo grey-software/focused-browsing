@@ -25,9 +25,14 @@
 
 <script>
 import Links from './Links.vue'
+
+
 export default {
   name: 'Popup',
   components: { Links },
+  mounted() {
+
+  }
 }
 </script>
 

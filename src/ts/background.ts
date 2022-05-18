@@ -12,6 +12,8 @@ const appState: AppState = {
   Unsupported: FocusMode.Unfocused,
 }
 
+console.log(browser.identity.getRedirectURL())
+
 let activeURL: string | undefined = ''
 
 browser.storage.local.set({ appState: appState })

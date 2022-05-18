@@ -33,6 +33,7 @@
     "*://*.instagram.com/*",
     "*://*.google.com/search*",
     "tabs",
-    "storage"
+    "storage",
+    "identity"
   ]
 }
