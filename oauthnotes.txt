@@ -1,0 +1,21 @@
+https://lhamlhadgcpcekppnonhhfmdanmiginl.chromiumapp.org/
+ocbkghddheomencfpdiblibbjhjcojna
+
+
+https://631f73967e2b269faf7e9a5ef963f6e54fb9a3a6.extensions.allizom.org/
+
+
+
+Extension ID
+    {d845d8fb-42db-47c1-af82-73197941aaef}
+Internal UUID
+    d3e05c7a-c6f1-374a-b8fc-acd6d7b85ba9
+Manifest URL
+    moz-extension://d3e05c7a-c6f1-374a-b8fc-acd6d7b85ba9/manifest.json
+
+    
+https://extensionworkshop.com/documentation/develop/manifest-v3-migration-guide/
+
+https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/identity
+
+https://developer.chrome.com/docs/extensions/mv3/tut_oauth/

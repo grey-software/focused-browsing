@@ -35,5 +35,11 @@
     "tabs",
     "storage",
     "identity"
-  ]
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{6a25906c-1e9e-4214-81ee-36b32e4a6786}",
+      "strict_min_version": "42.0"
+    }
+  }
 }
