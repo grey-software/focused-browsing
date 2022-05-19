@@ -12,27 +12,30 @@
       to show/hide feeds
     </p>
     <div class="seperator" />
-    <a
-      id="github-button"
-      target="_blank"
-      :href="`https://github.com/login/oauth/authorize?scope=user:arsala@grey.software&client_id=65615d22012f89567536`"
-    >
-      Sign in with Github
-    </a>
+
+    <button id="github-button" @click="beginAuth">Sign in with Github</button>
+
     <Links />
   </div>
 </template>
 
 <script>
 import Links from './Links.vue'
-
+import { browser } from 'webextension-polyfill-ts'
 
 export default {
   name: 'Popup',
   components: { Links },
-  mounted() {
-
-  }
+  methods: {
+    beginAuth() {
+      console.log(browser.identity.launchWebAuthFlow)
+      browser.identity
+        .launchWebAuthFlow({
+          url: 'https://github.com/login/oauth/authorize?client_id=aafa5f1e95867c5e7777',
+        })
+        .then((res) => console.log(res))
+    },
+  },
 }
 </script>
 
