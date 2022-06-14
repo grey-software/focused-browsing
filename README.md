@@ -9,10 +9,7 @@
 ![Chrome User Count](https://www.extensionbadge.com/api/installs/ocbkghddheomencfpdiblibbjhjcojna.svg)
 ![Chrome Rating](https://www.extensionbadge.com/api/ratings/ocbkghddheomencfpdiblibbjhjcojna.svg)
 
-## Project Status
-
-This project is currently being maintained by [Arsala](https://gitlab.com/ArsalaBangash),
-[Avi](https://gitlab.com/daveavi), and [Raj](https://gitlab.com/teccUI).
+> ⚠️ [We develop Focused Browsing on Gitlab](https://gitlab.com/grey-software/focused-browsing) and host an up-to-date mirror repo on Github
 
 ## Developing Focused Browsing
 
