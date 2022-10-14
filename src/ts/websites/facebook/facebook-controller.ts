@@ -29,7 +29,7 @@ export default class FacebookController extends WebsiteController {
   }
 
   unfocus() {
-    let url = document.URL
+    let url = utils.fixTestUrl(document.URL)
     if (FacebookUtils.isHomePage(url)) {
       this.clearIntervals()
       utils.removeFocusedBrowsingCards()
@@ -95,7 +95,7 @@ export default class FacebookController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!FacebookUtils.isHomePage(url)) {
         return
       }
@@ -113,7 +113,7 @@ export default class FacebookController extends WebsiteController {
 
   tryBlockingStories() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
 
       if (!FacebookUtils.isHomePage(url)) {
         return

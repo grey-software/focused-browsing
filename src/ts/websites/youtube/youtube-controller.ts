@@ -7,6 +7,7 @@ export default class YouTubeController extends WebsiteController {
   customFocus(): void {
     throw new Error('Method not implemented.')
   }
+  doc: Document
   YouTubeFeedChildNode: string | Node
   feedIntervalId: number
   suggestionsIntervalId: number
@@ -18,8 +19,11 @@ export default class YouTubeController extends WebsiteController {
   currentColor: string
   setCardColorIntervalId: number
 
-  constructor() {
+  constructor(doc: Document) {
     super()
+    console.log('init yt controller')
+
+    this.doc = doc
     this.suggestionElements = []
     this.commentElements = []
     this.YouTubeFeedChildNode = ''
@@ -32,12 +36,13 @@ export default class YouTubeController extends WebsiteController {
     this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
 
     this.currentColor = ''
-
     this.setCardColorInterval()
     this.listenForCardChange()
   }
 
   focus() {
+    console.log('focusing')
+
     this.suggestionElements = []
     this.commentElements = []
     this.focusFeed()
@@ -68,11 +73,11 @@ export default class YouTubeController extends WebsiteController {
     let backgroundColor = window.getComputedStyle(document.body).backgroundColor
     if (backgroundColor != this.currentColor && this.currentColor != '') {
       this.currentColor = backgroundColor
-      let currentUrl = document.URL
+      let currentUrl = utils.fixTestUrl(document.URL)
       if (YouTubeUtils.isHomePage(currentUrl)) {
-        let feed = YouTubeUtils.getYouTubeFeed()
+        let feed = YouTubeUtils.getYouTubeFeed(this.doc)
         if (feed) {
-          if (YouTubeUtils.isFeedHidden()) {
+          if (YouTubeUtils.isFeedHidden(this.doc)) {
             utils.removeFocusedBrowsingCards()
             YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
           }
@@ -82,7 +87,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   unfocus() {
-    let url = document.URL
+    let url = utils.fixTestUrl(document.URL)
     if (YouTubeUtils.isHomePage(url)) {
       this.clearIntervals()
       utils.removeFocusedBrowsingCards()
@@ -129,7 +134,9 @@ export default class YouTubeController extends WebsiteController {
   }
 
   setFeedVisibility(visible: boolean) {
-    let feed = YouTubeUtils.getYouTubeFeed()
+    console.log(`make feed visible?: ${visible}`)
+
+    let feed = YouTubeUtils.getYouTubeFeed(this.doc)
     if (feed) {
       if (!visible) {
         this.YouTubeFeedChildNode = feed.children[0]
@@ -142,7 +149,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   setSuggestionsVisibility(visibile: boolean) {
-    let suggestions = YouTubeUtils.getYoutubeSuggestions()
+    let suggestions = YouTubeUtils.getYoutubeSuggestions(this.doc)
     if (suggestions) {
       if (!visibile) {
         let length = suggestions.children.length
@@ -164,7 +171,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   setCommentsVisbility(visibile: boolean) {
-    let comments = YouTubeUtils.getYoutubeCommentsOnVideo()
+    let comments = YouTubeUtils.getYoutubeCommentsOnVideo(this.doc)
     if (comments) {
       if (!visibile) {
         let length = comments.children.length
@@ -187,32 +194,36 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!YouTubeUtils.isHomePage(url)) {
         return
       }
+      if (YouTubeUtils.isFeedHidden(this.doc)) {
+        console.log('feed hidden')
 
-      if (YouTubeUtils.isFeedHidden()) {
         return
       }
-      if (YouTubeUtils.hasFeedLoaded()) {
+      if (YouTubeUtils.hasFeedLoaded(this.doc)) {
+        console.log('feed loaded')
         this.setFeedVisibility(false)
         return
       }
-    } catch (err) {}
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   tryBlockingSuggestions() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!YouTubeUtils.isVideoPage(url)) {
         return
       }
-      if (YouTubeUtils.areSuggestionsHidden()) {
+      if (YouTubeUtils.areSuggestionsHidden(this.doc)) {
         return
       }
 
-      if (YouTubeUtils.hasSuggestionsLoaded()) {
+      if (YouTubeUtils.hasSuggestionsLoaded(this.doc)) {
         this.setSuggestionsVisibility(false)
         return
       }
@@ -221,16 +232,16 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingComments() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!YouTubeUtils.isVideoPage(url)) {
         return
       }
 
-      if (YouTubeUtils.areCommentsHidden()) {
+      if (YouTubeUtils.areCommentsHidden(this.doc)) {
         return
       }
 
-      if (YouTubeUtils.hasCommentsLoaded()) {
+      if (YouTubeUtils.hasCommentsLoaded(this.doc)) {
         this.setCommentsVisbility(false)
         return
       }

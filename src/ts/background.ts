@@ -25,6 +25,15 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
     return
   }
 
+  if (url?.includes('/__/#/specs')) {
+    console.log('test file')
+    const index = url.indexOf('/__/#/specs')
+    activeURL = url.substring(0, index)
+  } else {
+    activeURL = url
+  }
+  console.log(activeURL)
+
   browser.tabs.executeScript(tabId, {
     file: 'focus.js',
     runAt: 'document_start',
@@ -34,7 +43,6 @@ async function injectFocusScriptOnTabChange(tabId: number, changeInfo: Tabs.OnUp
     code: 'document.isFocusScriptInjected = true',
     runAt: 'document_start',
   })
-  activeURL = url
 }
 
 async function checkFocusScriptInjected(tabId: number) {

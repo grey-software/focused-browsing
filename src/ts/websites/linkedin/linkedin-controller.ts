@@ -138,7 +138,7 @@ export default class LinkedInController extends WebsiteController {
 
   tryBlockingAd() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!LinkedInUtils.isHomePage(url)) {
         return
       }
@@ -154,7 +154,7 @@ export default class LinkedInController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!LinkedInUtils.isHomePage(url)) {
         return
       }
@@ -170,7 +170,7 @@ export default class LinkedInController extends WebsiteController {
 
   tryBlockingPanel() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!LinkedInUtils.isHomePage(url)) {
         return
       }

@@ -29,7 +29,7 @@ export default class GithubController extends WebsiteController {
   }
 
   unfocus() {
-    let url = document.URL
+    let url = utils.fixTestUrl(document.URL)
     if (GithubUtils.isHomePage(url)) {
       this.clearIntervals()
       utils.removeFocusedBrowsingCards()
@@ -113,7 +113,7 @@ export default class GithubController extends WebsiteController {
 
   tryBlockingExplore() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
 
       if (!GithubUtils.isHomePage(url)) {
         return

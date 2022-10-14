@@ -57,7 +57,7 @@ function render() {
 }
 
 async function initialize() {
-  let currentURL = document.URL
+  let currentURL = FocusUtils.fixTestUrl(document.URL)
   if (currentURL.includes('twitter.com')) {
     websiteController = new TwitterController()
     currentWebsite = Website.Twitter
@@ -65,7 +65,7 @@ async function initialize() {
     websiteController = new LinkedInController()
     currentWebsite = Website.LinkedIn
   } else if (currentURL.includes('youtube.com')) {
-    websiteController = new YoutubeController()
+    websiteController = new YoutubeController(document)
     currentWebsite = Website.Youtube
   } else if (currentURL.includes('github.com')) {
     websiteController = new GithubController()
@@ -89,7 +89,10 @@ async function initialize() {
  */
 ;(async function () {
   await initialize()
+  console.log('rendering')
+
   render()
+  console.log('rendered')
 })()
 
 export default { initialize }

@@ -32,9 +32,14 @@ function setInLocalStorage(storageName: string, storageObj: any) {
   browser.storage.local.set(obj)
 }
 
+function fixTestUrl(url: String) {
+  return url.substring(0, url.indexOf('/__/#/specs'))
+}
+
 export default {
   isURLValid,
   getFromLocalStorage,
   setInLocalStorage,
   removeFocusedBrowsingCards,
+  fixTestUrl,
 }

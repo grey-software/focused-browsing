@@ -37,7 +37,7 @@ export default class TwitterController extends WebsiteController {
     this.clearIntervals()
     try {
       this.setPanelVisibility(true)
-      if (TwitterUtils.isHomePage(document.URL)) {
+      if (TwitterUtils.isHomePage(utils.fixTestUrl(document.URL))) {
         this.setFeedVisibility(true)
       }
     } catch (err) {}
@@ -46,7 +46,7 @@ export default class TwitterController extends WebsiteController {
   customFocus() {
     utils.removeFocusedBrowsingCards()
     this.clearIntervals()
-    if (TwitterUtils.isHomePage(document.URL)) {
+    if (TwitterUtils.isHomePage(utils.fixTestUrl(utils.fixTestUrl(document.URL)))) {
       this.setFeedVisibility(true)
     }
     this.focusPanel()
@@ -119,7 +119,7 @@ export default class TwitterController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
-      let url = document.URL
+      let url = utils.fixTestUrl(document.URL)
       if (!TwitterUtils.isHomePage(url)) {
         return
       }
