@@ -8,7 +8,8 @@
     "dev": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --env=local --config=node_modules/laravel-mix/setup/webpack.config.js --watch",
     "generate-release-zip": "$npm_execpath run build;node generate-release-zip.js",
     "format": "prettier --write .",
-    "testing": "yarn --cwd tests testing"
+    "test-env": "serve -p 3434 extension-build &",
+    "test": "yarn test-env; yarn --cwd tests test"
   },
   "dependencies": {
     "zip-folder": "^1.0.0"
@@ -25,6 +26,7 @@
     "sass": "^1.32.12",
     "sass-loader": "^11.1.0",
     "sass-resources-loader": "^2.2.1",
+    "serve": "^14.0.1",
     "ts-loader": "^9.2.3",
     "typescript": "^4.3.5",
     "vue": "^2.6.12",

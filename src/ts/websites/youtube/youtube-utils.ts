@@ -1,7 +1,7 @@
+import * as FocusUtils from '../../utils'
+
 function getYouTubeFeed(doc: Document): Element | null {
   let mainPage = doc.querySelector('ytd-two-column-browse-results-renderer')
-  console.log(mainPage)
-
   if (mainPage) {
     return mainPage.children[0]
   }
@@ -47,7 +47,7 @@ function isFeedHidden(doc: Document): boolean {
   return false
 }
 
-function hasSuggestionsLoaded(doc: Document): boolean {
+function haveSuggestionsLoaded(doc: Document): boolean {
   try {
     let suggestions = getYoutubeSuggestions(doc)
     if (suggestions) {
@@ -76,7 +76,6 @@ function hasCommentsLoaded(doc: Document): boolean {
   } catch (err) {
     return false
   }
-
   return false
 }
 
@@ -88,18 +87,20 @@ function areCommentsHidden(doc: Document): boolean {
   return false
 }
 
-function isHomePage(url: string): boolean {
-  console.log(url)
-  console.log(url == 'https://www.youtube.com' || url == 'https://www.youtube.com/')
-
+function isHomePage(urlToCheck: string): boolean {
+  let url = urlToCheck
+  if (FocusUtils.isTestUrl(url)) {
+    url = FocusUtils.fixTestUrl(url)
+  }
   return url == 'https://www.youtube.com' || url == 'https://www.youtube.com/'
 }
 
-function isVideoPage(url: string): boolean {
-  if (url.includes('https://www.youtube.com/')) {
-    return url.includes('/watch')
+function isVideoPage(urlToCheck: string): boolean {
+  let url = urlToCheck
+  if (FocusUtils.isTestUrl(url)) {
+    url = FocusUtils.fixTestUrl(url)
   }
-  return false
+  return url.includes('https://www.youtube.com/') && url.includes('/watch')
 }
 
 export default {
@@ -108,7 +109,7 @@ export default {
   getYoutubeCommentsOnVideo,
   hasFeedLoaded,
   isFeedHidden,
-  hasSuggestionsLoaded,
+  haveSuggestionsLoaded,
   areSuggestionsHidden,
   isHomePage,
   isVideoPage,

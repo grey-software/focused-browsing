@@ -1,14 +1,21 @@
 import YouTubeUtils from './youtube-utils'
-import YouTubeIFrameUtils from './youtube-iframe-utils'
-import utils from '../../utils'
+// import YouTubeIFrameUtils from './youtube-iframe-utils'
+import * as FocusUtils from '../../utils'
 import WebsiteController from '../website-controller'
+
+const ytCardHeight = '100%'
+const ytCardWidth = '100%'
+const ytCardStyles = {
+  position: 'fixed',
+  border: 'none',
+}
 
 export default class YouTubeController extends WebsiteController {
   customFocus(): void {
     throw new Error('Method not implemented.')
   }
   doc: Document
-  YouTubeFeedChildNode: string | Node
+  mainFeedChild: string | Node
   feedIntervalId: number
   suggestionsIntervalId: number
   cardChangeIntervalId: number
@@ -21,19 +28,17 @@ export default class YouTubeController extends WebsiteController {
 
   constructor(doc: Document) {
     super()
-    console.log('init yt controller')
-
     this.doc = doc
     this.suggestionElements = []
     this.commentElements = []
-    this.YouTubeFeedChildNode = ''
+    this.mainFeedChild = ''
 
     this.feedIntervalId = 0
     this.suggestionsIntervalId = 0
     this.commentIntervalId = 0
     this.cardChangeIntervalId = 0
     this.setCardColorIntervalId = 0
-    this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
+    this.feedIframe = FocusUtils.createFocusCardIframe(ytCardWidth, ytCardHeight, ytCardStyles)
 
     this.currentColor = ''
     this.setCardColorInterval()
@@ -41,8 +46,6 @@ export default class YouTubeController extends WebsiteController {
   }
 
   focus() {
-    console.log('focusing')
-
     this.suggestionElements = []
     this.commentElements = []
     this.focusFeed()
@@ -69,28 +72,35 @@ export default class YouTubeController extends WebsiteController {
   }
 
   changeCard() {
+    let currentUrl = document.URL
+    if (!YouTubeUtils.isHomePage(currentUrl)) {
+      return
+    }
     document.body.style.background = 'var(--yt-spec-general-background-a)'
     let backgroundColor = window.getComputedStyle(document.body).backgroundColor
     if (backgroundColor != this.currentColor && this.currentColor != '') {
       this.currentColor = backgroundColor
-      let currentUrl = utils.fixTestUrl(document.URL)
-      if (YouTubeUtils.isHomePage(currentUrl)) {
-        let feed = YouTubeUtils.getYouTubeFeed(this.doc)
-        if (feed) {
-          if (YouTubeUtils.isFeedHidden(this.doc)) {
-            utils.removeFocusedBrowsingCards()
-            YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
-          }
+
+      let feed = YouTubeUtils.getYouTubeFeed(this.doc)
+      if (feed) {
+        if (YouTubeUtils.isFeedHidden(this.doc)) {
+          FocusUtils.removeFocusedBrowsingCards()
+          // this.setCardIframe(feed, )
         }
       }
     }
   }
 
+  setCardIframe(ytFeed: Element, iframeSourceUrl: string) {
+    this.feedIframe.src = iframeSourceUrl
+    ytFeed.append(this.feedIframe)
+  }
+
   unfocus() {
-    let url = utils.fixTestUrl(document.URL)
+    let url = FocusUtils.fixTestUrl(document.URL)
     if (YouTubeUtils.isHomePage(url)) {
       this.clearIntervals()
-      utils.removeFocusedBrowsingCards()
+      FocusUtils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
     } else if (YouTubeUtils.isVideoPage(url)) {
       this.clearIntervals()
@@ -133,18 +143,18 @@ export default class YouTubeController extends WebsiteController {
     }, 250)
   }
 
-  setFeedVisibility(visible: boolean) {
-    console.log(`make feed visible?: ${visible}`)
-
+  setFeedVisibility(hideFeed: boolean) {
     let feed = YouTubeUtils.getYouTubeFeed(this.doc)
-    if (feed) {
-      if (!visible) {
-        this.YouTubeFeedChildNode = feed.children[0]
-        feed.removeChild(feed.childNodes[0])
-        YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
-      } else {
-        feed.append(this.YouTubeFeedChildNode)
-      }
+    if (!feed) {
+      return
+    }
+    if (hideFeed) {
+      this.mainFeedChild = feed.children[0]
+      feed.removeChild(feed.childNodes[0])
+      // YouTubeIFrameUtils.setIframeSource(this.feedIframe, this.currentColor)
+      feed.append(this.feedIframe)
+    } else {
+      feed.append(this.mainFeedChild)
     }
   }
 
@@ -153,14 +163,14 @@ export default class YouTubeController extends WebsiteController {
     if (suggestions) {
       if (!visibile) {
         let length = suggestions.children.length
-        let current_suggestion_elements = []
+        let currentSuggestionElements = []
         while (length != 0) {
           var currentLastChild = suggestions.children[length - 1]
-          current_suggestion_elements.push(currentLastChild)
+          currentSuggestionElements.push(currentLastChild)
           suggestions.removeChild(currentLastChild)
           length -= 1
         }
-        this.suggestionElements = current_suggestion_elements
+        this.suggestionElements = currentSuggestionElements
       } else {
         for (let i = this.suggestionElements.length - 1; i >= 0; i -= 1) {
           suggestions.append(this.suggestionElements[i])
@@ -170,41 +180,39 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  setCommentsVisbility(visibile: boolean) {
+  setCommentsVisbility(hideComments: boolean) {
     let comments = YouTubeUtils.getYoutubeCommentsOnVideo(this.doc)
-    if (comments) {
-      if (!visibile) {
-        let length = comments.children.length
-        let current_comment_elements = []
-        while (length != 0) {
-          var currentLastChild = comments.children[length - 1]
-          current_comment_elements.push(currentLastChild)
-          comments.removeChild(currentLastChild)
-          length -= 1
-        }
-        this.commentElements = current_comment_elements
-      } else {
-        for (let i = this.commentElements.length - 1; i >= 0; i -= 1) {
-          comments.append(this.commentElements[i])
-        }
-        this.commentElements = []
+    if (!comments) {
+      return
+    }
+    if (hideComments) {
+      let length = comments.children.length
+      let currentCommentElements = []
+      while (length != 0) {
+        const currentLastChild = comments.children[length - 1]
+        currentCommentElements.push(currentLastChild)
+        comments.removeChild(currentLastChild)
+        length -= 1
       }
+      this.commentElements = currentCommentElements
+    } else {
+      for (let i = this.commentElements.length - 1; i >= 0; i -= 1) {
+        comments.append(this.commentElements[i])
+      }
+      this.commentElements = []
     }
   }
 
   tryBlockingFeed() {
     try {
-      let url = utils.fixTestUrl(document.URL)
+      let url = FocusUtils.fixTestUrl(document.URL)
       if (!YouTubeUtils.isHomePage(url)) {
         return
       }
       if (YouTubeUtils.isFeedHidden(this.doc)) {
-        console.log('feed hidden')
-
         return
       }
       if (YouTubeUtils.hasFeedLoaded(this.doc)) {
-        console.log('feed loaded')
         this.setFeedVisibility(false)
         return
       }
@@ -215,7 +223,7 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingSuggestions() {
     try {
-      let url = utils.fixTestUrl(document.URL)
+      let url = FocusUtils.fixTestUrl(document.URL)
       if (!YouTubeUtils.isVideoPage(url)) {
         return
       }
@@ -223,7 +231,7 @@ export default class YouTubeController extends WebsiteController {
         return
       }
 
-      if (YouTubeUtils.hasSuggestionsLoaded(this.doc)) {
+      if (YouTubeUtils.haveSuggestionsLoaded(this.doc)) {
         this.setSuggestionsVisibility(false)
         return
       }
@@ -232,7 +240,7 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingComments() {
     try {
-      let url = utils.fixTestUrl(document.URL)
+      let url = FocusUtils.fixTestUrl(document.URL)
       if (!YouTubeUtils.isVideoPage(url)) {
         return
       }

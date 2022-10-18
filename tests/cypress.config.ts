@@ -5,6 +5,7 @@ const extensionPath = path.join(__dirname, '../extension-build')
 
 export default defineConfig({
   e2e: {
+    baseUrl: 'http://localhost:3434',
     setupNodeEvents(on, config) {
       on('before:browser:launch', (browser, launchOptions) => {
         // supply the absolute path to an unpacked extension's folder

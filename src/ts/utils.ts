@@ -36,8 +36,24 @@ function fixTestUrl(url: String) {
   return url.substring(0, url.indexOf('/__/#/specs'))
 }
 
-export default {
+function isTestUrl(url: String) {
+  return url.includes('/__/#/specs')
+}
+
+function createFocusCardIframe(width: string, height: string, styles: object): HTMLIFrameElement {
+  let focusCardIframe = document.createElement('iframe')
+  focusCardIframe.width = width
+  focusCardIframe.height = height
+  focusCardIframe.className = IFRAME_ClASS
+
+  Object.assign(focusCardIframe.style, styles)
+  return focusCardIframe
+}
+
+export {
+  createFocusCardIframe,
   isURLValid,
+  isTestUrl,
   getFromLocalStorage,
   setInLocalStorage,
   removeFocusedBrowsingCards,
