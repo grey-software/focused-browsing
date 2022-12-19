@@ -17,7 +17,7 @@ function getYoutubeSuggestions(doc: Document): Element | null {
   return null
 }
 
-function getYoutubeCommentsOnVideo(doc: Document): Element | null {
+function getVideoComments(doc: Document): Element | null {
   let comment_parent = doc.querySelector('ytd-comments')
   if (comment_parent) {
     return comment_parent.children[1].children[2]
@@ -69,7 +69,7 @@ function areSuggestionsHidden(doc: Document): boolean {
 
 function hasCommentsLoaded(doc: Document): boolean {
   try {
-    let youtubeComments = getYoutubeCommentsOnVideo(doc)
+    let youtubeComments = getVideoComments(doc)
     if (youtubeComments) {
       return youtubeComments.children.length != 0
     }
@@ -80,7 +80,7 @@ function hasCommentsLoaded(doc: Document): boolean {
 }
 
 function areCommentsHidden(doc: Document): boolean {
-  let comments = getYoutubeCommentsOnVideo(doc)
+  let comments = getVideoComments(doc)
   if (comments) {
     return comments.children.length == 0
   }
@@ -106,7 +106,7 @@ function isVideoPage(urlToCheck: string): boolean {
 export default {
   getYouTubeFeed,
   getYoutubeSuggestions,
-  getYoutubeCommentsOnVideo,
+  getVideoComments,
   hasFeedLoaded,
   isFeedHidden,
   haveSuggestionsLoaded,

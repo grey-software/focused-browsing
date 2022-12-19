@@ -181,7 +181,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   setCommentsVisbility(hideComments: boolean) {
-    let comments = YouTubeUtils.getYoutubeCommentsOnVideo(this.doc)
+    let comments = YouTubeUtils.getVideoComments(this.doc)
     if (!comments) {
       return
     }
