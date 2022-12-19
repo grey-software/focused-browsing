@@ -65,19 +65,19 @@ export default class YouTubeController extends WebsiteController {
         if (this.currentColor != '') {
           return
         }
-        document.body.style.background = 'var(--yt-spec-general-background-a)'
-        this.currentColor = window.getComputedStyle(document.body).backgroundColor
+        this.doc.body.style.background = 'var(--yt-spec-general-background-a)'
+        this.currentColor = window.getComputedStyle(this.doc.body).backgroundColor
       } catch (err) {}
     }, 250)
   }
 
   changeCard() {
-    let currentUrl = document.URL
+    let currentUrl = this.doc.URL
     if (!YouTubeUtils.isHomePage(currentUrl)) {
       return
     }
-    document.body.style.background = 'var(--yt-spec-general-background-a)'
-    let backgroundColor = window.getComputedStyle(document.body).backgroundColor
+    this.doc.body.style.background = 'var(--yt-spec-general-background-a)'
+    let backgroundColor = window.getComputedStyle(this.doc.body).backgroundColor
     if (backgroundColor != this.currentColor && this.currentColor != '') {
       this.currentColor = backgroundColor
 
@@ -97,7 +97,7 @@ export default class YouTubeController extends WebsiteController {
   }
 
   unfocus() {
-    let url = FocusUtils.fixTestUrl(document.URL)
+    let url = FocusUtils.fixTestUrl(this.doc.URL)
     if (YouTubeUtils.isHomePage(url)) {
       this.clearIntervals()
       FocusUtils.removeFocusedBrowsingCards()
@@ -205,7 +205,7 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingFeed() {
     try {
-      let url = FocusUtils.fixTestUrl(document.URL)
+      let url = FocusUtils.fixTestUrl(this.doc.URL)
       if (!YouTubeUtils.isHomePage(url)) {
         return
       }
@@ -223,7 +223,7 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingSuggestions() {
     try {
-      let url = FocusUtils.fixTestUrl(document.URL)
+      let url = FocusUtils.fixTestUrl(this.doc.URL)
       if (!YouTubeUtils.isVideoPage(url)) {
         return
       }
@@ -240,7 +240,7 @@ export default class YouTubeController extends WebsiteController {
 
   tryBlockingComments() {
     try {
-      let url = FocusUtils.fixTestUrl(document.URL)
+      let url = FocusUtils.fixTestUrl(this.doc.URL)
       if (!YouTubeUtils.isVideoPage(url)) {
         return
       }

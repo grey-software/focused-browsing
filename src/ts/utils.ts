@@ -1,4 +1,3 @@
-import { browser } from 'webextension-polyfill-ts'
 const IFRAME_ClASS = 'focus-card'
 
 function removeFocusedBrowsingCards() {
@@ -21,17 +20,6 @@ const isURLValid = (url: string) => {
   )
 }
 
-async function getFromLocalStorage(name: string) {
-  let storeObject = await browser.storage.local.get(name)
-  return storeObject[name]
-}
-
-function setInLocalStorage(storageName: string, storageObj: any) {
-  var obj: any = {}
-  obj[storageName] = storageObj
-  browser.storage.local.set(obj)
-}
-
 function fixTestUrl(url: String) {
   return url.substring(0, url.indexOf('/__/#/specs'))
 }
@@ -50,12 +38,4 @@ function createFocusCardIframe(width: string, height: string, styles: object): H
   return focusCardIframe
 }
 
-export {
-  createFocusCardIframe,
-  isURLValid,
-  isTestUrl,
-  getFromLocalStorage,
-  setInLocalStorage,
-  removeFocusedBrowsingCards,
-  fixTestUrl,
-}
+export { createFocusCardIframe, isURLValid, isTestUrl, removeFocusedBrowsingCards, fixTestUrl }

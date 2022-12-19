@@ -2,7 +2,8 @@ import LinkedInController from './websites/linkedin/linkedin-controller'
 import TwitterController from './websites/twitter/twitter-controller'
 import YoutubeController from './websites/youtube/youtube-controller'
 import GithubController from './websites/github/github-controller'
-import FocusUtils from './utils'
+import * as FocusUtils from './utils'
+import * as StorageUtils from './storage-utils'
 import AppStateManager from './app-state-manager'
 import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from './websites/website-controller'
@@ -76,7 +77,7 @@ async function initialize() {
   }
 
   if (currentWebsite != Website.Unsupported) {
-    let appState = await FocusUtils.getFromLocalStorage('appState')
+    let appState = await StorageUtils.getFromLocalStorage('appState')
     stateManager = new AppStateManager(appState)
     keyPressManager = new KeyPressManager()
   }
