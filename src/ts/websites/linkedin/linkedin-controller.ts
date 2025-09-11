@@ -27,6 +27,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focus() {
+    console.log('LinkedInController: Entering focus mode.');
     utils.clearElements(this.panelElements)
     this.focusFeed()
     this.focusPanel()
@@ -34,6 +35,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   unfocus() {
+    console.log('LinkedInController: Exiting focus mode.');
     let url = document.URL
     if (LinkedInUtils.isHomePage(url)) {
       this.clearIntervals()
@@ -44,12 +46,7 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  premiumFocus() {
-    utils.clearElements(this.panelElements)
-    this.focusPanel()
-    this.focusAd()
-    this.focusFeedAds()
-  }
+  
 
   clearIntervals() {
     window.clearInterval(this.feedIntervalId)
@@ -137,57 +134,50 @@ export default class LinkedInController extends WebsiteController {
   }
 
   tryBlockingAd() {
-    try {
-      let url = document.URL
-      if (!LinkedInUtils.isHomePage(url)) {
-        return
-      }
-      if (LinkedInUtils.isAdHidden()) {
-        return
-      }
-      if (LinkedInUtils.hasAdLoaded()) {
-        this.setAdVisibility(false)
-        return
-      }
-    } catch (err) {}
+    let url = document.URL
+    if (!LinkedInUtils.isHomePage(url)) {
+      return
+    }
+    if (LinkedInUtils.isAdHidden()) {
+      return
+    }
+    if (LinkedInUtils.hasAdLoaded()) {
+      this.setAdVisibility(false)
+      return
+    }
   }
 
   tryBlockingFeed() {
-    try {
-      let url = document.URL
-      if (!LinkedInUtils.isHomePage(url)) {
-        return
-      }
-      if (LinkedInUtils.isFeedHidden()) {
-        return
-      }
-      if (LinkedInUtils.hasFeedLoaded()) {
-        this.setFeedVisibility(false)
-        return
-      }
-    } catch (err) {}
+    let url = document.URL
+    if (!LinkedInUtils.isHomePage(url)) {
+      return
+    }
+    if (LinkedInUtils.isFeedHidden()) {
+      return
+    }
+    if (LinkedInUtils.hasFeedLoaded()) {
+      this.setFeedVisibility(false)
+      return
+    }
   }
 
   tryBlockingPanel() {
-    try {
-      let url = document.URL
-      if (!LinkedInUtils.isHomePage(url)) {
-        return
-      }
+    let url = document.URL
+    if (!LinkedInUtils.isHomePage(url)) {
+      return
+    }
 
-      if (LinkedInUtils.isPanelHidden()) {
-        return
-      }
-      if (LinkedInUtils.hasPanelLoaded()) {
-        this.setPanelVisibility(false)
-        return
-      }
-    } catch (err) {}
+    if (LinkedInUtils.isPanelHidden()) {
+      return
+    }
+    if (LinkedInUtils.hasPanelLoaded()) {
+      this.setPanelVisibility(false)
+      return
+    }
   }
 
   hideFeedAds() {
     linkedinUtils.getFeedAdElements().forEach((ad) => {
-      console.log('hiding ad')
       ad.style.display = 'none'
     })
   }

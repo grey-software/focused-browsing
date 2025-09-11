@@ -2,16 +2,16 @@
 
 <div align="center">
   <a href="https://grey.software/focused-browsing" target="_blank">
-    <img alt="Focused Browsing Icon" height="420" src="https://grey.software/focused-browsing/promo.png">
+    <img alt="buyao Icon" height="420" src="https://grey.software/focused-browsing/promo.png">
   </a>
 </div>
 
 ![Chrome User Count](https://www.extensionbadge.com/api/installs/ocbkghddheomencfpdiblibbjhjcojna.svg)
 ![Chrome Rating](https://www.extensionbadge.com/api/ratings/ocbkghddheomencfpdiblibbjhjcojna.svg)
 
-> ⚠️ [We develop Focused Browsing on Gitlab](https://gitlab.com/grey-software/focused-browsing) and host an up-to-date mirror repo on Github
+> ⚠️ [We develop buyao on Gitlab](https://gitlab.com/grey-software/focused-browsing) and host an up-to-date mirror repo on Github
 
-## Developing Focused Browsing
+## Developing buyao
 
 ### 1. Clone the repo and enter the directory
 
@@ -44,7 +44,7 @@ source code.
 
 ### 4. Load the extension on your browser
 
-At the moment, Focused Browsing is only compatible with Google Chrome or Brave Browser.
+At the moment, buyao is only compatible with Google Chrome or Brave Browser.
 
 The image below from the [chrome documentation](https://developer.chrome.com/docs/extensions/mv3/getstarted/), shows how
 to load an unpublished extension using developer mode.
@@ -72,7 +72,7 @@ to load an unpublished extension using developer mode.
 
 ### News Feed Eradicator by Jordan West
 
-Focused Browsing originally started as two separate student projects called Twitter Focus and LinkedIn Focus. Both of
+buyao originally started as two separate student projects called Twitter Focus and LinkedIn Focus. Both of
 these were inspired by [News Feed Eradicator for Facebook](News Feed Eradicator for Facebook).
 
 We are sincerely grateful to Jordan for
@@ -133,4 +133,4 @@ But what if we offered them a way to regain control over the feeds they did or d
 
 Other extensions on the market were helpful but lacked the kind of user experience our team was looking for.
 
-That's why we're building Focused Browsing!
+That's why we're building buyao!

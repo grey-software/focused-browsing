@@ -23,9 +23,7 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
   if (message.text == 'new-tab-activated') {
     render()
     return Promise.resolve({ status: 'success' })
-  } else if (message.text == 'unfocus-from-ui') {
-    toggleFocusMode()
-  }
+  } 
 })
 
 async function handleKeyEvent(e: KeyboardEvent) {
@@ -43,42 +41,52 @@ async function handleKeyEvent(e: KeyboardEvent) {
   }
 }
 
-async function toggleFocusMode() {
+export async function toggleFocusMode() {
   await stateManager.updateFocusMode(currentWebsite)
+  const newMode = stateManager.getFocusMode(currentWebsite);
+  console.log(`Toggling focus mode to: ${FocusMode[newMode]}`);
   render()
 }
 
-function render() {
+export function render() {
+  console.log('Rendering focus mode...');
   if (currentWebsite != Website.Unsupported) {
     let mode = stateManager.getFocusMode(currentWebsite)
     websiteController.renderFocusMode(mode)
   }
 }
 
-async function initialize() {
-  let currentURL = document.URL
-  if (currentURL.includes('twitter.com')) {
-    websiteController = new TwitterController()
-    currentWebsite = Website.Twitter
-  } else if (currentURL.includes('linkedin.com')) {
-    websiteController = new LinkedInController()
-    currentWebsite = Website.LinkedIn
-  } else if (currentURL.includes('youtube.com')) {
-    websiteController = new YoutubeController()
-    currentWebsite = Website.Youtube
-  } else if (currentURL.includes('github.com')) {
-    websiteController = new GithubController()
-    currentWebsite = Website.Github
+export async function initialize() {
+  console.log('Initializing focus script...');
+  const websiteMappings = {
+    'twitter.com': { controller: TwitterController, website: Website.Twitter },
+    'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn },
+    'youtube.com': { controller: YoutubeController, website: Website.Youtube },
+    'github.com': { controller: GithubController, website: Website.Github },
+  };
+
+  const currentURL = document.URL;
+
+  for (const domain in websiteMappings) {
+    if (currentURL.includes(domain)) {
+      const mapping = websiteMappings[domain as keyof typeof websiteMappings];
+      websiteController = new mapping.controller();
+      currentWebsite = mapping.website;
+      console.log(`Detected website: ${Website[currentWebsite]}`);
+      break;
+    }
   }
 
-  if (currentWebsite != Website.Unsupported) {
-    let appState = await FocusUtils.getFromLocalStorage('appState')
-    stateManager = new AppStateManager(appState)
-    keyPressManager = new KeyPressManager()
+  if (currentWebsite !== Website.Unsupported) {
+    const appState = await FocusUtils.getFromLocalStorage('appState');
+    stateManager = new AppStateManager(appState);
+    keyPressManager = new KeyPressManager();
+  } else {
+    console.log('Unsupported website.');
   }
 }
 
-;(async function () {
+(async function () {
   await initialize()
   render()
 })()

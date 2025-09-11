@@ -22,6 +22,7 @@ export default class TwitterController extends WebsiteController {
   }
 
   focus() {
+    console.log('TwitterController: Entering focus mode.');
     // the panel shows up on every page
     // we should clear our panel elements every time we focus because it can get over populated and we can be rendering extra elements
     utils.clearElements(this.panelElements)
@@ -30,24 +31,19 @@ export default class TwitterController extends WebsiteController {
   }
 
   unfocus() {
+    console.log('TwitterController: Exiting focus mode.');
     utils.removeFocusedBrowsingCards()
     let url = document.URL
-    try {
-      if (url.includes('twitter.com')) {
-        if (TwitterUtils.isHomePage(url)) {
-          this.setFeedVisibility(true)
-        }
-        this.setPanelVisibility(true)
-        this.clearIntervals()
+    if (url.includes('twitter.com')) {
+      if (TwitterUtils.isHomePage(url)) {
+        this.setFeedVisibility(true)
       }
-    } catch (err) {}
+      this.setPanelVisibility(true)
+      this.clearIntervals()
+    }
   }
 
-  premiumFocus() {
-    utils.clearElements(this.panelElements)
-    this.focusPanel()
-    this.focusFeedAds()
-  }
+  
 
   clearIntervals() {
     window.clearInterval(this.feedIntervalId)
@@ -114,32 +110,28 @@ export default class TwitterController extends WebsiteController {
   }
 
   tryBlockingFeed() {
-    try {
-      let url = document.URL
-      if (!TwitterUtils.isHomePage(url)) {
-        return
-      }
-      if (TwitterUtils.isFeedHidden()) {
-        return
-      }
-      if (TwitterUtils.hasFeedLoaded()) {
-        this.setFeedVisibility(false)
-        return
-      }
-    } catch (err) {}
+    let url = document.URL
+    if (!TwitterUtils.isHomePage(url)) {
+      return
+    }
+    if (TwitterUtils.isFeedHidden()) {
+      return
+    }
+    if (TwitterUtils.hasFeedLoaded()) {
+      this.setFeedVisibility(false)
+      return
+    }
   }
 
   tryBlockingPanel() {
-    try {
-      if (TwitterUtils.isPanelHidden()) {
-        return
-      }
+    if (TwitterUtils.isPanelHidden()) {
+      return
+    }
 
-      if (TwitterUtils.hasPanelLoaded()) {
-        this.setPanelVisibility(false)
-        return
-      }
-    } catch (err) {}
+    if (TwitterUtils.hasPanelLoaded()) {
+      this.setPanelVisibility(false)
+      return
+    }
   }
 
   hideFeedAds() {

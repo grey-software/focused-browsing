@@ -1,8 +1,7 @@
 {
     "/extension-build/focus.js": "/extension-build/focus.js",
     "/extension-build/background.js": "/extension-build/background.js",
-    "/extension-build/js/feed-card-controller.js": "/extension-build/js/feed-card-controller.js",
-    "/extension-build/js/popup-card-controller.js": "/extension-build/js/popup-card-controller.js",
+    "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
     "/extension-build/css/twitter.css": "/extension-build/css/twitter.css",
     "/extension-build/css/linkedin.css": "/extension-build/css/linkedin.css",
     "/extension-build/css/inter.css": "/extension-build/css/inter.css",
@@ -13,7 +12,6 @@
     "/extension-build/css/youtube-dark.css": "/extension-build/css/youtube-dark.css",
     "/extension-build/css/youtube.css": "/extension-build/css/youtube.css",
     "/extension-build/css/twitter-dark.css": "/extension-build/css/twitter-dark.css",
-    "/extension-build/css/twitter-dim.css": "/extension-build/css/twitter-dim.css",
     "/extension-build/html/assets/heading-logo.svg": "/extension-build/html/assets/heading-logo.svg",
     "/extension-build/html/assets/icons/icon-feedback.svg": "/extension-build/html/assets/icons/icon-feedback.svg",
     "/extension-build/html/assets/icons/icon-info.svg": "/extension-build/html/assets/icons/icon-info.svg",

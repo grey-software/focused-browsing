@@ -1,11 +1,11 @@
 {
-  "name": "Focused Browsing",
+  "name": "buyao",
   "version": "0.9.8",
-  "manifest_version": 2,
-  "description": "Reclaim your focus with a web extension that hides distracting feeds!",
-  "browser_action": {
+  "manifest_version": 3,
+  "description": "buyao is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
+  "action": {
     "default_icon": "icons/logo.png",
-    "default_title": "Focused Browsing",
+    "default_title": "buyao",
     "default_popup": "html/popup.html"
   },
   "icons": {
@@ -14,8 +14,7 @@
     "128": "icons/logox128.png"
   },
   "background": {
-    "scripts": ["background.js"],
-    "persistent": true
+    "service_worker": "background.js"
   },
   "commands": {
     "focus-feature": {
@@ -23,13 +22,21 @@
       "description": "Send a 'toggle-feature' event to the extension"
     }
   },
-  "web_accessible_resources": ["html/*", "js/*", "css/*", "<all_urls>"],
-  "permissions": [
+  "web_accessible_resources": [
+    {
+      "resources": ["html/*", "js/*", "css/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": [
     "*://*.twitter.com/*",
     "*://*.linkedin.com/*",
     "*://*.youtube.com/*",
-    "*://*.github.com/*",
+    "*://*.github.com/*"
+  ],
+  "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "scripting"
   ]
 }

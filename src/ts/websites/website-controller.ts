@@ -11,15 +11,11 @@ export default abstract class WebsiteController {
         this.unfocus()
         return
       }
-      case FocusMode.Premium: {
-        this.premiumFocus()
-        return
-      }
+      
     }
   }
 
   abstract focus(): void
   abstract unfocus(): void
-  abstract premiumFocus(): void
   abstract clearIntervals(): void
 }

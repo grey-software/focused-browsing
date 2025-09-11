@@ -4,9 +4,7 @@ import utils from '../utils'
 import WebsiteController from '../website-controller'
 
 export default class YouTubeController extends WebsiteController {
-  premiumFocus(): void {
-    throw new Error('Method not implemented.')
-  }
+  
   YouTubeFeedChildNode: string | Node
   feedIntervalId: number
   suggestionsIntervalId: number
@@ -37,14 +35,6 @@ export default class YouTubeController extends WebsiteController {
     this.listenForCardChange()
   }
 
-  focus() {
-    utils.clearElements(this.suggestionElements)
-    utils.clearElements(this.commentElements)
-    this.focusFeed()
-    this.focusSuggestions()
-    this.focusComments()
-  }
-
   listenForCardChange() {
     this.cardChangeIntervalId = window.setInterval(() => {
       this.changeCard()
@@ -53,13 +43,11 @@ export default class YouTubeController extends WebsiteController {
 
   setCardColorInterval() {
     this.setCardColorIntervalId = window.setInterval(() => {
-      try {
-        if (this.currentColor != '') {
-          return
-        }
-        document.body.style.background = 'var(--yt-spec-general-background-a)'
-        this.currentColor = window.getComputedStyle(document.body).backgroundColor
-      } catch (err) {}
+      if (this.currentColor != '') {
+        return
+      }
+      document.body.style.background = 'var(--yt-spec-general-background-a)'
+      this.currentColor = window.getComputedStyle(document.body).backgroundColor
     }, 250)
   }
 
@@ -81,7 +69,17 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
+  focus() {
+    console.log('YouTubeController: Entering focus mode.');
+    utils.clearElements(this.suggestionElements)
+    utils.clearElements(this.commentElements)
+    this.focusFeed()
+    this.focusSuggestions()
+    this.focusComments()
+  }
+
   unfocus() {
+    console.log('YouTubeController: Exiting focus mode.');
     let url = document.URL
     if (YouTubeUtils.isHomePage(url)) {
       this.clearIntervals()
@@ -186,54 +184,48 @@ export default class YouTubeController extends WebsiteController {
   }
 
   tryBlockingFeed() {
-    try {
-      let url = document.URL
-      if (!YouTubeUtils.isHomePage(url)) {
-        return
-      }
+    let url = document.URL
+    if (!YouTubeUtils.isHomePage(url)) {
+      return
+    }
 
-      if (YouTubeUtils.isFeedHidden()) {
-        return
-      }
-      if (YouTubeUtils.hasFeedLoaded()) {
-        this.setFeedVisibility(false)
-        return
-      }
-    } catch (err) {}
+    if (YouTubeUtils.isFeedHidden()) {
+      return
+    }
+    if (YouTubeUtils.hasFeedLoaded()) {
+      this.setFeedVisibility(false)
+      return
+    }
   }
 
   tryBlockingSuggestions() {
-    try {
-      let url = document.URL
-      if (!YouTubeUtils.isVideoPage(url)) {
-        return
-      }
-      if (YouTubeUtils.areSuggestionsHidden()) {
-        return
-      }
+    let url = document.URL
+    if (!YouTubeUtils.isVideoPage(url)) {
+      return
+    }
+    if (YouTubeUtils.areSuggestionsHidden()) {
+      return
+    }
 
-      if (YouTubeUtils.haveSuggestionsLoaded()) {
-        this.setSuggestionsVisibility(false)
-        return
-      }
-    } catch (err) {}
+    if (YouTubeUtils.haveSuggestionsLoaded()) {
+      this.setSuggestionsVisibility(false)
+      return
+    }
   }
 
   tryBlockingComments() {
-    try {
-      let url = document.URL
-      if (!YouTubeUtils.isVideoPage(url)) {
-        return
-      }
+    let url = document.URL
+    if (!YouTubeUtils.isVideoPage(url)) {
+      return
+    }
 
-      if (YouTubeUtils.areCommentsHidden()) {
-        return
-      }
+    if (YouTubeUtils.areCommentsHidden()) {
+      return
+    }
 
-      if (YouTubeUtils.haveCommentsLoaded()) {
-        this.setCommentsVisbility(false)
-        return
-      }
-    } catch (err) {}
+    if (YouTubeUtils.haveCommentsLoaded()) {
+      this.setCommentsVisbility(false)
+      return
+    }
   }
 }

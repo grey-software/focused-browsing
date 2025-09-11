@@ -4,9 +4,7 @@ import utils from '../utils'
 import WebsiteController from '../website-controller'
 
 export default class GithubController extends WebsiteController {
-  premiumFocus(): void {
-    throw new Error('Method not implemented.')
-  }
+  
   exploreElements: Node[]
   activityIntervalId: number
   exploreIntervalId: number
@@ -23,12 +21,14 @@ export default class GithubController extends WebsiteController {
   }
 
   focus() {
+    console.log('GithubController: Entering focus mode.');
     utils.clearElements(this.exploreElements)
     this.focusActivity()
     this.focusExplore()
   }
 
   unfocus() {
+    console.log('GithubController: Exiting focus mode.');
     let url = document.URL
     if (GithubUtils.isHomePage(url)) {
       this.clearIntervals()
@@ -95,36 +95,32 @@ export default class GithubController extends WebsiteController {
   }
 
   tryBlockingActivity() {
-    try {
-      let url = document.URL
+    let url = document.URL
 
-      if (!GithubUtils.isHomePage(url)) {
-        return
-      }
-      if (GithubUtils.isAcitivityHidden()) {
-        return
-      }
-      if (GithubUtils.hasActivityLoaded()) {
-        this.setActivityVisibility(false)
-        return
-      }
-    } catch (err) {}
+    if (!GithubUtils.isHomePage(url)) {
+      return
+    }
+    if (GithubUtils.isAcitivityHidden()) {
+      return
+    }
+    if (GithubUtils.hasActivityLoaded()) {
+      this.setActivityVisibility(false)
+      return
+    }
   }
 
   tryBlockingExplore() {
-    try {
-      let url = document.URL
+    let url = document.URL
 
-      if (!GithubUtils.isHomePage(url)) {
-        return
-      }
-      if (GithubUtils.isExploreHidden()) {
-        return
-      }
-      if (GithubUtils.hasExploreLoaded()) {
-        this.setExploreVisibility(false)
-        return
-      }
-    } catch (err) {}
+    if (!GithubUtils.isHomePage(url)) {
+      return
+    }
+    if (GithubUtils.isExploreHidden()) {
+      return
+    }
+    if (GithubUtils.hasExploreLoaded()) {
+      this.setExploreVisibility(false)
+      return
+    }
   }
 }
