@@ -1,0 +1,69 @@
+const esbuild = require('esbuild');
+const fs = require('fs');
+const path = require('path');
+
+const isWatch = process.argv.includes('--watch');
+
+function copyRecursive(src, dest) {
+  if (fs.statSync(src).isDirectory()) {
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest, { recursive: true });
+    }
+    for (const file of fs.readdirSync(src)) {
+      copyRecursive(path.join(src, file), path.join(dest, file));
+    }
+  } else {
+    fs.copyFileSync(src, dest);
+  }
+}
+
+async function build() {
+  try {
+    // Clean extension-build directory
+    if (fs.existsSync('extension-build')) {
+      fs.rmSync('extension-build', { recursive: true });
+    }
+    fs.mkdirSync('extension-build', { recursive: true });
+
+    // Build TypeScript files
+    const ctx = await esbuild.context({
+      entryPoints: {
+        'background': 'src/ts/background.ts',
+        'focus': 'src/ts/focus/focus.ts',
+      },
+      bundle: true,
+      outdir: 'extension-build',
+      sourcemap: true,
+      platform: 'browser',
+      target: ['chrome58', 'firefox57', 'safari11'],
+      loader: {
+        '.ts': 'ts',
+      },
+      define: {
+        'process.env.NODE_ENV': isWatch ? '"development"' : '"production"'
+      }
+    });
+
+    // Copy static files
+    copyRecursive('src/html', 'extension-build/html');
+    copyRecursive('src/icons', 'extension-build/icons');
+    copyRecursive('src/css', 'extension-build/css');
+    
+    // Copy manifest.json
+    fs.copyFileSync('src/manifest.json', 'extension-build/manifest.json');
+
+    if (isWatch) {
+      await ctx.watch();
+      console.log('Watching for changes...');
+    } else {
+      await ctx.rebuild();
+      await ctx.dispose();
+      console.log('Build complete');
+    }
+  } catch (err) {
+    console.error('Build failed:', err);
+    process.exit(1);
+  }
+}
+
+build();

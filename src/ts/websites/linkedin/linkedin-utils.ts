@@ -2,43 +2,47 @@ const LINKEDIN_FEED_CLASS = 'scaffold-layout__main'
 const PANEL_CLASS = 'scaffold-layout__aside'
 const AD_CLASS = 'ad-banner-container is-header-zone'
 
-function getLinkedInFeed(): Element {
-  return document.getElementsByClassName(LINKEDIN_FEED_CLASS)[0].children[2]
+function getLinkedInFeed(): Element | null {
+  const feed = document.getElementsByClassName(LINKEDIN_FEED_CLASS)[0];
+  return feed?.children?.[2] || null;
 }
 
-function getLinkedInPanel(): Element {
-  return document.getElementsByClassName(PANEL_CLASS)[0]
+function getLinkedInPanel(): Element | null {
+  return document.getElementsByClassName(PANEL_CLASS)[0] || null;
 }
 
-function getAdHeader(): Element {
-  return document.getElementsByClassName(AD_CLASS)[0]
+function getAdHeader(): Element | null {
+  return document.getElementsByClassName(AD_CLASS)[0] || null;
 }
 
 function hasFeedLoaded(): boolean {
-  return getLinkedInFeed().children.length == 2
+  const feed = getLinkedInFeed();
+  return feed?.children?.length === 2 || false;
 }
 
 function hasPanelLoaded(): boolean {
-  return getLinkedInPanel().children.length == 3
+  const panel = getLinkedInPanel();
+  return panel?.children?.length === 3 || false;
 }
 
 function hasAdLoaded(): boolean {
-  return getAdHeader().children.length == 1
+  const ad = getAdHeader();
+  return ad?.children?.length === 1 || false;
 }
 
 function isFeedHidden(): boolean {
-  let feed = getLinkedInFeed()
-  return feed.children[1].nodeName == 'IFRAME'
+  const feed = getLinkedInFeed();
+  return feed?.children?.[1]?.nodeName === 'IFRAME' || false;
 }
 
 function isPanelHidden(): boolean {
-  let panel = getLinkedInPanel()
-  return panel.children.length == 0
+  const panel = getLinkedInPanel();
+  return !panel || panel.children.length === 0;
 }
 
 function isAdHidden(): boolean {
-  let ad = getAdHeader()
-  return ad.children.length == 0
+  const ad = getAdHeader();
+  return !ad || ad.children.length === 0;
 }
 
 function isHomePage(url: string): boolean {

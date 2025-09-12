@@ -92,44 +92,60 @@ export default class LinkedInController extends WebsiteController {
   }
 
   setAdVisibility(visibile: boolean) {
-    let adParentNode = LinkedInUtils.getAdHeader()
+    const adParentNode = LinkedInUtils.getAdHeader();
+    if (!adParentNode || !visibile || !adParentNode.children.length) return;
+
     if (!visibile) {
-      this.adChildNode = adParentNode.children[0]
-      adParentNode.removeChild(this.adChildNode)
-    } else {
-      adParentNode.append(this.adChildNode)
+      this.adChildNode = adParentNode.children[0];
+      if (this.adChildNode) {
+        adParentNode.removeChild(this.adChildNode);
+      }
+    } else if (this.adChildNode instanceof Node) {
+      adParentNode.append(this.adChildNode);
     }
   }
 
   setFeedVisibility(visibile: boolean) {
-    let feedParentNode = LinkedInUtils.getLinkedInFeed()
+    const feedParentNode = LinkedInUtils.getLinkedInFeed();
+    if (!feedParentNode) return;
+
     if (!visibile) {
-      this.feedChildNode = feedParentNode.children[1]
-      feedParentNode.removeChild(this.feedChildNode)
-      LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, feedParentNode)
-    } else {
-      feedParentNode.append(this.feedChildNode)
+      const feedChild = feedParentNode.children[1];
+      if (feedChild) {
+        this.feedChildNode = feedChild;
+        feedParentNode.removeChild(feedChild);
+        LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, feedParentNode);
+      }
+    } else if (this.feedChildNode instanceof Node) {
+      feedParentNode.append(this.feedChildNode);
     }
   }
 
   setPanelVisibility(visible: boolean) {
-    let panel = LinkedInUtils.getLinkedInPanel()
-    if (!visible) {
-      let length = panel.children.length
+    const panel = LinkedInUtils.getLinkedInPanel();
+    if (!panel) return;
 
-      let currentPanelElements = []
-      while (length != 1) {
-        var currentLastChild = panel.children[length - 1]
-        currentPanelElements.push(currentLastChild)
-        panel.removeChild(currentLastChild)
-        length -= 1
+    if (!visible) {
+      let length = panel.children.length;
+      let currentPanelElements = [];
+
+      while (length > 1) {
+        const currentLastChild = panel.children[length - 1];
+        if (currentLastChild) {
+          currentPanelElements.push(currentLastChild);
+          panel.removeChild(currentLastChild);
+        }
+        length -= 1;
       }
-      this.panelElements = currentPanelElements
+      this.panelElements = currentPanelElements;
     } else {
       for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
-        panel.append(this.panelElements[i])
+        const element = this.panelElements[i];
+        if (element instanceof Node) {
+          panel.append(element);
+        }
       }
-      utils.clearElements(this.panelElements)
+      utils.clearElements(this.panelElements);
     }
   }
 

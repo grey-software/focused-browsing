@@ -14,16 +14,24 @@ describe('background.ts', () => {
       const changeInfo = { status: 'loading' };
       const tab = { url: 'https://twitter.com' };
 
-      (browser.scripting.executeScript as jest.Mock).mockResolvedValue([{ result: false }]);
+      // First call to checkFocusScriptInjected returns false
+      (browser.scripting.executeScript as jest.Mock)
+        .mockResolvedValueOnce([{ result: false }])  // For checkFocusScriptInjected
+        .mockResolvedValueOnce(undefined)  // For focus.js injection
+        .mockResolvedValueOnce(undefined); // For setting isFocusScriptInjected flag
 
       await injectFocusScriptOnTabChange(tabId, changeInfo, tab as any);
 
       expect(browser.scripting.executeScript).toHaveBeenCalledTimes(3);
-      expect(browser.scripting.executeScript).toHaveBeenCalledWith({
+      expect(browser.scripting.executeScript).toHaveBeenNthCalledWith(1, {
+        target: { tabId: tabId },
+        func: expect.any(Function),
+      });
+      expect(browser.scripting.executeScript).toHaveBeenNthCalledWith(2, {
         target: { tabId: tabId },
         files: ['focus.js'],
       });
-      expect(browser.scripting.executeScript).toHaveBeenCalledWith({
+      expect(browser.scripting.executeScript).toHaveBeenNthCalledWith(3, {
         target: { tabId: tabId },
         func: expect.any(Function),
       });
@@ -45,6 +53,7 @@ describe('background.ts', () => {
   describe('checkFocusScriptInjected', () => {
     it('should return true if the script is injected', async () => {
       const tabId = 1;
+      (browser.tabs.get as jest.Mock).mockResolvedValue({ id: tabId, url: 'https://example.com' });
       (browser.scripting.executeScript as jest.Mock).mockResolvedValue([{ result: true }]);
 
       const result = await checkFocusScriptInjected(tabId);
@@ -54,6 +63,7 @@ describe('background.ts', () => {
 
     it('should return false if the script is not injected', async () => {
       const tabId = 1;
+      (browser.tabs.get as jest.Mock).mockResolvedValue({ id: tabId, url: 'https://example.com' });
       (browser.scripting.executeScript as jest.Mock).mockResolvedValue([{ result: false }]);
 
       const result = await checkFocusScriptInjected(tabId);

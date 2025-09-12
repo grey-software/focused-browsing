@@ -6,6 +6,7 @@ export const browser = {
     },
   },
   tabs: {
+    get: jest.fn((tabId) => Promise.resolve({ id: tabId, url: 'https://example.com' })),
     onUpdated: {
       addListener: jest.fn(),
     },
@@ -15,7 +16,7 @@ export const browser = {
     sendMessage: jest.fn(() => Promise.resolve({})),
   },
   scripting: {
-    executeScript: jest.fn(() => Promise.resolve([])),
+    executeScript: jest.fn(() => Promise.resolve([{ result: false }])),
   },
   runtime: {
     onMessage: {

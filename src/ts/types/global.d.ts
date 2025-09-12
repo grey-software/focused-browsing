@@ -1,0 +1,3 @@
+interface Document {
+  isFocusScriptInjected?: boolean;
+}
