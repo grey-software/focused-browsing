@@ -1,5 +1,4 @@
 import LinkedInUtils from './linkedin-utils'
-import LinkedInIFrameUtils from './linkedin-iframe-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
 import linkedinUtils from './linkedin-utils'
@@ -8,11 +7,11 @@ export default class LinkedInController extends WebsiteController {
   panelElements: Node[]
   feedIntervalId: number
   panelIntervalId: number
-  feedIframe: HTMLIFrameElement
   feedChildNode: string | Node
   adChildNode: string | Node
   adIntervalId: number
   feedAdsIntervalId: number
+  quoteElement: HTMLDivElement | null
 
   constructor() {
     super()
@@ -23,7 +22,7 @@ export default class LinkedInController extends WebsiteController {
     this.panelIntervalId = 0
     this.adIntervalId = 0
     this.feedAdsIntervalId = 0
-    this.feedIframe = LinkedInIFrameUtils.createLinkedInIframe()
+    this.quoteElement = null
   }
 
   focus() {
@@ -114,9 +113,20 @@ export default class LinkedInController extends WebsiteController {
       if (feedChild) {
         this.feedChildNode = feedChild;
         feedParentNode.removeChild(feedChild);
-        LinkedInIFrameUtils.injectFeedIframe(this.feedIframe, feedParentNode);
+        
+        // Create and inject quote element if not already present
+        if (!this.quoteElement) {
+          import('../../quote-manager').then(({ default: QuoteManager }) => {
+            this.quoteElement = QuoteManager.createQuoteElement();
+            feedParentNode.append(this.quoteElement!);
+          });
+        } else {
+          feedParentNode.append(this.quoteElement);
+        }
       }
     } else if (this.feedChildNode instanceof Node) {
+      // Remove quote element
+      this.quoteElement?.remove();
       feedParentNode.append(this.feedChildNode);
     }
   }

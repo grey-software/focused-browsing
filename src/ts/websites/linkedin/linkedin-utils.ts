@@ -3,12 +3,13 @@ const PANEL_CLASS = 'scaffold-layout__aside'
 const AD_CLASS = 'ad-banner-container is-header-zone'
 
 function getLinkedInFeed(): Element | null {
-  const feed = document.getElementsByClassName(LINKEDIN_FEED_CLASS)[0];
-  return feed?.children?.[2] || null;
+  const feed = document.querySelector('[aria-label="Main Feed"]');
+  return feed || null;
 }
 
 function getLinkedInPanel(): Element | null {
-  return document.getElementsByClassName(PANEL_CLASS)[0] || null;
+  const panel = document.querySelector('[aria-label="Add to your feed"]');
+  return panel || null;
 }
 
 function getAdHeader(): Element | null {
@@ -17,17 +18,20 @@ function getAdHeader(): Element | null {
 
 function hasFeedLoaded(): boolean {
   const feed = getLinkedInFeed();
-  return feed?.children?.length === 2 || false;
+  if (!feed || !feed.children) return false;
+  return feed.children.length >= 2;
 }
 
 function hasPanelLoaded(): boolean {
   const panel = getLinkedInPanel();
-  return panel?.children?.length === 3 || false;
+  if (!panel || !panel.children) return false;
+  return panel.children.length >= 3;
 }
 
 function hasAdLoaded(): boolean {
   const ad = getAdHeader();
-  return ad?.children?.length === 1 || false;
+  if (!ad || !ad.children) return false;
+  return ad.children.length >= 1;
 }
 
 function isFeedHidden(): boolean {
@@ -37,12 +41,12 @@ function isFeedHidden(): boolean {
 
 function isPanelHidden(): boolean {
   const panel = getLinkedInPanel();
-  return !panel || panel.children.length === 0;
+  return !panel || !panel.children || panel.children.length === 0;
 }
 
 function isAdHidden(): boolean {
   const ad = getAdHeader();
-  return !ad || ad.children.length === 0;
+  return !ad || !ad.children || ad.children.length === 0;
 }
 
 function isHomePage(url: string): boolean {

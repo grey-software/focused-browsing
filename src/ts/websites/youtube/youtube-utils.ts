@@ -18,7 +18,7 @@ function getSuggestions(): Element | null {
 function getVideoComments(): Element | null {
   let commentParent = document.querySelector('ytd-comments')
   if (commentParent) {
-    return commentParent.children[1].children[2]
+    return commentParent
   }
   return null
 }

@@ -1,5 +1,4 @@
 import YouTubeUtils from './youtube-utils'
-import YouTubeIFrameUtils from './youtube-iframe-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
 
@@ -9,12 +8,12 @@ export default class YouTubeController extends WebsiteController {
   feedIntervalId: number
   suggestionsIntervalId: number
   cardChangeIntervalId: number
-  feedIframe: HTMLIFrameElement
   suggestionElements: Node[]
   commentElements: Node[]
   commentIntervalId: number
   currentColor: string
   setCardColorIntervalId: number
+  quoteElement: HTMLDivElement | null
 
   constructor() {
     super()
@@ -27,7 +26,7 @@ export default class YouTubeController extends WebsiteController {
     this.commentIntervalId = 0
     this.cardChangeIntervalId = 0
     this.setCardColorIntervalId = 0
-    this.feedIframe = YouTubeIFrameUtils.createYouTubeFeedIframe()
+    this.quoteElement = null
 
     this.currentColor = ''
 
@@ -56,15 +55,8 @@ export default class YouTubeController extends WebsiteController {
     let backgroundColor = window.getComputedStyle(document.body).backgroundColor
     if (backgroundColor != this.currentColor && this.currentColor != '') {
       this.currentColor = backgroundColor
-      let currentUrl = document.URL
-      if (YouTubeUtils.isHomePage(currentUrl)) {
-        let feed = YouTubeUtils.getFeed()
-        if (feed) {
-          if (YouTubeUtils.isFeedHidden()) {
-            utils.removeFocusedBrowsingCards()
-            YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
-          }
-        }
+      if (this.quoteElement) {
+        this.quoteElement.style.background = this.currentColor;
       }
     }
   }
@@ -132,8 +124,24 @@ export default class YouTubeController extends WebsiteController {
       if (!visible) {
         this.YouTubeFeedChildNode = feed.children[0]
         feed.removeChild(feed.childNodes[0])
-        YouTubeIFrameUtils.injectFeedIframe(this.feedIframe, feed, this.currentColor)
+        
+        // Create and inject quote element if not already present
+        if (!this.quoteElement) {
+          import('../../quote-manager').then(({ default: QuoteManager }) => {
+            this.quoteElement = QuoteManager.createQuoteElement();
+            // Adjust quote styles for YouTube's theme
+            if (this.quoteElement) {
+              this.quoteElement.style.background = this.currentColor || '#f9f9f9';
+              this.quoteElement.style.marginTop = '24px';
+              feed.append(this.quoteElement);
+            }
+          });
+        } else {
+          this.quoteElement.style.background = this.currentColor || '#f9f9f9';
+          feed.append(this.quoteElement);
+        }
       } else {
+        this.quoteElement?.remove();
         feed.append(this.YouTubeFeedChildNode)
       }
     }
