@@ -11,7 +11,7 @@ function removeFocusedBrowsingCards() {
 }
 
 function clearElements(elements: any[]) {
-  elements = []
+  elements.length = 0
 }
 
 export default { removeFocusedBrowsingCards, clearElements }

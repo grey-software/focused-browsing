@@ -3,7 +3,7 @@ import utils from '../utils'
 import WebsiteController from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import QuoteManager from '../../quote-manager';
-import { SIZE_MAP, SizeKey } from '../../constants/size-map';
+import { QuoteSizeHandler } from '../quote-size-handler';
 
 export default class YouTubeController extends WebsiteController {
   
@@ -70,15 +70,7 @@ export default class YouTubeController extends WebsiteController {
 
   handleTextSizeChange(textSize: string) {
     if (this.quoteElement) {
-      const sizes = SIZE_MAP[textSize as SizeKey] || SIZE_MAP.medium;
-      const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
-      const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
-      if (quoteText) {
-        quoteText.style.fontSize = sizes.quote;
-      }
-      if (quoteSource) {
-        quoteSource.style.fontSize = sizes.source;
-      }
+      QuoteSizeHandler.updateQuoteTextSize(this.quoteElement, textSize);
     }
   }
 
