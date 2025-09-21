@@ -7,23 +7,50 @@
   </head>
   <body>
     <div class="popup-container">
-      <div class="title-container">
-        <p class="title">buyao</p>
-      </div>
-      <p class="shortcut-container">
-        Press
-        <strong class="shortcut-caption-emphasis-1">LeftShift &#43; RightShift</strong>
-        to show/hide feeds
-      </p>
-
-      <div class="settings-container">
-        <div class="setting">
-          <label for="show-quote">Show Quote</label>
-          <input type="checkbox" id="show-quote" />
+      <!-- Header -->
+      <div class="header">
+        <div class="brand">
+          <div class="logo-placeholder"></div>
+          <h1 class="title">buyao</h1>
         </div>
-        <div class="setting">
-          <label for="font-size">Font Size</label>
-          <input type="range" id="font-size" min="10" max="30" value="16" />
+        <div class="tagline">Focus on what matters</div>
+      </div>
+
+      <!-- Shortcut Info -->
+      <div class="shortcut-section">
+        <div class="shortcut-label">Toggle focus mode</div>
+        <div class="shortcut-keys">
+          <kbd class="key">⇧</kbd>
+          <span class="plus">+</span>
+          <kbd class="key">⇧</kbd>
+        </div>
+        <div class="shortcut-hint">Left Shift + Right Shift</div>
+      </div>
+
+      <!-- Settings -->
+      <div class="settings-section">
+        <h2 class="section-title">Quote Settings</h2>
+        
+        <div class="setting-row">
+          <div class="setting-info">
+            <label class="setting-label" for="show-quote">Show inspirational quotes</label>
+            <p class="setting-description">Display motivational quotes when feeds are blocked</p>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="show-quote" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row" id="font-size-row">
+          <div class="setting-info">
+            <label class="setting-label" for="font-size">Font size</label>
+            <p class="setting-description">Adjust quote text size for better readability</p>
+          </div>
+          <div class="slider-container">
+            <input type="range" id="font-size" min="12" max="24" value="16" />
+            <span class="slider-value" id="font-size-value">16px</span>
+          </div>
         </div>
       </div>
     </div>
