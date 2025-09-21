@@ -1,4 +1,6 @@
 import { quotes } from './quotes';
+import { customStyles } from './custom-styles';
+import { browser } from 'webextension-polyfill-ts';
 
 export default class QuoteManager {
   static getRandomQuote() {
@@ -45,24 +47,22 @@ export default class QuoteManager {
     return quoteDiv;
   }
 
-  static createSimpleQuoteElement(): HTMLDivElement {
+  static async createSimpleQuoteElement(): Promise<HTMLDivElement> {
     const quote = this.getRandomQuote();
     const quoteDiv = document.createElement('div');
     quoteDiv.className = 'focus-quote-simple';
-    quoteDiv.style.cssText = `
-      padding: 20px;
-      margin: 20px 0;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      text-align: left;
-    `;
+    Object.assign(quoteDiv.style, customStyles.quoteContainer);
 
     const quoteText = document.createElement('p');
-    quoteText.style.marginBottom = '0.5rem';
+    Object.assign(quoteText.style, customStyles.quoteText);
+
+    const settings = await browser.storage.local.get('fontSize');
+    quoteText.style.fontSize = `${settings.fontSize || 16}px`;
+
     quoteText.textContent = `"${quote.text}"`;
 
     const quoteSource = document.createElement('p');
-    quoteSource.style.fontStyle = 'italic';
+    Object.assign(quoteSource.style, customStyles.quoteSource);
     quoteSource.textContent = `— ${quote.source}`;
 
     quoteDiv.appendChild(quoteText);

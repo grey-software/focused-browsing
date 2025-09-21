@@ -30,6 +30,7 @@ async function build() {
       entryPoints: {
         'background': 'src/ts/background.ts',
         'focus': 'src/ts/focus/focus.ts',
+        'popup': 'src/ts/popup.ts',
       },
       bundle: true,
       outdir: 'extension-build',

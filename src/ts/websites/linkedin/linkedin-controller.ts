@@ -2,6 +2,8 @@ import LinkedInUtils from './linkedin-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
 import linkedinUtils from './linkedin-utils'
+import { browser } from 'webextension-polyfill-ts';
+import QuoteManager from '../../quote-manager';
 
 export default class LinkedInController extends WebsiteController {
   panelElements: Node[]
@@ -26,6 +28,44 @@ export default class LinkedInController extends WebsiteController {
     this.feedAdsIntervalId = 0
     this.quoteElement = null
     this.isFeedBlocked = false
+
+    this.addStorageListener();
+  }
+
+  addStorageListener() {
+    browser.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName === 'local') {
+        if (changes.showQuote) {
+          this.handleShowQuoteChange(changes.showQuote.newValue);
+        }
+        if (changes.fontSize) {
+          this.handleFontSizeChange(changes.fontSize.newValue);
+        }
+      }
+    });
+  }
+
+  handleShowQuoteChange(showQuote: boolean) {
+    if (showQuote) {
+      if (this.isFeedBlocked && !this.quoteElement) {
+        const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
+        if (feedParentNode) {
+          this.injectQuote(feedParentNode);
+        }
+      }
+    } else {
+      this.quoteElement?.remove();
+      this.quoteElement = null;
+    }
+  }
+
+  handleFontSizeChange(fontSize: number) {
+    if (this.quoteElement) {
+      const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+      if (quoteText) {
+        quoteText.style.fontSize = `${fontSize}px`;
+      }
+    }
   }
 
   focus() {
@@ -126,23 +166,25 @@ export default class LinkedInController extends WebsiteController {
     this.hiddenFeedElements = [];
   }
 
-  injectQuote(feedParentNode: HTMLElement) {
+  async injectQuote(feedParentNode: HTMLElement) {
+    const settings = await browser.storage.local.get('showQuote');
+    if (settings.showQuote === false) return;
+
     if (!this.quoteElement) {
-      import('../../quote-manager').then(({ default: QuoteManager }) => {
-        this.quoteElement = QuoteManager.createSimpleQuoteElement();
-        feedParentNode.append(this.quoteElement!);
-      });
+      this.quoteElement = await QuoteManager.createSimpleQuoteElement();
+      feedParentNode.append(this.quoteElement!);
     }
   }
 
-  setFeedVisibility(visible: boolean) {
+  async setFeedVisibility(visible: boolean) {
     const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
     if (!feedParentNode) return;
 
     if (!visible) {
       this.hideFeed(feedParentNode);
-      this.injectQuote(feedParentNode);
-    } else {
+      await this.injectQuote(feedParentNode);
+    }
+    else {
       this.showFeed();
     }
   }
@@ -172,7 +214,7 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  tryBlockingFeed() {
+  async tryBlockingFeed() {
     if (this.isFeedBlocked) {
       return
     }
@@ -184,7 +226,7 @@ export default class LinkedInController extends WebsiteController {
       return
     }
     if (LinkedInUtils.hasFeedLoaded()) {
-      this.setFeedVisibility(false)
+      await this.setFeedVisibility(false)
       return
     }
   }

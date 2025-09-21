@@ -1,6 +1,8 @@
 import YouTubeUtils from './youtube-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
+import { browser } from 'webextension-polyfill-ts';
+import QuoteManager from '../../quote-manager';
 
 export default class YouTubeController extends WebsiteController {
   
@@ -35,6 +37,43 @@ export default class YouTubeController extends WebsiteController {
 
     this.setCardColorInterval()
     this.listenForCardChange()
+    this.addStorageListener();
+  }
+
+  addStorageListener() {
+    browser.storage.onChanged.addListener((changes, areaName) => {
+      if (areaName === 'local') {
+        if (changes.showQuote) {
+          this.handleShowQuoteChange(changes.showQuote.newValue);
+        }
+        if (changes.fontSize) {
+          this.handleFontSizeChange(changes.fontSize.newValue);
+        }
+      }
+    });
+  }
+
+  handleShowQuoteChange(showQuote: boolean) {
+    if (showQuote) {
+      if (this.isFeedBlocked && !this.quoteElement) {
+        const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
+        if (feedParentNode) {
+          this.injectQuote(feedParentNode);
+        }
+      }
+    } else {
+      this.quoteElement?.remove();
+      this.quoteElement = null;
+    }
+  }
+
+  handleFontSizeChange(fontSize: number) {
+    if (this.quoteElement) {
+      const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+      if (quoteText) {
+        quoteText.style.fontSize = `${fontSize}px`;
+      }
+    }
   }
 
   listenForCardChange() {
@@ -150,38 +189,39 @@ export default class YouTubeController extends WebsiteController {
     this.hiddenFeedElements = [];
   }
 
-  injectQuote(feedParentNode: HTMLElement) {
+  async injectQuote(feedParentNode: HTMLElement) {
+    const settings = await browser.storage.local.get('showQuote');
+    if (settings.showQuote === false) return;
+
     if (!this.quoteElement) {
-      import('../../quote-manager').then(({ default: QuoteManager }) => {
-        this.quoteElement = QuoteManager.createSimpleQuoteElement();
-        this.quoteElement.style.background = this.currentColor || '#f9f9f9';
-        this.quoteElement.style.marginTop = '24px';
+      this.quoteElement = await QuoteManager.createSimpleQuoteElement();
+      this.quoteElement.style.background = this.currentColor || '#f9f9f9';
+      this.quoteElement.style.marginTop = '24px';
 
-        const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
-        const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
+      const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+      const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
 
-        if (quoteText && quoteSource) {
-          if (YouTubeUtils.isDarkTheme()) {
-            quoteText.style.color = '#fff';
-            quoteSource.style.color = '#ccc';
-          } else {
-            quoteText.style.color = '#000';
-            quoteSource.style.color = '#666';
-          }
+      if (quoteText && quoteSource) {
+        if (YouTubeUtils.isDarkTheme()) {
+          quoteText.style.color = '#fff';
+          quoteSource.style.color = '#ccc';
+        } else {
+          quoteText.style.color = '#000';
+          quoteSource.style.color = '#666';
         }
+      }
 
-        feedParentNode.append(this.quoteElement!);
-      });
+      feedParentNode.append(this.quoteElement!);
     }
   }
 
-  setFeedVisibility(visible: boolean) {
+  async setFeedVisibility(visible: boolean) {
     const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
     if (!feedParentNode) return;
 
     if (!visible) {
       this.hideFeed(feedParentNode);
-      this.injectQuote(feedParentNode);
+      await this.injectQuote(feedParentNode);
     } else {
       this.showFeed();
     }
@@ -231,7 +271,7 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  tryBlockingFeed() {
+  async tryBlockingFeed() {
     if (this.isFeedBlocked) {
       return
     }
@@ -244,7 +284,7 @@ export default class YouTubeController extends WebsiteController {
       return
     }
     if (YouTubeUtils.hasFeedLoaded()) {
-      this.setFeedVisibility(false)
+      await this.setFeedVisibility(false)
       return
     }
   }
