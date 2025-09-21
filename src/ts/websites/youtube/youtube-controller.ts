@@ -183,6 +183,7 @@ export default class YouTubeController extends WebsiteController {
 
   showFeed() {
     this.quoteElement?.remove();
+    this.quoteElement = null;
     this.hiddenFeedElements.forEach((child) => {
       child.style.display = '';
     });

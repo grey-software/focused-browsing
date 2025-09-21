@@ -25,12 +25,6 @@ export default class AppStateManager {
 
   async updateFocusMode(currentWebsite: Website) {
     let focusModeCount = 2
-    switch (currentWebsite) {
-      case Website.Twitter:
-      case Website.LinkedIn:
-        focusModeCount = 3
-        break
-    }
     this.appState[currentWebsite] = (this.appState[currentWebsite] + 1) % focusModeCount
     await this.updateAppState(currentWebsite)
   }

@@ -1,7 +1,6 @@
 export enum FocusMode {
   Focused = 0,
   Unfocused = 1,
-  Premium = 2,
 }
 
 export enum Website {
