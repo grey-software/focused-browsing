@@ -5,6 +5,16 @@ import linkedinUtils from './linkedin-utils'
 import { browser } from 'webextension-polyfill-ts';
 import QuoteManager from '../../quote-manager';
 
+// Size mapping for both quote text and source
+const SIZE_MAP = {
+  small: { quote: '1.25rem', source: '1rem' },    // S: 20px/16px
+  medium: { quote: '1.5rem', source: '1.125rem' }, // M: 24px/18px
+  large: { quote: '1.75rem', source: '1.25rem' },  // L: 28px/20px
+  xlarge: { quote: '2rem', source: '1.375rem' }    // XL: 32px/22px
+};
+
+type SizeKey = keyof typeof SIZE_MAP;
+
 export default class LinkedInController extends WebsiteController {
   panelElements: Node[]
   feedIntervalId: number
@@ -38,8 +48,8 @@ export default class LinkedInController extends WebsiteController {
         if (changes.showQuote) {
           this.handleShowQuoteChange(changes.showQuote.newValue);
         }
-        if (changes.fontSize) {
-          this.handleFontSizeChange(changes.fontSize.newValue);
+        if (changes.textSize) {
+          this.handleTextSizeChange(changes.textSize.newValue);
         }
       }
     });
@@ -59,11 +69,16 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  handleFontSizeChange(fontSize: number) {
+  handleTextSizeChange(textSize: string) {
     if (this.quoteElement) {
+      const sizes = SIZE_MAP[textSize as SizeKey] || SIZE_MAP.medium;
       const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+      const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
       if (quoteText) {
-        quoteText.style.fontSize = `${fontSize}px`;
+        quoteText.style.fontSize = sizes.quote;
+      }
+      if (quoteSource) {
+        quoteSource.style.fontSize = sizes.source;
       }
     }
   }

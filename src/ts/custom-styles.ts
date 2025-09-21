@@ -6,10 +6,11 @@ export const customStyles = {
   },
   quoteText: {
     marginBottom: '1rem',
-    fontSize: '2.5rem'
+    lineHeight: '1.5',
+    fontStyle: 'italic',
   },
   quoteSource: {
     fontStyle: 'italic',
-    fontSize: '2rem'
+    opacity: '0.8',
   },
 };

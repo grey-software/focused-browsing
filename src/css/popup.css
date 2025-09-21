@@ -213,63 +213,51 @@ body {
   background: #2563eb;
 }
 
-/* Slider Container */
-.slider-container {
+/* Size Selector */
+.size-selector {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  gap: 4px;
   flex-shrink: 0;
 }
 
-.slider-container input[type="range"] {
-  width: 100px;
-  height: 6px;
-  border-radius: 3px;
-  background: #e5e7eb;
-  outline: none;
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.slider-container input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #3b82f6;
-  cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-}
-
-.slider-container input[type="range"]::-webkit-slider-thumb:hover {
-  background: #2563eb;
-  transform: scale(1.1);
-}
-
-.slider-container input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: #3b82f6;
-  cursor: pointer;
-  border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
-}
-
-.slider-container input[type="range"]::-moz-range-thumb:hover {
-  background: #2563eb;
-  transform: scale(1.1);
-}
-
-.slider-value {
+.size-option {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 32px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   color: #6b7280;
-  min-width: 32px;
-  text-align: right;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.size-option:hover {
+  background: #f3f4f6;
+  border-color: #d1d5db;
+  color: #374151;
+}
+
+.size-option.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.size-option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.size-option:disabled:hover {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  color: #6b7280;
 }
 
 /* Conditional visibility for font size setting */
@@ -283,7 +271,8 @@ body {
 }
 
 #font-size-row.disabled input,
-#font-size-row.disabled label {
+#font-size-row.disabled label,
+#font-size-row.disabled .size-option {
   cursor: not-allowed;
 }
 

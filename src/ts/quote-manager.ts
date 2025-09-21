@@ -2,6 +2,15 @@ import { quotes } from './quotes';
 import { customStyles } from './custom-styles';
 import { browser } from 'webextension-polyfill-ts';
 
+const SIZE_MAP = {
+  small: { quote: '1.5rem', source: '1.25rem' },   
+  medium: { quote: '2rem', source: '1.5rem' }, 
+  large: { quote: '2.5rem', source: '2rem' },  
+  xlarge: { quote: '4rem', source: '3rem' }    
+};
+
+type SizeKey = keyof typeof SIZE_MAP;
+
 export default class QuoteManager {
   static getRandomQuote() {
     const randomIndex = Math.floor(Math.random() * quotes.length);
@@ -56,13 +65,18 @@ export default class QuoteManager {
     const quoteText = document.createElement('p');
     Object.assign(quoteText.style, customStyles.quoteText);
 
-    const settings = await browser.storage.local.get('fontSize');
-    quoteText.style.fontSize = `${settings.fontSize || 16}px`;
-
-    quoteText.textContent = `"${quote.text}"`;
-
     const quoteSource = document.createElement('p');
     Object.assign(quoteSource.style, customStyles.quoteSource);
+
+    // Get size settings and apply to both text and source
+    const settings = await browser.storage.local.get(['textSize']);
+    const textSize = settings.textSize || 'medium';
+    const sizes = SIZE_MAP[textSize as SizeKey];
+    
+    quoteText.style.fontSize = sizes.quote;
+    quoteSource.style.fontSize = sizes.source;
+
+    quoteText.textContent = `"${quote.text}"`;
     quoteSource.textContent = `— ${quote.source}`;
 
     quoteDiv.appendChild(quoteText);

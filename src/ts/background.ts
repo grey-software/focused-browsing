@@ -11,7 +11,7 @@ const appState: AppState = {
 
 let activeURL: string | undefined = ''
 
-browser.storage.local.set({ appState: appState, showQuote: true, fontSize: 16 })
+browser.storage.local.set({ appState: appState, showQuote: true, textSize: 'medium' })
 
 export async function injectFocusScriptOnTabChange(
   tabId: number,

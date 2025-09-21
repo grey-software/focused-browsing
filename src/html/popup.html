@@ -44,12 +44,14 @@
 
         <div class="setting-row" id="font-size-row">
           <div class="setting-info">
-            <label class="setting-label" for="font-size">Font size</label>
-            <p class="setting-description">Adjust quote text size for better readability</p>
+            <label class="setting-label" for="font-size">Text size</label>
+            <p class="setting-description">Choose the size for quote text and attribution</p>
           </div>
-          <div class="slider-container">
-            <input type="range" id="font-size" min="12" max="24" value="16" />
-            <span class="slider-value" id="font-size-value">16px</span>
+          <div class="size-selector">
+            <button type="button" class="size-option" data-size="small">S</button>
+            <button type="button" class="size-option" data-size="medium">M</button>
+            <button type="button" class="size-option" data-size="large">L</button>
+            <button type="button" class="size-option" data-size="xlarge">XL</button>
           </div>
         </div>
       </div>

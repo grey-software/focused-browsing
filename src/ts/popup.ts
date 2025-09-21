@@ -1,44 +1,65 @@
 import { browser } from 'webextension-polyfill-ts';
 
+// Size mapping
+const SIZE_MAP = {
+  small: { quote: '1.5rem', source: '1.25rem' },   
+  medium: { quote: '2rem', source: '1.5rem' }, 
+  large: { quote: '2.5rem', source: '2rem' },  
+  xlarge: { quote: '4rem', source: '3rem' }    
+};
+
+type SizeKey = keyof typeof SIZE_MAP;
+
 document.addEventListener('DOMContentLoaded', async () => {
   const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;
-  const fontSizeSlider = document.getElementById('font-size') as HTMLInputElement;
-  const fontSizeValue = document.getElementById('font-size-value') as HTMLElement;
+  const sizeOptions = document.querySelectorAll('.size-option') as NodeListOf<HTMLButtonElement>;
   const fontSizeRow = document.getElementById('font-size-row') as HTMLElement;
 
   // Load settings
-  const settings = await browser.storage.local.get(['showQuote', 'fontSize']);
+  const settings = await browser.storage.local.get(['showQuote', 'textSize']);
   const showQuote = settings.showQuote !== false;
-  const fontSize = settings.fontSize || '16';
+  const textSize = settings.textSize || 'medium';
   
   showQuoteCheckbox.checked = showQuote;
-  fontSizeSlider.value = fontSize;
-  fontSizeValue.textContent = `${fontSize}px`;
-
-  // Update font size row visibility
-  updateFontSizeRowState(showQuote);
+  
+  // Set active size option
+  updateActiveSizeOption(textSize);
+  
+  // Update size row visibility
+  updateSizeRowState(showQuote);
 
   // Save showQuote setting
   showQuoteCheckbox.addEventListener('change', () => {
     const checked = showQuoteCheckbox.checked;
     browser.storage.local.set({ showQuote: checked });
-    updateFontSizeRowState(checked);
+    updateSizeRowState(checked);
   });
 
-  // Save fontSize setting and update display
-  fontSizeSlider.addEventListener('input', () => {
-    const value = fontSizeSlider.value;
-    browser.storage.local.set({ fontSize: value });
-    fontSizeValue.textContent = `${value}px`;
+  // Handle size option clicks
+  sizeOptions.forEach(option => {
+    option.addEventListener('click', () => {
+      if (option.disabled) return;
+      
+      const size = option.dataset.size as SizeKey;
+      browser.storage.local.set({ textSize: size });
+      updateActiveSizeOption(size);
+    });
   });
 
-  function updateFontSizeRowState(showQuote: boolean) {
+  function updateActiveSizeOption(activeSize: string) {
+    sizeOptions.forEach(option => {
+      const isActive = option.dataset.size === activeSize;
+      option.classList.toggle('active', isActive);
+    });
+  }
+
+  function updateSizeRowState(showQuote: boolean) {
     if (showQuote) {
       fontSizeRow.classList.remove('disabled');
-      fontSizeSlider.disabled = false;
+      sizeOptions.forEach(option => option.disabled = false);
     } else {
       fontSizeRow.classList.add('disabled');
-      fontSizeSlider.disabled = true;
+      sizeOptions.forEach(option => option.disabled = true);
     }
   }
 });

@@ -17,7 +17,7 @@ describe('popup.ts', () => {
   });
 
   it('should load the settings from storage and initialize the UI', async () => {
-    const settings = { showQuote: false, fontSize: '20' };
+    const settings = { showQuote: false, textSize: 'large' };
     (browser.storage.local.get as jest.Mock).mockResolvedValue(settings);
 
     // Dispatch the DOMContentLoaded event to trigger the popup script
@@ -26,10 +26,10 @@ describe('popup.ts', () => {
     await new Promise(resolve => setTimeout(resolve, 0)); // Wait for the async operations to complete
 
     const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;
-    const fontSizeSlider = document.getElementById('font-size') as HTMLInputElement;
+    const largeSizeOption = document.querySelector('[data-size="large"]') as HTMLButtonElement;
 
     expect(showQuoteCheckbox.checked).toBe(false);
-    expect(fontSizeSlider.value).toBe('20');
+    expect(largeSizeOption.classList.contains('active')).toBe(true);
   });
 
   it('should save the showQuote setting when the checkbox is changed', async () => {
@@ -43,14 +43,13 @@ describe('popup.ts', () => {
     expect(browser.storage.local.set).toHaveBeenCalledWith({ showQuote: false });
   });
 
-  it('should save the fontSize setting when the slider is changed', async () => {
+  it('should save the textSize setting when a size option is clicked', async () => {
     document.dispatchEvent(new Event('DOMContentLoaded'));
     await new Promise(resolve => setTimeout(resolve, 0));
 
-    const fontSizeSlider = document.getElementById('font-size') as HTMLInputElement;
-    fontSizeSlider.value = '24';
-    fontSizeSlider.dispatchEvent(new Event('input'));
+    const xlargeSizeOption = document.querySelector('[data-size="xlarge"]') as HTMLButtonElement;
+    xlargeSizeOption.click();
 
-    expect(browser.storage.local.set).toHaveBeenCalledWith({ fontSize: '24' });
+    expect(browser.storage.local.set).toHaveBeenCalledWith({ textSize: 'xlarge' });
   });
 });
