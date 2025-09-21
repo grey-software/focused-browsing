@@ -19,7 +19,7 @@ function getAdHeader(): Element | null {
 function hasFeedLoaded(): boolean {
   const feed = getLinkedInFeed();
   if (!feed || !feed.children) return false;
-  return feed.children.length >= 2;
+  return feed.children.length >= 1;
 }
 
 function hasPanelLoaded(): boolean {
@@ -36,7 +36,9 @@ function hasAdLoaded(): boolean {
 
 function isFeedHidden(): boolean {
   const feed = getLinkedInFeed();
-  return feed?.children?.[1]?.nodeName === 'IFRAME' || false;
+  if (!feed) return false;
+  const focusQuote = feed.querySelector('.focus-quote');
+  return !!focusQuote;
 }
 
 function isPanelHidden(): boolean {

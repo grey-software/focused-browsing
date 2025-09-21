@@ -14,6 +14,8 @@ export default class YouTubeController extends WebsiteController {
   currentColor: string
   setCardColorIntervalId: number
   quoteElement: HTMLDivElement | null
+  isFeedBlocked: boolean
+  hiddenFeedElements: HTMLElement[] = []
 
   constructor() {
     super()
@@ -27,6 +29,7 @@ export default class YouTubeController extends WebsiteController {
     this.cardChangeIntervalId = 0
     this.setCardColorIntervalId = 0
     this.quoteElement = null
+    this.isFeedBlocked = false
 
     this.currentColor = ''
 
@@ -57,6 +60,17 @@ export default class YouTubeController extends WebsiteController {
       this.currentColor = backgroundColor
       if (this.quoteElement) {
         this.quoteElement.style.background = this.currentColor;
+        const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+        const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
+        if (quoteText && quoteSource) {
+          if (YouTubeUtils.isDarkTheme()) {
+            quoteText.style.color = '#fff';
+            quoteSource.style.color = '#ccc';
+          } else {
+            quoteText.style.color = '#000';
+            quoteSource.style.color = '#666';
+          }
+        }
       }
     }
   }
@@ -77,6 +91,7 @@ export default class YouTubeController extends WebsiteController {
       this.clearIntervals()
       utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
+      this.isFeedBlocked = false
     } else if (YouTubeUtils.isVideoPage(url)) {
       this.clearIntervals()
       this.setSuggestionsVisibility(true)
@@ -118,32 +133,57 @@ export default class YouTubeController extends WebsiteController {
     }, 250)
   }
 
-  setFeedVisibility(visible: boolean) {
-    let feed = YouTubeUtils.getFeed()
-    if (feed) {
-      if (!visible) {
-        this.YouTubeFeedChildNode = feed.children[0]
-        feed.removeChild(feed.childNodes[0])
-        
-        // Create and inject quote element if not already present
-        if (!this.quoteElement) {
-          import('../../quote-manager').then(({ default: QuoteManager }) => {
-            this.quoteElement = QuoteManager.createQuoteElement();
-            // Adjust quote styles for YouTube's theme
-            if (this.quoteElement) {
-              this.quoteElement.style.background = this.currentColor || '#f9f9f9';
-              this.quoteElement.style.marginTop = '24px';
-              feed.append(this.quoteElement);
-            }
-          });
-        } else {
-          this.quoteElement.style.background = this.currentColor || '#f9f9f9';
-          feed.append(this.quoteElement);
+  hideFeed(feedParentNode: HTMLElement) {
+    this.isFeedBlocked = true;
+    Array.from(feedParentNode.children).forEach((child) => {
+      const htmlChild = child as HTMLElement;
+      this.hiddenFeedElements.push(htmlChild);
+      htmlChild.style.display = 'none';
+    });
+  }
+
+  showFeed() {
+    this.quoteElement?.remove();
+    this.hiddenFeedElements.forEach((child) => {
+      child.style.display = '';
+    });
+    this.hiddenFeedElements = [];
+  }
+
+  injectQuote(feedParentNode: HTMLElement) {
+    if (!this.quoteElement) {
+      import('../../quote-manager').then(({ default: QuoteManager }) => {
+        this.quoteElement = QuoteManager.createSimpleQuoteElement();
+        this.quoteElement.style.background = this.currentColor || '#f9f9f9';
+        this.quoteElement.style.marginTop = '24px';
+
+        const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+        const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
+
+        if (quoteText && quoteSource) {
+          if (YouTubeUtils.isDarkTheme()) {
+            quoteText.style.color = '#fff';
+            quoteSource.style.color = '#ccc';
+          } else {
+            quoteText.style.color = '#000';
+            quoteSource.style.color = '#666';
+          }
         }
-      } else {
-        this.quoteElement?.remove();
-        feed.append(this.YouTubeFeedChildNode)
-      }
+
+        feedParentNode.append(this.quoteElement!);
+      });
+    }
+  }
+
+  setFeedVisibility(visible: boolean) {
+    const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
+    if (!feedParentNode) return;
+
+    if (!visible) {
+      this.hideFeed(feedParentNode);
+      this.injectQuote(feedParentNode);
+    } else {
+      this.showFeed();
     }
   }
 
@@ -192,6 +232,9 @@ export default class YouTubeController extends WebsiteController {
   }
 
   tryBlockingFeed() {
+    if (this.isFeedBlocked) {
+      return
+    }
     let url = document.URL
     if (!YouTubeUtils.isHomePage(url)) {
       return

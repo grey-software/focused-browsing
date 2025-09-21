@@ -95,6 +95,10 @@ function isVideoPage(url: string): boolean {
   return false
 }
 
+function isDarkTheme(): boolean {
+  return document.documentElement.hasAttribute('dark');
+}
+
 export default {
   getFeed,
   getSuggestions,
@@ -107,4 +111,5 @@ export default {
   isVideoPage,
   haveCommentsLoaded,
   areCommentsHidden,
+  isDarkTheme,
 }

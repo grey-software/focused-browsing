@@ -44,4 +44,30 @@ export default class QuoteManager {
 
     return quoteDiv;
   }
+
+  static createSimpleQuoteElement(): HTMLDivElement {
+    const quote = this.getRandomQuote();
+    const quoteDiv = document.createElement('div');
+    quoteDiv.className = 'focus-quote-simple';
+    quoteDiv.style.cssText = `
+      padding: 20px;
+      margin: 20px 0;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      text-align: left;
+    `;
+
+    const quoteText = document.createElement('p');
+    quoteText.style.marginBottom = '0.5rem';
+    quoteText.textContent = `"${quote.text}"`;
+
+    const quoteSource = document.createElement('p');
+    quoteSource.style.fontStyle = 'italic';
+    quoteSource.textContent = `— ${quote.source}`;
+
+    quoteDiv.appendChild(quoteText);
+    quoteDiv.appendChild(quoteSource);
+
+    return quoteDiv;
+  }
 }

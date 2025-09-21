@@ -12,6 +12,8 @@ export default class LinkedInController extends WebsiteController {
   adIntervalId: number
   feedAdsIntervalId: number
   quoteElement: HTMLDivElement | null
+  isFeedBlocked: boolean
+  hiddenFeedElements: HTMLElement[] = []
 
   constructor() {
     super()
@@ -23,6 +25,7 @@ export default class LinkedInController extends WebsiteController {
     this.adIntervalId = 0
     this.feedAdsIntervalId = 0
     this.quoteElement = null
+    this.isFeedBlocked = false
   }
 
   focus() {
@@ -42,6 +45,7 @@ export default class LinkedInController extends WebsiteController {
       this.setFeedVisibility(true)
       this.setPanelVisibility(true)
       this.setAdVisibility(true)
+      this.isFeedBlocked = false
     }
   }
 
@@ -104,58 +108,53 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  setFeedVisibility(visibile: boolean) {
-    const feedParentNode = LinkedInUtils.getLinkedInFeed();
+  hideFeed(feedParentNode: HTMLElement) {
+    this.isFeedBlocked = true;
+    Array.from(feedParentNode.children).forEach((child) => {
+      const htmlChild = child as HTMLElement;
+      this.hiddenFeedElements.push(htmlChild);
+      htmlChild.style.display = 'none';
+    });
+  }
+
+  showFeed() {
+    this.quoteElement?.remove();
+    this.quoteElement = null;
+    this.hiddenFeedElements.forEach((child) => {
+      child.style.display = '';
+    });
+    this.hiddenFeedElements = [];
+  }
+
+  injectQuote(feedParentNode: HTMLElement) {
+    if (!this.quoteElement) {
+      import('../../quote-manager').then(({ default: QuoteManager }) => {
+        this.quoteElement = QuoteManager.createSimpleQuoteElement();
+        feedParentNode.append(this.quoteElement!);
+      });
+    }
+  }
+
+  setFeedVisibility(visible: boolean) {
+    const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
     if (!feedParentNode) return;
 
-    if (!visibile) {
-      const feedChild = feedParentNode.children[1];
-      if (feedChild) {
-        this.feedChildNode = feedChild;
-        feedParentNode.removeChild(feedChild);
-        
-        // Create and inject quote element if not already present
-        if (!this.quoteElement) {
-          import('../../quote-manager').then(({ default: QuoteManager }) => {
-            this.quoteElement = QuoteManager.createQuoteElement();
-            feedParentNode.append(this.quoteElement!);
-          });
-        } else {
-          feedParentNode.append(this.quoteElement);
-        }
-      }
-    } else if (this.feedChildNode instanceof Node) {
-      // Remove quote element
-      this.quoteElement?.remove();
-      feedParentNode.append(this.feedChildNode);
+    if (!visible) {
+      this.hideFeed(feedParentNode);
+      this.injectQuote(feedParentNode);
+    } else {
+      this.showFeed();
     }
   }
 
   setPanelVisibility(visible: boolean) {
-    const panel = LinkedInUtils.getLinkedInPanel();
+    const panel = LinkedInUtils.getLinkedInPanel() as HTMLElement;
     if (!panel) return;
 
     if (!visible) {
-      let length = panel.children.length;
-      let currentPanelElements = [];
-
-      while (length > 1) {
-        const currentLastChild = panel.children[length - 1];
-        if (currentLastChild) {
-          currentPanelElements.push(currentLastChild);
-          panel.removeChild(currentLastChild);
-        }
-        length -= 1;
-      }
-      this.panelElements = currentPanelElements;
+      panel.style.display = 'none';
     } else {
-      for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
-        const element = this.panelElements[i];
-        if (element instanceof Node) {
-          panel.append(element);
-        }
-      }
-      utils.clearElements(this.panelElements);
+      panel.style.display = '';
     }
   }
 
@@ -174,6 +173,9 @@ export default class LinkedInController extends WebsiteController {
   }
 
   tryBlockingFeed() {
+    if (this.isFeedBlocked) {
+      return
+    }
     let url = document.URL
     if (!LinkedInUtils.isHomePage(url)) {
       return
