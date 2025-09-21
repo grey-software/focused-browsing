@@ -1,19 +1,9 @@
 import LinkedInUtils from './linkedin-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
-import linkedinUtils from './linkedin-utils'
 import { browser } from 'webextension-polyfill-ts';
 import QuoteManager from '../../quote-manager';
-
-// Size mapping for both quote text and source
-const SIZE_MAP = {
-  small: { quote: '1.25rem', source: '1rem' },    // S: 20px/16px
-  medium: { quote: '1.5rem', source: '1.125rem' }, // M: 24px/18px
-  large: { quote: '1.75rem', source: '1.25rem' },  // L: 28px/20px
-  xlarge: { quote: '2rem', source: '1.375rem' }    // XL: 32px/22px
-};
-
-type SizeKey = keyof typeof SIZE_MAP;
+import { SIZE_MAP, SizeKey } from '../../constants/size-map';
 
 export default class LinkedInController extends WebsiteController {
   panelElements: Node[]
@@ -262,7 +252,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   hideFeedAds() {
-    linkedinUtils.getFeedAdElements().forEach((ad) => {
+    LinkedInUtils.getFeedAdElements().forEach((ad: HTMLElement) => {
       ad.style.display = 'none'
     })
   }

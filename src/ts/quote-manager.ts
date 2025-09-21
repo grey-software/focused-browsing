@@ -1,15 +1,7 @@
 import { quotes } from './quotes';
 import { customStyles } from './custom-styles';
 import { browser } from 'webextension-polyfill-ts';
-
-const SIZE_MAP = {
-  small: { quote: '1.5rem', source: '1.25rem' },   
-  medium: { quote: '2rem', source: '1.5rem' }, 
-  large: { quote: '2.5rem', source: '2rem' },  
-  xlarge: { quote: '4rem', source: '3rem' }    
-};
-
-type SizeKey = keyof typeof SIZE_MAP;
+import { SIZE_MAP, SizeKey } from './constants/size-map';
 
 export default class QuoteManager {
   static getRandomQuote() {
