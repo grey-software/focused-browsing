@@ -99,6 +99,30 @@ function isDarkTheme(): boolean {
   return document.documentElement.hasAttribute('dark');
 }
 
+function getPanels(): Element | null {
+  return document.getElementById('panels');
+}
+
+function havePanelsLoaded(): boolean {
+  try {
+    let panels = getPanels();
+    if (panels) {
+      return panels.children.length != 0;
+    }
+  } catch (err) {
+    return false;
+  }
+  return false;
+}
+
+function arePanelsHidden(): boolean {
+  let panels = getPanels() as HTMLElement;
+  if (panels) {
+    return panels.style.display === 'none' || panels.children.length === 0;
+  }
+  return false;
+}
+
 export default {
   getFeed,
   getSuggestions,
@@ -112,4 +136,7 @@ export default {
   haveCommentsLoaded,
   areCommentsHidden,
   isDarkTheme,
+  getPanels,
+  havePanelsLoaded,
+  arePanelsHidden,
 }

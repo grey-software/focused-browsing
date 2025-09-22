@@ -11,6 +11,7 @@ export default class YouTubeController extends WebsiteController {
   suggestionsIntervalId: number
   suggestionElements: Node[]
   commentElements: Node[]
+  panelElements: Node[]
   commentIntervalId: number
   quoteElement: HTMLDivElement | null
   isFeedBlocked: boolean
@@ -20,6 +21,7 @@ export default class YouTubeController extends WebsiteController {
     super()
     this.suggestionElements = []
     this.commentElements = []
+    this.panelElements = []
     this.YouTubeFeedChildNode = ''
 
     this.feedIntervalId = 0
@@ -68,9 +70,11 @@ export default class YouTubeController extends WebsiteController {
     console.log('YouTubeController: Entering focus mode.');
     utils.clearElements(this.suggestionElements)
     utils.clearElements(this.commentElements)
+    utils.clearElements(this.panelElements)
     this.focusFeed()
     this.focusSuggestions()
     this.focusComments()
+    this.focusPanels()
   }
 
   unfocus() {
@@ -101,6 +105,10 @@ export default class YouTubeController extends WebsiteController {
 
   focusComments() {
     this.createInterval('comments', () => this.tryBlockingComments())
+  }
+
+  focusPanels() {
+    this.createInterval('panels', () => this.tryBlockingPanels())
   }
 
   hideFeed(feedParentNode: HTMLElement) {
@@ -208,6 +216,28 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
+  setPanelsVisibility(visible: boolean) {
+    let panels = YouTubeUtils.getPanels()
+    if (panels) {
+      if (!visible) {
+        let length = panels.children.length
+        let currentPanelElements = []
+        while (length != 0) {
+          var currentLastChild = panels.children[length - 1]
+          currentPanelElements.push(currentLastChild)
+          panels.removeChild(currentLastChild)
+          length -= 1
+        }
+        this.panelElements = currentPanelElements
+      } else {
+        for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
+          panels.append(this.panelElements[i])
+        }
+        utils.clearElements(this.panelElements)
+      }
+    }
+  }
+
   async tryBlockingFeed() {
     if (this.isFeedBlocked) return
     
@@ -234,6 +264,15 @@ export default class YouTubeController extends WebsiteController {
       YouTubeUtils.areCommentsHidden,
       YouTubeUtils.haveCommentsLoaded,
       () => this.setCommentsVisbility(false)
+    )
+  }
+
+  tryBlockingPanels() {
+    this.tryBlocking(
+      YouTubeUtils.isVideoPage,
+      YouTubeUtils.arePanelsHidden,
+      YouTubeUtils.havePanelsLoaded,
+      () => this.setPanelsVisibility(false)
     )
   }
 }
