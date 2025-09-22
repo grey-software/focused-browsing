@@ -1,6 +1,6 @@
 import { quotes } from './quotes-data';
 import { browser } from 'webextension-polyfill-ts';
-import { SIZE_MAP, SizeKey } from '../constants/size-map';
+import { SIZE_MAP, SizeKey } from '../utils';
 
 // Custom styles for quotes
 const customStyles = {
