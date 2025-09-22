@@ -4,6 +4,9 @@ export const browser = {
       get: jest.fn(() => Promise.resolve({})),
       set: jest.fn(() => Promise.resolve()),
     },
+    onChanged: {
+      addListener: jest.fn(),
+    },
   },
   tabs: {
     get: jest.fn((tabId) => Promise.resolve({ id: tabId, url: 'https://example.com' })),

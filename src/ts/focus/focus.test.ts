@@ -3,16 +3,21 @@ import { initialize, toggleFocusMode, render } from './focus';
 import AppStateManager from './app-state-manager';
 import KeyPressManager from './keypress-manager';
 import LinkedInController from '../websites/linkedin/linkedin-controller';
+import FocusUtils from './focus-utils';
 
 jest.mock('webextension-polyfill-ts');
 jest.mock('./app-state-manager');
 jest.mock('./keypress-manager');
 jest.mock('../websites/linkedin/linkedin-controller');
+jest.mock('./focus-utils');
 
 describe('focus.ts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     document.body.innerHTML = '';
+    
+    // Mock FocusUtils - return null so default values are used
+    (FocusUtils.getFromLocalStorage as jest.Mock).mockResolvedValue(null);
   });
 
   describe('initialize', () => {

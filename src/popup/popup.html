@@ -10,10 +10,8 @@
       <!-- Header -->
       <div class="header">
         <div class="brand">
-          <div class="logo-placeholder"></div>
           <h1 class="title">buyao</h1>
         </div>
-        <div class="tagline">Focus on what matters</div>
       </div>
 
       <!-- Shortcut Info -->
@@ -27,14 +25,34 @@
         <div class="shortcut-hint">Left Shift + Right Shift</div>
       </div>
 
-      <!-- Settings -->
-      <div class="settings-section">
-        <h2 class="section-title">Quote Settings</h2>
-        
+      <!-- Website Settings -->
+      <div class="settings-section">        
+        <div class="setting-row">
+          <div class="setting-info">
+            <label class="setting-label" for="linkedin-toggle">LinkedIn</label>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="linkedin-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+
+        <div class="setting-row">
+          <div class="setting-info">
+            <label class="setting-label" for="youtube-toggle">YouTube</label>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="youtube-toggle" />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Quote Settings -->
+      <div class="settings-section">        
         <div class="setting-row">
           <div class="setting-info">
             <label class="setting-label" for="show-quote">Show inspirational quotes</label>
-            <p class="setting-description">Display motivational quotes when feeds are blocked</p>
           </div>
           <label class="toggle">
             <input type="checkbox" id="show-quote" />
@@ -45,7 +63,6 @@
         <div class="setting-row" id="font-size-row">
           <div class="setting-info">
             <label class="setting-label" for="font-size">Text size</label>
-            <p class="setting-description">Choose the size for quote text and attribution</p>
           </div>
           <div class="size-selector">
             <button type="button" class="size-option" data-size="small">S</button>

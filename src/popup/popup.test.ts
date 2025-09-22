@@ -54,4 +54,69 @@ describe('popup.ts', () => {
 
     expect(browser.storage.local.set).toHaveBeenCalledWith({ textSize: 'xlarge' });
   });
+
+  it('should load website toggles from storage and initialize the UI', async () => {
+    const settings = { websiteToggles: { linkedin: false, youtube: true } };
+    (browser.storage.local.get as jest.Mock).mockResolvedValue(settings);
+
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const linkedinToggle = document.getElementById('linkedin-toggle') as HTMLInputElement;
+    const youtubeToggle = document.getElementById('youtube-toggle') as HTMLInputElement;
+
+    expect(linkedinToggle.checked).toBe(false);
+    expect(youtubeToggle.checked).toBe(true);
+  });
+
+  it('should default website toggles to enabled when not in storage', async () => {
+    (browser.storage.local.get as jest.Mock).mockResolvedValue({});
+
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const linkedinToggle = document.getElementById('linkedin-toggle') as HTMLInputElement;
+    const youtubeToggle = document.getElementById('youtube-toggle') as HTMLInputElement;
+
+    expect(linkedinToggle.checked).toBe(true);
+    expect(youtubeToggle.checked).toBe(true);
+  });
+
+  it('should save linkedin toggle setting when changed', async () => {
+    const currentSettings = { websiteToggles: { linkedin: true, youtube: true } };
+    (browser.storage.local.get as jest.Mock).mockResolvedValue(currentSettings);
+
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const linkedinToggle = document.getElementById('linkedin-toggle') as HTMLInputElement;
+    linkedinToggle.checked = false;
+    linkedinToggle.dispatchEvent(new Event('change'));
+
+    // Wait for debounce delay
+    await new Promise(resolve => setTimeout(resolve, 200));
+
+    expect(browser.storage.local.set).toHaveBeenCalledWith({ 
+      websiteToggles: { linkedin: false, youtube: true } 
+    });
+  });
+
+  it('should save youtube toggle setting when changed', async () => {
+    const currentSettings = { websiteToggles: { linkedin: true, youtube: true } };
+    (browser.storage.local.get as jest.Mock).mockResolvedValue(currentSettings);
+
+    document.dispatchEvent(new Event('DOMContentLoaded'));
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    const youtubeToggle = document.getElementById('youtube-toggle') as HTMLInputElement;
+    youtubeToggle.checked = false;
+    youtubeToggle.dispatchEvent(new Event('change'));
+
+    // Wait for debounce delay
+    await new Promise(resolve => setTimeout(resolve, 350));
+
+    expect(browser.storage.local.set).toHaveBeenCalledWith({ 
+      websiteToggles: { linkedin: true, youtube: false } 
+    });
+  });
 });

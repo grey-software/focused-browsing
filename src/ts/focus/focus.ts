@@ -56,9 +56,14 @@ export function render() {
 
 export async function initialize() {
   console.log('Initializing focus script...');
+  
+  // Check website toggles before initializing controllers
+  const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
+  const websiteToggles = settings || { linkedin: true, youtube: true };
+  
   const websiteMappings = {
-    'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn },
-    'youtube.com': { controller: YoutubeController, website: Website.Youtube },
+    'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
+    'youtube.com': { controller: YoutubeController, website: Website.Youtube, enabled: websiteToggles.youtube },
   };
 
   const currentURL = document.URL;
@@ -66,9 +71,16 @@ export async function initialize() {
   for (const domain in websiteMappings) {
     if (currentURL.includes(domain)) {
       const mapping = websiteMappings[domain as keyof typeof websiteMappings];
-      websiteController = new mapping.controller();
-      currentWebsite = mapping.website;
-      console.log(`Detected website: ${Website[currentWebsite]}`);
+      
+      // Only initialize if the website is enabled
+      if (mapping.enabled) {
+        websiteController = new mapping.controller();
+        currentWebsite = mapping.website;
+        console.log(`Detected website: ${Website[currentWebsite]} (enabled)`);
+      } else {
+        console.log(`Detected website: ${Website[mapping.website]} (disabled)`);
+        return; // Exit early if disabled
+      }
       break;
     }
   }
@@ -80,6 +92,59 @@ export async function initialize() {
   } else {
     console.log('Unsupported website.');
   }
+
+  // Always listen for website toggle changes, regardless of current state
+  browser.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName === 'local' && changes.websiteToggles) {
+      const newToggles = changes.websiteToggles.newValue;
+      const currentURL = document.URL;
+      
+      const isLinkedin = currentURL.includes('linkedin.com');
+      const isYoutube = currentURL.includes('youtube.com');
+      
+      console.log('Website toggles changed:', newToggles);
+      
+      // Handle LinkedIn state change
+      if (isLinkedin) {
+        if (!newToggles.linkedin && websiteController) {
+          console.log('LinkedIn disabled - unfocusing and clearing controller');
+          websiteController.unfocus();
+          websiteController.clearIntervals();
+          websiteController = null as any;
+          currentWebsite = Website.Unsupported;
+        } else if (newToggles.linkedin && !websiteController) {
+          console.log('LinkedIn enabled - initializing controller');
+          websiteController = new LinkedInController();
+          currentWebsite = Website.LinkedIn;
+          // Apply current focus state
+          if (stateManager) {
+            const mode = stateManager.getFocusMode(currentWebsite);
+            websiteController.renderFocusMode(mode);
+          }
+        }
+      }
+      
+      // Handle YouTube state change  
+      if (isYoutube) {
+        if (!newToggles.youtube && websiteController) {
+          console.log('YouTube disabled - unfocusing and clearing controller');
+          websiteController.unfocus();
+          websiteController.clearIntervals();
+          websiteController = null as any;
+          currentWebsite = Website.Unsupported;
+        } else if (newToggles.youtube && !websiteController) {
+          console.log('YouTube enabled - initializing controller');
+          websiteController = new YoutubeController();
+          currentWebsite = Website.Youtube;
+          // Apply current focus state
+          if (stateManager) {
+            const mode = stateManager.getFocusMode(currentWebsite);
+            websiteController.renderFocusMode(mode);
+          }
+        }
+      }
+    }
+  });
 }
 
 (async function () {

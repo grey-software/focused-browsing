@@ -7,7 +7,7 @@
 
 body {
   width: 360px;
-  min-height: 500px;
+  min-height: 460px;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   background: #ffffff;
   color: #1f2937;
@@ -15,16 +15,16 @@ body {
 }
 
 .popup-container {
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 18px;
 }
 
 /* Header Section */
 .header {
   text-align: center;
-  padding-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 1px solid #e5e7eb;
 }
 
@@ -33,7 +33,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 12px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .logo-placeholder {
@@ -62,7 +62,7 @@ body {
   background: #f9fafb;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   text-align: center;
 }
 
@@ -70,7 +70,7 @@ body {
   font-size: 14px;
   font-weight: 600;
   color: #374151;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .shortcut-keys {
@@ -78,7 +78,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .key {
@@ -114,22 +114,23 @@ body {
 .settings-section {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 14px;
 }
 
 .section-title {
   font-size: 16px;
   font-weight: 600;
   color: #111827;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .setting-row {
+  position: relative;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
-  padding: 16px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #f3f4f6;
 }
 
@@ -211,6 +212,36 @@ body {
 
 .toggle:hover input:checked + .toggle-slider {
   background: #2563eb;
+}
+
+/* Loading spinner that replaces the toggle */
+.toggle.loading {
+  cursor: not-allowed;
+}
+
+.toggle.loading .toggle-slider,
+.toggle.loading .toggle-slider:before {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.toggle.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid #e5e7eb;
+  border-top: 2px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 /* Size Selector */
