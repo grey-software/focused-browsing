@@ -9,12 +9,9 @@ export default class YouTubeController extends WebsiteController {
   YouTubeFeedChildNode: string | Node
   feedIntervalId: number
   suggestionsIntervalId: number
-  cardChangeIntervalId: number
   suggestionElements: Node[]
   commentElements: Node[]
   commentIntervalId: number
-  currentColor: string
-  setCardColorIntervalId: number
   quoteElement: HTMLDivElement | null
   isFeedBlocked: boolean
   hiddenFeedElements: HTMLElement[] = []
@@ -28,15 +25,9 @@ export default class YouTubeController extends WebsiteController {
     this.feedIntervalId = 0
     this.suggestionsIntervalId = 0
     this.commentIntervalId = 0
-    this.cardChangeIntervalId = 0
-    this.setCardColorIntervalId = 0
     this.quoteElement = null
     this.isFeedBlocked = false
 
-    this.currentColor = ''
-
-    this.setCardColorInterval()
-    this.listenForCardChange()
     this.addStorageListener();
   }
 
@@ -70,44 +61,6 @@ export default class YouTubeController extends WebsiteController {
   handleTextSizeChange(textSize: string) {
     if (this.quoteElement) {
       quoteUtils.updateQuoteTextSize(this.quoteElement, textSize);
-    }
-  }
-
-  listenForCardChange() {
-    this.cardChangeIntervalId = window.setInterval(() => {
-      this.changeCard()
-    }, 250)
-  }
-
-  setCardColorInterval() {
-    this.setCardColorIntervalId = window.setInterval(() => {
-      if (this.currentColor != '') {
-        return
-      }
-      document.body.style.background = 'var(--yt-spec-general-background-a)'
-      this.currentColor = window.getComputedStyle(document.body).backgroundColor
-    }, 250)
-  }
-
-  changeCard() {
-    document.body.style.background = 'var(--yt-spec-general-background-a)'
-    let backgroundColor = window.getComputedStyle(document.body).backgroundColor
-    if (backgroundColor != this.currentColor && this.currentColor != '') {
-      this.currentColor = backgroundColor
-      if (this.quoteElement) {
-        this.quoteElement.style.background = this.currentColor;
-        const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
-        const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
-        if (quoteText && quoteSource) {
-          if (YouTubeUtils.isDarkTheme()) {
-            quoteText.style.color = '#fff';
-            quoteSource.style.color = '#ccc';
-          } else {
-            quoteText.style.color = '#000';
-            quoteSource.style.color = '#666';
-          }
-        }
-      }
     }
   }
 
@@ -174,14 +127,19 @@ export default class YouTubeController extends WebsiteController {
 
     if (!this.quoteElement) {
       this.quoteElement = await quoteUtils.createSimpleQuoteElement();
-      this.quoteElement.style.background = this.currentColor || '#f9f9f9';
+      
+      // Get YouTube's background color for proper theming
+      const isDark = YouTubeUtils.isDarkTheme();
+      const backgroundColor = isDark ? '#0f0f0f' : '#f9f9f9';
+      
+      this.quoteElement.style.background = backgroundColor;
       this.quoteElement.style.marginTop = '24px';
 
       const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
       const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
 
       if (quoteText && quoteSource) {
-        if (YouTubeUtils.isDarkTheme()) {
+        if (isDark) {
           quoteText.style.color = '#fff';
           quoteSource.style.color = '#ccc';
         } else {
