@@ -1,5 +1,5 @@
-import quoteUtils from './quotes';
-import { quotes } from './quotes/quotes-data';
+import quoteUtils from '.';
+import { quotes } from './quotes-data';
 
 // Mock webextension-polyfill-ts
 jest.mock('webextension-polyfill-ts', () => ({

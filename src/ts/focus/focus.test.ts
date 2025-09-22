@@ -1,13 +1,13 @@
 import { browser } from 'webextension-polyfill-ts';
-import { initialize, toggleFocusMode, render } from './focus/focus';
-import AppStateManager from './focus/app-state-manager';
-import KeyPressManager from './focus/keypress-manager';
-import LinkedInController from './websites/linkedin/linkedin-controller';
+import { initialize, toggleFocusMode, render } from './focus';
+import AppStateManager from './app-state-manager';
+import KeyPressManager from './keypress-manager';
+import LinkedInController from '../websites/linkedin/linkedin-controller';
 
 jest.mock('webextension-polyfill-ts');
-jest.mock('./focus/app-state-manager');
-jest.mock('./focus/keypress-manager');
-jest.mock('./websites/linkedin/linkedin-controller');
+jest.mock('./app-state-manager');
+jest.mock('./keypress-manager');
+jest.mock('../websites/linkedin/linkedin-controller');
 
 describe('focus.ts', () => {
   beforeEach(() => {
