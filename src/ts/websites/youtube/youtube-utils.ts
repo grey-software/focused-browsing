@@ -1,126 +1,107 @@
 function getFeed(): Element | null {
-  let mainPage = document.querySelector('ytd-two-column-browse-results-renderer')
-  if (mainPage) {
-    return mainPage.children[0]
-  }
+  // Primary selector from skeleton
+  const primary = document.querySelector('ytd-two-column-browse-results-renderer #primary');
+  if (primary) return primary;
 
-  return null
+  // Fallback for variations (e.g., rich grid)
+  return document.querySelector('ytd-browse #primary') || document.querySelector('#contents.ytd-rich-grid-renderer');
 }
 
 function getSuggestions(): Element | null {
-  let suggestionsParent = document.querySelector('ytd-watch-next-secondary-results-renderer')
-  if (suggestionsParent) {
-    return suggestionsParent.children[1]
-  }
-  return null
+  // Primary from skeleton
+  let suggestions = document.querySelector('ytd-watch-flexy #secondary');
+  if (suggestions) return suggestions.querySelector('#secondary-inner') || suggestions;
+
+  // Legacy fallback (original)
+  const legacy = document.querySelector('ytd-watch-next-secondary-results-renderer');
+  return legacy ? (legacy.children[1] as Element) || legacy : null;
 }
 
 function getVideoComments(): Element | null {
-  let commentParent = document.querySelector('ytd-comments')
-  if (commentParent) {
-    return commentParent
-  }
-  return null
+  // Primary from skeleton
+  let comments = document.querySelector('ytd-watch-flexy #primary-inner ytd-comments');
+  if (comments) return comments;
+
+  // Standard fallback
+  return document.querySelector('ytd-comments') || document.querySelector('#comments');
 }
 
 function hasFeedLoaded(): boolean {
   try {
-    let youtubeFeed = getFeed()
-    if (youtubeFeed) {
-      return youtubeFeed.children.length != 0
-    }
+    const feed = getFeed();
+    return !!(feed && feed.children.length > 0 && feed.children.length < 50);  // Arbitrary cap to detect "infinite" vs. loaded
   } catch (err) {
-    return false
+    console.warn('Feed load check error:', err);
+    return false;
   }
-  return false
 }
 
 function isFeedHidden(): boolean {
-  let feed = getFeed() as HTMLElement
-  if (feed) {
-    return feed.style.display === 'none' || feed.children.length === 0
-  }
-  return false
+  const feed = getFeed() as HTMLElement | null;
+  return !!(feed && (feed.style.display === 'none' || feed.children.length === 0));
 }
 
 function haveSuggestionsLoaded(): boolean {
   try {
-    let suggestions = getSuggestions()
-    if (suggestions) {
-      return suggestions.children.length != 0
-    }
-    return false
+    const suggestions = getSuggestions();
+    return !!(suggestions && suggestions.children.length > 1);  // >1 to ignore headers/spacers
   } catch (err) {
-    return false
+    console.warn('Suggestions load check error:', err);
+    return false;
   }
 }
 
 function areSuggestionsHidden(): boolean {
-  let suggestions = getSuggestions()
-  if (suggestions) {
-    return suggestions.children.length == 1
-  }
-  return false
+  const suggestions = getSuggestions() as HTMLElement | null;
+  return !!(suggestions && (suggestions.style.display === 'none' || suggestions.children.length <= 1));
 }
 
 function haveCommentsLoaded(): boolean {
   try {
-    let youtubeComments = getVideoComments()
-    if (youtubeComments) {
-      return youtubeComments.children.length != 0
-    }
+    const comments = getVideoComments();
+    return !!(comments && comments.children.length > 0);
   } catch (err) {
-    return false
+    console.warn('Comments load check error:', err);
+    return false;
   }
-
-  return false
 }
 
 function areCommentsHidden(): boolean {
-  let comments = getVideoComments()
-  if (comments) {
-    return comments.children.length == 0
-  }
-  return false
+  const comments = getVideoComments() as HTMLElement | null;
+  return !!(comments && (comments.style.display === 'none' || comments.children.length === 0));
 }
 
 function isHomePage(url: string): boolean {
-  return url == 'https://www.youtube.com/'
+  return url === 'https://www.youtube.com/' || url.startsWith('https://www.youtube.com/?');  // Handles query params
 }
 
 function isVideoPage(url: string): boolean {
-  if (url.includes('https://www.youtube.com/')) {
-    return url.includes('/watch')
-  }
-  return false
+  return url.startsWith('https://www.youtube.com/watch') || url.includes('/watch?v=');
 }
 
 function isDarkTheme(): boolean {
-  return document.documentElement.hasAttribute('dark');
+  return document.documentElement.hasAttribute('dark');  // Or check :root[dark]
 }
 
 function getPanels(): Element | null {
-  return document.getElementById('panels');
+  // Miniplayer as elegant "panel" equivalent (floating distraction)
+  return document.querySelector('ytd-miniplayer.ytdMiniplayerComponentHost') || 
+         document.querySelector('ytd-app ytd-miniplayer');
 }
 
 function havePanelsLoaded(): boolean {
   try {
-    let panels = getPanels();
-    if (panels) {
-      return panels.children.length != 0;
-    }
+    const panels = getPanels();
+    return !!(panels && panels.children.length > 0);  // Miniplayer has content like info-bar
   } catch (err) {
+    console.warn('Panels (miniplayer) load check error:', err);
     return false;
   }
-  return false;
 }
 
 function arePanelsHidden(): boolean {
-  let panels = getPanels() as HTMLElement;
-  if (panels) {
-    return panels.style.display === 'none' || panels.children.length === 0;
-  }
-  return false;
+  const panels = getPanels() as HTMLElement | null;
+  return !!(panels && (panels.style.display === 'none' || panels.children.length === 0));
 }
 
 export default {

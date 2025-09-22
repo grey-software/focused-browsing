@@ -6,30 +6,21 @@ import quoteUtils from '../../quotes';
 
 export default class YouTubeController extends WebsiteController {
   
-  YouTubeFeedChildNode: string | Node
-  feedIntervalId: number
-  suggestionsIntervalId: number
-  suggestionElements: Node[]
-  commentElements: Node[]
-  panelElements: Node[]
-  commentIntervalId: number
-  quoteElement: HTMLDivElement | null
-  isFeedBlocked: boolean
-  hiddenFeedElements: HTMLElement[] = []
+  YouTubeFeedChildNode: string | Node = '';
+  suggestionElements: Node[] = [];
+  commentElements: Node[] = [];
+  panelElements: Node[] = [];  // Now for miniplayer/panels
+  hiddenFeedElements: HTMLElement[] = [];
+  commentIntervalId: number = 0;  // Legacy, can remove if not used elsewhere
+  quoteElement: HTMLDivElement | null = null;
+  isFeedBlocked: boolean = false;
+
+  // Observers array for cleanup
+  private observers: MutationObserver[] = [];
+  private debounceTimers: NodeJS.Timeout[] = [];
 
   constructor() {
     super()
-    this.suggestionElements = []
-    this.commentElements = []
-    this.panelElements = []
-    this.YouTubeFeedChildNode = ''
-
-    this.feedIntervalId = 0
-    this.suggestionsIntervalId = 0
-    this.commentIntervalId = 0
-    this.quoteElement = null
-    this.isFeedBlocked = false
-
     this.addStorageListener();
   }
 
@@ -66,57 +57,129 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
+  // Elegant Observer Creation (Core Strategy)
+  private createObserver(
+    targetSelector: string,
+    pageCheck: (url: string) => boolean,
+    loadCheck: () => boolean,
+    hiddenCheck: () => boolean,
+    blockAction: () => void,
+    config: MutationObserverInit = { childList: true, subtree: true }
+  ) {
+    if (!pageCheck(document.URL)) return;  // Skip if wrong page
+
+    const target = document.querySelector(targetSelector) || document.body;
+    const observer = new MutationObserver((mutations) => {
+      // Debounce: Ignore if recent mutation (e.g., 100ms)
+      if (this.debounceTimers[0]) clearTimeout(this.debounceTimers[0]);
+      this.debounceTimers[0] = setTimeout(() => {
+        if (loadCheck() && !hiddenCheck()) {
+          blockAction();
+        }
+      }, 100);
+    });
+
+    observer.observe(target, config);
+    this.observers.push(observer);
+
+    // Initial scan (elegant one-off check)
+    setTimeout(() => {
+      if (loadCheck() && !hiddenCheck()) blockAction();
+    }, 500);  // Delay for initial load
+  }
+
   focus() {
     console.log('YouTubeController: Entering focus mode.');
-    utils.clearElements(this.suggestionElements)
-    utils.clearElements(this.commentElements)
-    utils.clearElements(this.panelElements)
-    this.focusFeed()
-    this.focusSuggestions()
-    this.focusComments()
-    this.focusPanels()
+    utils.clearElements(this.suggestionElements);
+    utils.clearElements(this.commentElements);
+    utils.clearElements(this.panelElements);
+    this.focusFeed();
+    this.focusSuggestions();
+    this.focusComments();
+    this.focusPanels();
   }
 
   unfocus() {
     console.log('YouTubeController: Exiting focus mode.');
-    let url = document.URL
+    const url = document.URL;
     if (YouTubeUtils.isHomePage(url)) {
-      this.clearIntervals()
-      this.setFeedVisibility(true)
-      this.isFeedBlocked = false
+      this.clearObservers();
+      this.setFeedVisibility(true);
+      this.isFeedBlocked = false;
     } else if (YouTubeUtils.isVideoPage(url)) {
-      this.clearIntervals()
-      this.setSuggestionsVisibility(true)
-      this.setCommentsVisbility(true)
+      this.clearObservers();
+      this.setSuggestionsVisibility(true);
+      this.setCommentsVisibility(true);
+      this.setPanelsVisibility(true);
     }
   }
 
   clearIntervals() {
-    this.clearAllIntervals()
+    this.clearObservers();
   }
 
-  focusSuggestions() {
-    this.createInterval('suggestions', () => this.tryBlockingSuggestions())
+  clearObservers() {
+    this.observers.forEach(obs => obs.disconnect());
+    this.observers = [];
+    this.debounceTimers.forEach(timer => clearTimeout(timer));
+    this.debounceTimers = [];
   }
 
+  // Feed Focus (Homepage: Observer on browse renderer for load changes)
   focusFeed() {
-    this.createInterval('feed', () => this.tryBlockingFeed())
+    this.createObserver(
+      'ytd-two-column-browse-results-renderer, ytd-browse',  // From home skeleton
+      YouTubeUtils.isHomePage,
+      YouTubeUtils.hasFeedLoaded,
+      YouTubeUtils.isFeedHidden,
+      () => this.setFeedVisibility(false)
+    );
   }
 
+  // Suggestions Focus (Watch: Observer on watch-flexy for sidebar additions)
+  focusSuggestions() {
+    this.createObserver(
+      'ytd-watch-flexy, ytd-app',  // From watch skeleton
+      YouTubeUtils.isVideoPage,
+      YouTubeUtils.haveSuggestionsLoaded,
+      YouTubeUtils.areSuggestionsHidden,
+      () => this.setSuggestionsVisibility(false)
+    );
+  }
+
+  // Comments Focus (Watch: Observer on primary for comment section loads)
   focusComments() {
-    this.createInterval('comments', () => this.tryBlockingComments())
+    this.createObserver(
+      'ytd-watch-flexy #primary, #primary',  // From watch skeleton
+      YouTubeUtils.isVideoPage,
+      YouTubeUtils.haveCommentsLoaded,
+      YouTubeUtils.areCommentsHidden,
+      () => this.setCommentsVisibility(false)
+    );
   }
 
+  // Panels Focus (Watch: Observer on app for miniplayer insertions)
   focusPanels() {
-    this.createInterval('panels', () => this.tryBlockingPanels())
+    this.createObserver(
+      'ytd-app, body',  // Miniplayer floats under app
+      YouTubeUtils.isVideoPage,
+      YouTubeUtils.havePanelsLoaded,
+      YouTubeUtils.arePanelsHidden,
+      () => this.setPanelsVisibility(false)
+    );
   }
 
+  // Existing Block/Restore Methods (Kept, with Minor Elegance: Better Error Handling)
   hideFeed(feedParentNode: HTMLElement) {
+    if (this.isFeedBlocked) return;
     this.isFeedBlocked = true;
     Array.from(feedParentNode.children).forEach((child) => {
       const htmlChild = child as HTMLElement;
-      this.hiddenFeedElements.push(htmlChild);
-      htmlChild.style.display = 'none';
+      // Only hide if it's a content child (skip loaders/spacers)
+      if (htmlChild.children.length > 0 || htmlChild.textContent?.trim()) {
+        this.hiddenFeedElements.push(htmlChild);
+        htmlChild.style.display = 'none';  // Style hide as backup to removal
+      }
     });
   }
 
@@ -124,9 +187,10 @@ export default class YouTubeController extends WebsiteController {
     this.quoteElement?.remove();
     this.quoteElement = null;
     this.hiddenFeedElements.forEach((child) => {
-      child.style.display = '';
+      child.style.display = '';  // Restore style
     });
     this.hiddenFeedElements = [];
+    this.isFeedBlocked = false;
   }
 
   async injectQuote(feedParentNode: HTMLElement) {
@@ -136,27 +200,27 @@ export default class YouTubeController extends WebsiteController {
     if (!this.quoteElement) {
       this.quoteElement = await quoteUtils.createSimpleQuoteElement();
       
-      // Get YouTube's background color for proper theming
       const isDark = YouTubeUtils.isDarkTheme();
       const backgroundColor = isDark ? '#0f0f0f' : '#f9f9f9';
       
       this.quoteElement.style.background = backgroundColor;
       this.quoteElement.style.marginTop = '24px';
+      this.quoteElement.style.padding = '16px';  // Elegant: Add padding for readability
+      this.quoteElement.style.borderRadius = '8px';  // Subtle integration
 
       const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
       const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
 
       if (quoteText && quoteSource) {
-        if (isDark) {
-          quoteText.style.color = '#fff';
-          quoteSource.style.color = '#ccc';
-        } else {
-          quoteText.style.color = '#000';
-          quoteSource.style.color = '#666';
-        }
+        const textColor = isDark ? '#fff' : '#000';
+        const sourceColor = isDark ? '#ccc' : '#666';
+        quoteText.style.color = textColor;
+        quoteSource.style.color = sourceColor;
+        quoteText.style.marginBottom = '4px';  // Elegant spacing
       }
 
-      feedParentNode.append(this.quoteElement!);
+      // Append to end for natural flow
+      feedParentNode.appendChild(this.quoteElement);
     }
   }
 
@@ -172,107 +236,56 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  setSuggestionsVisibility(visibile: boolean) {
-    let suggestions = YouTubeUtils.getSuggestions()
-    if (suggestions) {
-      if (!visibile) {
-        let length = suggestions.children.length
-        let currentSuggestionElements = []
-        while (length != 0) {
-          var currentLastChild = suggestions.children[length - 1]
-          currentSuggestionElements.push(currentLastChild)
-          suggestions.removeChild(currentLastChild)
-          length -= 1
+  // Generic Visibility Setters (Your Logic, with Fallback for Null)
+  private setElementVisibility(
+    element: Element | null,
+    visible: boolean,
+    elementsArray: Node[],
+    arrayName: keyof Pick<YouTubeController, 'suggestionElements' | 'commentElements' | 'panelElements'>
+  ) {
+    if (!element) return;  // Elegant: Skip if not found
+
+    if (!visible) {
+      // Remove children in reverse for clean extraction
+      const children = Array.from(element.children).reverse();
+      children.forEach(child => {
+        if (element.contains(child)) {
+          element.removeChild(child);
         }
-        this.suggestionElements = currentSuggestionElements
-      } else {
-        for (let i = this.suggestionElements.length - 1; i >= 0; i -= 1) {
-          suggestions.append(this.suggestionElements[i])
-        }
-        utils.clearElements(this.suggestionElements)
-      }
+      });
+      this[arrayName] = children;  // Store for restore
+    } else {
+      // Restore in original order (reverse the stored array back)
+      const restoredChildren = this[arrayName].slice().reverse();
+      restoredChildren.forEach(child => element.appendChild(child));
+      (this[arrayName] as Node[]) = [];  // Clear
     }
   }
 
-  setCommentsVisbility(visibile: boolean) {
-    let comments = YouTubeUtils.getVideoComments()
-    if (comments) {
-      if (!visibile) {
-        let length = comments.children.length
-        let currentCommentElements = []
-        while (length != 0) {
-          var currentLastChild = comments.children[length - 1]
-          currentCommentElements.push(currentLastChild)
-          comments.removeChild(currentLastChild)
-          length -= 1
-        }
-        this.commentElements = currentCommentElements
-      } else {
-        for (let i = this.commentElements.length - 1; i >= 0; i -= 1) {
-          comments.append(this.commentElements[i])
-        }
-        utils.clearElements(this.commentElements)
-      }
-    }
+  setSuggestionsVisibility(visible: boolean) {
+    this.setElementVisibility(
+      YouTubeUtils.getSuggestions(),
+      visible,
+      this.suggestionElements,
+      'suggestionElements'
+    );
+  }
+
+  setCommentsVisibility(visible: boolean) {
+    this.setElementVisibility(
+      YouTubeUtils.getVideoComments(),
+      visible,
+      this.commentElements,
+      'commentElements'
+    );
   }
 
   setPanelsVisibility(visible: boolean) {
-    let panels = YouTubeUtils.getPanels()
-    if (panels) {
-      if (!visible) {
-        let length = panels.children.length
-        let currentPanelElements = []
-        while (length != 0) {
-          var currentLastChild = panels.children[length - 1]
-          currentPanelElements.push(currentLastChild)
-          panels.removeChild(currentLastChild)
-          length -= 1
-        }
-        this.panelElements = currentPanelElements
-      } else {
-        for (let i = this.panelElements.length - 1; i >= 0; i -= 1) {
-          panels.append(this.panelElements[i])
-        }
-        utils.clearElements(this.panelElements)
-      }
-    }
-  }
-
-  async tryBlockingFeed() {
-    if (this.isFeedBlocked) return
-    
-    this.tryBlocking(
-      YouTubeUtils.isHomePage,
-      YouTubeUtils.isFeedHidden,
-      YouTubeUtils.hasFeedLoaded,
-      () => this.setFeedVisibility(false)
-    )
-  }
-
-  tryBlockingSuggestions() {
-    this.tryBlocking(
-      YouTubeUtils.isVideoPage,
-      YouTubeUtils.areSuggestionsHidden,
-      YouTubeUtils.haveSuggestionsLoaded,
-      () => this.setSuggestionsVisibility(false)
-    )
-  }
-
-  tryBlockingComments() {
-    this.tryBlocking(
-      YouTubeUtils.isVideoPage,
-      YouTubeUtils.areCommentsHidden,
-      YouTubeUtils.haveCommentsLoaded,
-      () => this.setCommentsVisbility(false)
-    )
-  }
-
-  tryBlockingPanels() {
-    this.tryBlocking(
-      YouTubeUtils.isVideoPage,
-      YouTubeUtils.arePanelsHidden,
-      YouTubeUtils.havePanelsLoaded,
-      () => this.setPanelsVisibility(false)
-    )
+    this.setElementVisibility(
+      YouTubeUtils.getPanels(),  // Miniplayer or legacy
+      visible,
+      this.panelElements,
+      'panelElements'
+    );
   }
 }
