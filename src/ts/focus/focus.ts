@@ -10,7 +10,7 @@ import { FocusMode, Website } from './types'
 let currentWebsite: Website = Website.Unsupported
 let stateManager: AppStateManager
 let keyPressManager: KeyPressManager
-let websiteController: WebsiteController
+let websiteController: WebsiteController | null = null
 
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
@@ -61,7 +61,7 @@ export async function toggleFocusMode() {
 
 export function render() {
   console.log('Rendering focus mode...');
-  if (currentWebsite != Website.Unsupported) {
+  if (currentWebsite != Website.Unsupported && websiteController) {
     let mode = stateManager.getFocusMode(currentWebsite)
     websiteController.renderFocusMode(mode)
   }
@@ -98,12 +98,18 @@ export async function initialize() {
     }
   }
 
-  if (currentWebsite !== Website.Unsupported) {
+  // Always initialize state managers, even for disabled/unsupported sites
+  // so that the storage listener can work properly when toggling sites on/off
+  if (!stateManager) {
     const appState = await FocusUtils.getFromLocalStorage('appState');
     stateManager = new AppStateManager(appState);
     keyPressManager = new KeyPressManager();
+  }
+
+  if (currentWebsite !== Website.Unsupported) {
+    console.log('Website controller initialized and ready');
   } else {
-    console.log('Unsupported website.');
+    console.log('Unsupported or disabled website - listening for toggle changes');
   }
 
   // Always listen for website toggle changes, regardless of current state
@@ -119,9 +125,9 @@ export async function initialize() {
       
       // Handle LinkedIn focus state change
       if (isLinkedin) {
-        if (!websiteController && (newToggles.linkedin !== undefined)) {
-          // Initialize controller if it doesn't exist and we have a toggle state
-          console.log('LinkedIn - initializing controller');
+        // Check if we need to initialize from a disabled state
+        if (!websiteController && newToggles.linkedin) {
+          console.log('LinkedIn - initializing controller from disabled state');
           websiteController = new LinkedInController();
           currentWebsite = Website.LinkedIn;
           
@@ -142,13 +148,21 @@ export async function initialize() {
           console.log(`LinkedIn toggle ${newToggles.linkedin ? 'ON' : 'OFF'} - applying ${FocusMode[newMode]} mode`);
           websiteController.renderFocusMode(newMode);
         }
+        
+        // If toggling off, clean up the controller
+        if (websiteController && currentWebsite === Website.LinkedIn && !newToggles.linkedin) {
+          console.log('LinkedIn - cleaning up controller (disabled)');
+          websiteController.unfocus(); // Ensure content is visible
+          websiteController = null;
+          currentWebsite = Website.Unsupported;
+        }
       }
       
       // Handle YouTube focus state change  
       if (isYoutube) {
-        if (!websiteController && (newToggles.youtube !== undefined)) {
-          // Initialize controller if it doesn't exist and we have a toggle state
-          console.log('YouTube - initializing controller');
+        // Check if we need to initialize from a disabled state
+        if (!websiteController && newToggles.youtube) {
+          console.log('YouTube - initializing controller from disabled state');
           websiteController = new YoutubeController();
           currentWebsite = Website.Youtube;
           
@@ -168,6 +182,14 @@ export async function initialize() {
           // Apply focus/unfocus based on the new mode
           console.log(`YouTube toggle ${newToggles.youtube ? 'ON' : 'OFF'} - applying ${FocusMode[newMode]} mode`);
           websiteController.renderFocusMode(newMode);
+        }
+        
+        // If toggling off, clean up the controller
+        if (websiteController && currentWebsite === Website.Youtube && !newToggles.youtube) {
+          console.log('YouTube - cleaning up controller (disabled)');
+          websiteController.unfocus(); // Ensure content is visible
+          websiteController = null;
+          currentWebsite = Website.Unsupported;
         }
       }
     }

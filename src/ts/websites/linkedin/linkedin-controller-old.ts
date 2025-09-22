@@ -44,26 +44,6 @@ export default class LinkedInController extends WebsiteController {
     });
   }
 
-  handleShowQuoteChange(showQuote: boolean) {
-    if (showQuote) {
-      if (this.isFeedBlocked && !this.quoteElement) {
-        const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
-        if (feedParentNode) {
-          this.injectQuote(feedParentNode);
-        }
-      }
-    } else {
-      this.quoteElement?.remove();
-      this.quoteElement = null;
-    }
-  }
-
-  handleTextSizeChange(textSize: string) {
-    if (this.quoteElement) {
-      quoteUtils.updateQuoteTextSize(this.quoteElement, textSize);
-    }
-  }
-
   // Observer management methods
   private createObserver(name: string, callback: () => void, debounceMs: number = 50): MutationObserver {
     this.destroyObserver(name);
@@ -131,6 +111,26 @@ export default class LinkedInController extends WebsiteController {
     } else if (this.currentFocusMode === 'unfocused') {
       // Ensure content is visible in unfocus mode
       this.applyUnfocusMode();
+    }
+  }
+
+  handleShowQuoteChange(showQuote: boolean) {
+    if (showQuote) {
+      if (this.isFeedBlocked && !this.quoteElement) {
+        const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
+        if (feedParentNode) {
+          this.injectQuote(feedParentNode);
+        }
+      }
+    } else {
+      this.quoteElement?.remove();
+      this.quoteElement = null;
+    }
+  }
+
+  handleTextSizeChange(textSize: string) {
+    if (this.quoteElement) {
+      quoteUtils.updateQuoteTextSize(this.quoteElement, textSize);
     }
   }
 
@@ -231,11 +231,11 @@ export default class LinkedInController extends WebsiteController {
     this.clearAllIntervals();
   }
 
-  setAdVisibility(visible: boolean) {
+  async injectQuote(feedParentNode: HTMLElement) {
     const adParentNode = LinkedInUtils.getAdHeader();
-    if (!adParentNode || !adParentNode.children.length) return;
+    if (!adParentNode || !visibile || !adParentNode.children.length) return;
 
-    if (!visible) {
+    if (!visibile) {
       this.adChildNode = adParentNode.children[0];
       if (this.adChildNode) {
         adParentNode.removeChild(this.adChildNode);
@@ -264,22 +264,12 @@ export default class LinkedInController extends WebsiteController {
   }
 
   async injectQuote(feedParentNode: HTMLElement) {
-    if (this.isCreatingQuote) return;
-    
     const settings = await browser.storage.local.get('showQuote');
     if (settings.showQuote === false) return;
 
     if (!this.quoteElement) {
-      this.isCreatingQuote = true;
-      try {
-        this.quoteElement = await quoteUtils.createSimpleQuoteElement();
-        feedParentNode.append(this.quoteElement!);
-        console.log('LinkedIn: Quote injected successfully');
-      } catch (error) {
-        console.error('LinkedIn: Failed to inject quote:', error);
-      } finally {
-        this.isCreatingQuote = false;
-      }
+      this.quoteElement = await quoteUtils.createSimpleQuoteElement();
+      feedParentNode.append(this.quoteElement!);
     }
   }
 
@@ -290,7 +280,8 @@ export default class LinkedInController extends WebsiteController {
     if (!visible) {
       this.hideFeed(feedParentNode);
       await this.injectQuote(feedParentNode);
-    } else {
+    }
+    else {
       this.showFeed();
     }
   }
@@ -304,5 +295,40 @@ export default class LinkedInController extends WebsiteController {
     } else {
       panel.style.display = '';
     }
+  }
+
+  tryBlockingAd() {
+    this.tryBlocking(
+      LinkedInUtils.isHomePage,
+      LinkedInUtils.isAdHidden,
+      LinkedInUtils.hasAdLoaded,
+      () => this.setAdVisibility(false)
+    )
+  }
+
+  async tryBlockingFeed() {
+    if (this.isFeedBlocked) return
+    
+    this.tryBlocking(
+      LinkedInUtils.isHomePage,
+      LinkedInUtils.isFeedHidden,
+      LinkedInUtils.hasFeedLoaded,
+      () => this.setFeedVisibility(false)
+    )
+  }
+
+  tryBlockingPanel() {
+    this.tryBlocking(
+      LinkedInUtils.isHomePage,
+      LinkedInUtils.isPanelHidden,
+      LinkedInUtils.hasPanelLoaded,
+      () => this.setPanelVisibility(false)
+    )
+  }
+
+  hideFeedAds() {
+    LinkedInUtils.getFeedAdElements().forEach((ad: HTMLElement) => {
+      ad.style.display = 'none'
+    })
   }
 }
