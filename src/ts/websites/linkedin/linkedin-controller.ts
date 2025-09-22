@@ -85,46 +85,23 @@ export default class LinkedInController extends WebsiteController {
   }
 
   clearIntervals() {
-    window.clearInterval(this.feedIntervalId)
-    window.clearInterval(this.panelIntervalId)
-    window.clearInterval(this.adIntervalId)
-    window.clearInterval(this.feedAdsIntervalId)
+    this.clearAllIntervals()
   }
 
   focusFeed() {
-    if (this.feedIntervalId) {
-      clearInterval(this.feedIntervalId)
-    }
-    this.feedIntervalId = window.setInterval(() => {
-      this.tryBlockingFeed()
-    }, 250)
+    this.createInterval('feed', () => this.tryBlockingFeed())
   }
 
   focusPanel() {
-    if (this.panelIntervalId) {
-      clearInterval(this.panelIntervalId)
-    }
-    this.panelIntervalId = window.setInterval(() => {
-      this.tryBlockingPanel()
-    }, 250)
+    this.createInterval('panel', () => this.tryBlockingPanel())
   }
 
   focusAd() {
-    if (this.adIntervalId) {
-      clearInterval(this.adIntervalId)
-    }
-    this.adIntervalId = window.setInterval(() => {
-      this.tryBlockingAd()
-    }, 250)
+    this.createInterval('ad', () => this.tryBlockingAd())
   }
 
   focusFeedAds() {
-    if (this.feedAdsIntervalId) {
-      window.clearInterval(this.feedAdsIntervalId)
-    }
-    this.feedAdsIntervalId = window.setInterval(() => {
-      this.hideFeedAds()
-    }, 250)
+    this.createInterval('feedAds', () => this.hideFeedAds())
   }
 
   setAdVisibility(visibile: boolean) {
@@ -194,49 +171,32 @@ export default class LinkedInController extends WebsiteController {
   }
 
   tryBlockingAd() {
-    let url = document.URL
-    if (!LinkedInUtils.isHomePage(url)) {
-      return
-    }
-    if (LinkedInUtils.isAdHidden()) {
-      return
-    }
-    if (LinkedInUtils.hasAdLoaded()) {
-      this.setAdVisibility(false)
-      return
-    }
+    this.tryBlocking(
+      LinkedInUtils.isHomePage,
+      LinkedInUtils.isAdHidden,
+      LinkedInUtils.hasAdLoaded,
+      () => this.setAdVisibility(false)
+    )
   }
 
   async tryBlockingFeed() {
-    if (this.isFeedBlocked) {
-      return
-    }
-    let url = document.URL
-    if (!LinkedInUtils.isHomePage(url)) {
-      return
-    }
-    if (LinkedInUtils.isFeedHidden()) {
-      return
-    }
-    if (LinkedInUtils.hasFeedLoaded()) {
-      await this.setFeedVisibility(false)
-      return
-    }
+    if (this.isFeedBlocked) return
+    
+    this.tryBlocking(
+      LinkedInUtils.isHomePage,
+      LinkedInUtils.isFeedHidden,
+      LinkedInUtils.hasFeedLoaded,
+      () => this.setFeedVisibility(false)
+    )
   }
 
   tryBlockingPanel() {
-    let url = document.URL
-    if (!LinkedInUtils.isHomePage(url)) {
-      return
-    }
-
-    if (LinkedInUtils.isPanelHidden()) {
-      return
-    }
-    if (LinkedInUtils.hasPanelLoaded()) {
-      this.setPanelVisibility(false)
-      return
-    }
+    this.tryBlocking(
+      LinkedInUtils.isHomePage,
+      LinkedInUtils.isPanelHidden,
+      LinkedInUtils.hasPanelLoaded,
+      () => this.setPanelVisibility(false)
+    )
   }
 
   hideFeedAds() {

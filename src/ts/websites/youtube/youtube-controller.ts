@@ -135,37 +135,19 @@ export default class YouTubeController extends WebsiteController {
   }
 
   clearIntervals() {
-    window.clearInterval(this.suggestionsIntervalId)
-    window.clearInterval(this.commentIntervalId)
-    window.clearInterval(this.feedIntervalId)
+    this.clearAllIntervals()
   }
 
   focusSuggestions() {
-    if (this.suggestionsIntervalId) {
-      window.clearInterval(this.suggestionsIntervalId)
-    }
-    this.suggestionsIntervalId = window.setInterval(() => {
-      this.tryBlockingSuggestions()
-    }, 250)
+    this.createInterval('suggestions', () => this.tryBlockingSuggestions())
   }
 
   focusFeed() {
-    if (this.feedIntervalId) {
-      window.clearInterval(this.feedIntervalId)
-    }
-
-    this.feedIntervalId = window.setInterval(() => {
-      this.tryBlockingFeed()
-    }, 250)
+    this.createInterval('feed', () => this.tryBlockingFeed())
   }
 
   focusComments() {
-    if (this.commentIntervalId) {
-      window.clearInterval(this.commentIntervalId)
-    }
-    this.commentIntervalId = window.setInterval(() => {
-      this.tryBlockingComments()
-    }, 250)
+    this.createInterval('comments', () => this.tryBlockingComments())
   }
 
   hideFeed(feedParentNode: HTMLElement) {
@@ -269,51 +251,31 @@ export default class YouTubeController extends WebsiteController {
   }
 
   async tryBlockingFeed() {
-    if (this.isFeedBlocked) {
-      return
-    }
-    let url = document.URL
-    if (!YouTubeUtils.isHomePage(url)) {
-      return
-    }
-
-    if (YouTubeUtils.isFeedHidden()) {
-      return
-    }
-    if (YouTubeUtils.hasFeedLoaded()) {
-      await this.setFeedVisibility(false)
-      return
-    }
+    if (this.isFeedBlocked) return
+    
+    this.tryBlocking(
+      YouTubeUtils.isHomePage,
+      YouTubeUtils.isFeedHidden,
+      YouTubeUtils.hasFeedLoaded,
+      () => this.setFeedVisibility(false)
+    )
   }
 
   tryBlockingSuggestions() {
-    let url = document.URL
-    if (!YouTubeUtils.isVideoPage(url)) {
-      return
-    }
-    if (YouTubeUtils.areSuggestionsHidden()) {
-      return
-    }
-
-    if (YouTubeUtils.haveSuggestionsLoaded()) {
-      this.setSuggestionsVisibility(false)
-      return
-    }
+    this.tryBlocking(
+      YouTubeUtils.isVideoPage,
+      YouTubeUtils.areSuggestionsHidden,
+      YouTubeUtils.haveSuggestionsLoaded,
+      () => this.setSuggestionsVisibility(false)
+    )
   }
 
   tryBlockingComments() {
-    let url = document.URL
-    if (!YouTubeUtils.isVideoPage(url)) {
-      return
-    }
-
-    if (YouTubeUtils.areCommentsHidden()) {
-      return
-    }
-
-    if (YouTubeUtils.haveCommentsLoaded()) {
-      this.setCommentsVisbility(false)
-      return
-    }
+    this.tryBlocking(
+      YouTubeUtils.isVideoPage,
+      YouTubeUtils.areCommentsHidden,
+      YouTubeUtils.haveCommentsLoaded,
+      () => this.setCommentsVisbility(false)
+    )
   }
 }
