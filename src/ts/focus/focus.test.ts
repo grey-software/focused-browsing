@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
-import { initialize, toggleFocusMode, render } from './focus';
+import { initialize, toggleFocusMode, render, resetGlobalState } from './focus';
 import AppStateManager from './app-state-manager';
 import KeyPressManager from './keypress-manager';
 import LinkedInController from '../websites/linkedin/linkedin-controller';
@@ -14,6 +14,7 @@ jest.mock('./focus-utils');
 describe('focus.ts', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    resetGlobalState(); // Reset global state between tests
     document.body.innerHTML = '';
     
     // Mock FocusUtils - return null so default values are used

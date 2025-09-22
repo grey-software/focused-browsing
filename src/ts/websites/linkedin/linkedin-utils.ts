@@ -31,25 +31,42 @@ const FEED_AD_SELECTORS = [
 function getLinkedInFeed(): Element | null {
   for (const selector of FEED_SELECTORS) {
     const element = document.querySelector(selector);
-    if (element) return element;
+    if (element) {
+      console.log(`LinkedIn feed found with selector: ${selector}`);
+      return element;
+    }
   }
+  console.log('LinkedIn feed not found with any selector');
   return null;
 }
 
 function getLinkedInPanel(): Element | null {
   for (const selector of PANEL_SELECTORS) {
     const element = document.querySelector(selector);
-    if (element) return element;
+    if (element) {
+      console.log(`LinkedIn panel found with selector: ${selector}`);
+      return element;
+    }
   }
+  console.log('LinkedIn panel not found with any selector');
   return null;
 }
 
 function getAdHeader(): Element | null {
   for (const selector of AD_SELECTORS) {
     const element = document.querySelector(selector);
-    if (element) return element;
+    if (element) {
+      console.log(`LinkedIn ad found with selector: ${selector}`);
+      return element;
+    }
   }
-  return document.getElementsByClassName(AD_CLASS)[0] || null;
+  const fallback = document.getElementsByClassName(AD_CLASS)[0] || null;
+  if (fallback) {
+    console.log(`LinkedIn ad found with fallback class: ${AD_CLASS}`);
+  } else {
+    console.log('LinkedIn ad not found with any selector');
+  }
+  return fallback;
 }
 
 function hasFeedLoaded(): boolean {
@@ -89,7 +106,18 @@ function isAdHidden(): boolean {
 
 function isHomePage(url: string): boolean {
   if (url.includes('linkedin.com')) {
-    return url.includes('/feed') || url == 'https://www.linkedin.com/' || url == 'https://www.linkedin.com/home'
+    // More permissive LinkedIn homepage detection
+    const isHome = url.includes('/feed') || 
+                   url === 'https://www.linkedin.com/' || 
+                   url === 'https://www.linkedin.com/home' ||
+                   url === 'https://linkedin.com/' ||
+                   url === 'https://linkedin.com/home' ||
+                   url.match(/https:\/\/(www\.)?linkedin\.com\/?$/) ||
+                   url.match(/https:\/\/(www\.)?linkedin\.com\/feed/) ||
+                   url.match(/https:\/\/(www\.)?linkedin\.com\/home/);
+    
+    console.log(`LinkedIn isHomePage: URL="${url}" -> ${isHome}`);
+    return !!isHome;
   }
   return false
 }
@@ -133,20 +161,33 @@ function getAllObservableContainers(): Element[] {
   
   // Add feed container
   const feed = getLinkedInFeed();
-  if (feed) containers.push(feed);
+  if (feed) {
+    containers.push(feed);
+    console.log('LinkedIn: Added feed container for observation');
+  }
   
   // Add panel container
   const panel = getLinkedInPanel(); 
-  if (panel) containers.push(panel);
+  if (panel) {
+    containers.push(panel);
+    console.log('LinkedIn: Added panel container for observation');
+  }
   
   // Add ad containers
   const adHeader = getAdHeader();
-  if (adHeader) containers.push(adHeader);
+  if (adHeader) {
+    containers.push(adHeader);
+    console.log('LinkedIn: Added ad container for observation');
+  }
   
   // Add main scaffold container for broader monitoring
   const scaffold = document.querySelector('.scaffold-layout');
-  if (scaffold) containers.push(scaffold);
+  if (scaffold) {
+    containers.push(scaffold);
+    console.log('LinkedIn: Added scaffold container for observation');
+  }
   
+  console.log(`LinkedIn: Total observable containers found: ${containers.length}`);
   return containers;
 }
 

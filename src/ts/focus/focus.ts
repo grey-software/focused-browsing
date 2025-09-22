@@ -12,6 +12,14 @@ let stateManager: AppStateManager
 let keyPressManager: KeyPressManager
 let websiteController: WebsiteController | null = null
 
+// Export function for testing to reset global state
+export function resetGlobalState() {
+  currentWebsite = Website.Unsupported;
+  stateManager = undefined as any;
+  keyPressManager = undefined as any;
+  websiteController = null;
+}
+
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
 
@@ -70,10 +78,47 @@ export function render() {
 export async function initialize() {
   console.log('Initializing focus script...');
   
+  let reloadedWebsite: Website | null = null;
+  
+  // Check if we're loading after a disabled-to-enabled reload
+  const pendingReload = await FocusUtils.getFromLocalStorage('pendingReload');
+  if (pendingReload && (Date.now() - pendingReload.timestamp) < 10000) { // Within 10 seconds
+    console.log(`Detected reload after enabling ${pendingReload.website} from disabled state`);
+    
+    // Remember which website was reloaded so we can set it to focused mode
+    reloadedWebsite = pendingReload.website === 'youtube' ? Website.Youtube : Website.LinkedIn;
+    
+    // Set loading state for the popup to read
+    await FocusUtils.setInLocalStorage('websiteLoading', {
+      website: pendingReload.website,
+      timestamp: Date.now()
+    });
+    
+    // Clear the pending reload flag
+    await FocusUtils.setInLocalStorage('pendingReload', null);
+    
+    // Wait 2 seconds before proceeding with initialization
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
+    // Clear loading state
+    await FocusUtils.setInLocalStorage('websiteLoading', null);
+  }
+  
   // Check website toggles before initializing controllers
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
   const websiteToggles = settings || { linkedin: true, youtube: true };
   
+  console.log('Initial website toggles:', websiteToggles);
+  console.log('Current URL:', document.URL);
+
+  // Always initialize state managers FIRST, even for disabled/unsupported sites
+  // so that the storage listener can work properly when toggling sites on/off
+  if (!stateManager) {
+    const appState = await FocusUtils.getFromLocalStorage('appState');
+    stateManager = new AppStateManager(appState);
+    keyPressManager = new KeyPressManager();
+  }
+
   const websiteMappings = {
     'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
     'youtube.com': { controller: YoutubeController, website: Website.Youtube, enabled: websiteToggles.youtube },
@@ -85,25 +130,23 @@ export async function initialize() {
     if (currentURL.includes(domain)) {
       const mapping = websiteMappings[domain as keyof typeof websiteMappings];
       
-      // Only initialize if the website is enabled
+      // Only initialize controller if the website is enabled
       if (mapping.enabled) {
         websiteController = new mapping.controller();
         currentWebsite = mapping.website;
-        console.log(`Detected website: ${Website[currentWebsite]} (enabled)`);
+        console.log(`Detected website: ${Website[currentWebsite]} (enabled) - controller initialized`);
+        
+        // If this website was just reloaded from disabled-to-enabled, set it to focused mode
+        if (reloadedWebsite && reloadedWebsite === currentWebsite && stateManager) {
+          console.log(`Setting focus mode to FOCUSED for reloaded website: ${Website[reloadedWebsite]}`);
+          await stateManager.setFocusMode(reloadedWebsite, FocusMode.Focused);
+        }
       } else {
-        console.log(`Detected website: ${Website[mapping.website]} (disabled)`);
-        return; // Exit early if disabled
+        console.log(`Detected website: ${Website[mapping.website]} (disabled) - no controller initialized`);
+        currentWebsite = mapping.website; // Still set the website type so storage listener works
       }
       break;
     }
-  }
-
-  // Always initialize state managers, even for disabled/unsupported sites
-  // so that the storage listener can work properly when toggling sites on/off
-  if (!stateManager) {
-    const appState = await FocusUtils.getFromLocalStorage('appState');
-    stateManager = new AppStateManager(appState);
-    keyPressManager = new KeyPressManager();
   }
 
   if (currentWebsite !== Website.Unsupported) {
@@ -121,79 +164,60 @@ export async function initialize() {
       const isLinkedin = currentURL.includes('linkedin.com');
       const isYoutube = currentURL.includes('youtube.com');
       
-      console.log('Website toggles changed:', newToggles);
+      if (!isLinkedin && !isYoutube) return; // Not a supported website
       
-      // Handle LinkedIn focus state change
-      if (isLinkedin) {
-        // Check if we need to initialize from a disabled state
-        if (!websiteController && newToggles.linkedin) {
-          console.log('LinkedIn - initializing controller from disabled state');
-          websiteController = new LinkedInController();
-          currentWebsite = Website.LinkedIn;
-          
-          // Initialize state manager if not already done
-          if (!stateManager) {
-            const appState = await FocusUtils.getFromLocalStorage('appState');
-            stateManager = new AppStateManager(appState);
-            keyPressManager = new KeyPressManager();
-          }
-        }
-        
-        if (websiteController && currentWebsite === Website.LinkedIn && stateManager) {
-          // Update the stored state to match toggle and apply the mode
-          const newMode = newToggles.linkedin ? FocusMode.Focused : FocusMode.Unfocused;
-          await stateManager.setFocusMode(currentWebsite, newMode);
-          
-          // Apply focus/unfocus based on the new mode
-          console.log(`LinkedIn toggle ${newToggles.linkedin ? 'ON' : 'OFF'} - applying ${FocusMode[newMode]} mode`);
-          websiteController.renderFocusMode(newMode);
-        }
-        
-        // If toggling off, clean up the controller
-        if (websiteController && currentWebsite === Website.LinkedIn && !newToggles.linkedin) {
-          console.log('LinkedIn - cleaning up controller (disabled)');
-          websiteController.unfocus(); // Ensure content is visible
-          websiteController = null;
-          currentWebsite = Website.Unsupported;
-        }
-      }
+      const website = isLinkedin ? 'linkedin' : 'youtube';
+      const websiteEnum = isLinkedin ? Website.LinkedIn : Website.Youtube;
+      const isEnabled = isLinkedin ? newToggles.linkedin : newToggles.youtube;
       
-      // Handle YouTube focus state change  
-      if (isYoutube) {
-        // Check if we need to initialize from a disabled state
-        if (!websiteController && newToggles.youtube) {
-          console.log('YouTube - initializing controller from disabled state');
-          websiteController = new YoutubeController();
-          currentWebsite = Website.Youtube;
-          
-          // Initialize state manager if not already done
-          if (!stateManager) {
-            const appState = await FocusUtils.getFromLocalStorage('appState');
-            stateManager = new AppStateManager(appState);
-            keyPressManager = new KeyPressManager();
-          }
-        }
-        
-        if (websiteController && currentWebsite === Website.Youtube && stateManager) {
-          // Update the stored state to match toggle and apply the mode
-          const newMode = newToggles.youtube ? FocusMode.Focused : FocusMode.Unfocused;
-          await stateManager.setFocusMode(currentWebsite, newMode);
-          
-          // Apply focus/unfocus based on the new mode
-          console.log(`YouTube toggle ${newToggles.youtube ? 'ON' : 'OFF'} - applying ${FocusMode[newMode]} mode`);
-          websiteController.renderFocusMode(newMode);
-        }
-        
-        // If toggling off, clean up the controller
-        if (websiteController && currentWebsite === Website.Youtube && !newToggles.youtube) {
-          console.log('YouTube - cleaning up controller (disabled)');
-          websiteController.unfocus(); // Ensure content is visible
-          websiteController = null;
-          currentWebsite = Website.Unsupported;
-        }
-      }
+      console.log(`${website} toggle changed to: ${isEnabled}`);
+      console.log(`Current state - controller: ${websiteController ? 'exists' : 'null'}, website: ${Website[currentWebsite]}`);
+      
+      await handleWebsiteToggleChange(website, websiteEnum, isEnabled);
     }
   });
+}
+
+async function handleWebsiteToggleChange(website: string, websiteEnum: Website, isEnabled: boolean) {
+  const hasController = websiteController !== null;
+  const isCorrectWebsite = currentWebsite === websiteEnum;
+  
+  if (!hasController && isEnabled) {
+    // DISABLED → ENABLED: Need to reload for content script injection
+    console.log(`${website} - transitioning from DISABLED to ENABLED, triggering reload`);
+    await triggerReloadForWebsite(website);
+    
+  } else if (hasController && isCorrectWebsite && stateManager && websiteController && !isEnabled) {
+    // ENABLED → DISABLED: Instant cleanup (disable functionality entirely)
+    console.log(`${website} - transitioning from ENABLED to DISABLED, cleaning up controller`);
+    await stateManager.setFocusMode(websiteEnum, FocusMode.Unfocused);
+    websiteController.renderFocusMode(FocusMode.Unfocused);
+    
+    // Clean up controller - website functionality is now disabled
+    websiteController = null;
+    currentWebsite = Website.Unsupported;
+  }
+  
+  // Note: ENABLED → ENABLED transitions (focused ↔ unfocused) are handled by keypress
+  // The popup toggle only controls ENABLED vs DISABLED, not focused vs unfocused
+}
+
+async function triggerReloadForWebsite(website: string) {
+  // Set loading state for popup
+  await FocusUtils.setInLocalStorage('websiteLoading', {
+    website: website,
+    timestamp: Date.now()
+  });
+  
+  // Set reload flag  
+  await FocusUtils.setInLocalStorage('pendingReload', {
+    website: website,
+    timestamp: Date.now(),
+    reason: 'disabled-to-enabled'
+  });
+  
+  // Reload the page
+  window.location.reload();
 }
 
 (async function () {

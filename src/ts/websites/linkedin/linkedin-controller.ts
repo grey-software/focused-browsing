@@ -136,6 +136,7 @@ export default class LinkedInController extends WebsiteController {
 
   focus() {
     console.log('LinkedInController: Entering focus mode with MutationObserver.');
+    console.log(`LinkedIn: Current URL: ${document.URL}`);
     this.currentFocusMode = 'focused';
     
     // Clear any existing intervals from legacy code
@@ -150,6 +151,7 @@ export default class LinkedInController extends WebsiteController {
 
   unfocus() {
     console.log('LinkedInController: Exiting focus mode.');
+    console.log(`LinkedIn: Current URL: ${document.URL}`);
     this.currentFocusMode = 'unfocused';
     
     // Stop all observers
@@ -166,9 +168,23 @@ export default class LinkedInController extends WebsiteController {
 
   private applyFocusMode(): void {
     const url = document.URL;
-    if (!LinkedInUtils.isHomePage(url)) return;
+    console.log(`LinkedIn: Checking homepage for URL: ${url}`);
+    console.log(`LinkedIn: isHomePage result: ${LinkedInUtils.isHomePage(url)}`);
+    
+    if (!LinkedInUtils.isHomePage(url)) {
+      console.log('LinkedIn: Not a homepage, skipping focus mode');
+      return;
+    }
     
     console.log('LinkedIn: Applying focus mode immediately');
+    
+    // Log DOM element availability
+    const feed = LinkedInUtils.getLinkedInFeed();
+    const panel = LinkedInUtils.getLinkedInPanel();
+    const adHeader = LinkedInUtils.getAdHeader();
+    
+    console.log(`LinkedIn DOM elements - Feed: ${!!feed}, Panel: ${!!panel}, Ad: ${!!adHeader}`);
+    console.log(`LinkedIn Load status - Feed: ${LinkedInUtils.hasFeedLoaded()}, Panel: ${LinkedInUtils.hasPanelLoaded()}, Ad: ${LinkedInUtils.hasAdLoaded()}`);
     
     // Apply all focus features immediately
     this.focusFeeds();
@@ -179,7 +195,13 @@ export default class LinkedInController extends WebsiteController {
 
   private applyUnfocusMode(): void {
     const url = document.URL;
-    if (!LinkedInUtils.isHomePage(url)) return;
+    console.log(`LinkedIn: applyUnfocusMode() - URL: ${url}`);
+    console.log(`LinkedIn: isHomePage result: ${LinkedInUtils.isHomePage(url)}`);
+    
+    if (!LinkedInUtils.isHomePage(url)) {
+      console.log('LinkedIn: Not a homepage, skipping unfocus mode');
+      return;
+    }
     
     console.log('LinkedIn: Applying unfocus mode');
     
@@ -188,28 +210,54 @@ export default class LinkedInController extends WebsiteController {
     this.setPanelVisibility(true);
     this.setAdVisibility(true);
     this.isFeedBlocked = false;
+    
+    console.log('LinkedIn: Unfocus mode applied');
   }
 
   private focusFeeds(): void {
-    if (this.isFeedBlocked) return;
+    console.log('LinkedIn: focusFeeds() called');
+    if (this.isFeedBlocked) {
+      console.log('LinkedIn: Feed already blocked, skipping');
+      return;
+    }
     
-    if (LinkedInUtils.hasFeedLoaded() && !LinkedInUtils.isFeedHidden()) {
+    const feedLoaded = LinkedInUtils.hasFeedLoaded();
+    const feedHidden = LinkedInUtils.isFeedHidden();
+    console.log(`LinkedIn: Feed status - Loaded: ${feedLoaded}, Hidden: ${feedHidden}`);
+    
+    if (feedLoaded && !feedHidden) {
       console.log('LinkedIn: Hiding feed');
       this.setFeedVisibility(false);
+    } else {
+      console.log('LinkedIn: Feed not ready for hiding');
     }
   }
 
   private focusPanel(): void {
-    if (LinkedInUtils.hasPanelLoaded() && !LinkedInUtils.isPanelHidden()) {
+    console.log('LinkedIn: focusPanel() called');
+    const panelLoaded = LinkedInUtils.hasPanelLoaded();
+    const panelHidden = LinkedInUtils.isPanelHidden();
+    console.log(`LinkedIn: Panel status - Loaded: ${panelLoaded}, Hidden: ${panelHidden}`);
+    
+    if (panelLoaded && !panelHidden) {
       console.log('LinkedIn: Hiding panel');
       this.setPanelVisibility(false);
+    } else {
+      console.log('LinkedIn: Panel not ready for hiding');
     }
   }
 
   private focusAds(): void {
-    if (LinkedInUtils.hasAdLoaded() && !LinkedInUtils.isAdHidden()) {
+    console.log('LinkedIn: focusAds() called');
+    const adLoaded = LinkedInUtils.hasAdLoaded();
+    const adHidden = LinkedInUtils.isAdHidden();
+    console.log(`LinkedIn: Ad status - Loaded: ${adLoaded}, Hidden: ${adHidden}`);
+    
+    if (adLoaded && !adHidden) {
       console.log('LinkedIn: Hiding ads');
       this.setAdVisibility(false);
+    } else {
+      console.log('LinkedIn: Ads not ready for hiding');
     }
   }
 
@@ -232,16 +280,24 @@ export default class LinkedInController extends WebsiteController {
   }
 
   setAdVisibility(visible: boolean) {
+    console.log(`LinkedIn: setAdVisibility(${visible}) called`);
     const adParentNode = LinkedInUtils.getAdHeader();
-    if (!adParentNode || !adParentNode.children.length) return;
+    if (!adParentNode || !adParentNode.children.length) {
+      console.log('LinkedIn: Ad element not found or has no children');
+      return;
+    }
 
     if (!visible) {
+      console.log('LinkedIn: Hiding ad');
       this.adChildNode = adParentNode.children[0];
       if (this.adChildNode) {
         adParentNode.removeChild(this.adChildNode);
       }
     } else if (this.adChildNode instanceof Node) {
+      console.log('LinkedIn: Showing ad');
       adParentNode.append(this.adChildNode);
+    } else {
+      console.log('LinkedIn: No stored ad child to restore');
     }
   }
 
@@ -255,12 +311,24 @@ export default class LinkedInController extends WebsiteController {
   }
 
   showFeed() {
+    console.log('LinkedIn: showFeed() called');
     this.quoteElement?.remove();
     this.quoteElement = null;
+    
+    // Restore previously hidden elements
     this.hiddenFeedElements.forEach((child) => {
       child.style.display = '';
     });
     this.hiddenFeedElements = [];
+    
+    // Also ensure feed container is visible (in case it was hidden by other means)
+    const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
+    if (feedParentNode) {
+      feedParentNode.style.display = '';
+      console.log('LinkedIn: Feed container visibility restored');
+    }
+    
+    this.isFeedBlocked = false;
   }
 
   async injectQuote(feedParentNode: HTMLElement) {
@@ -296,12 +364,18 @@ export default class LinkedInController extends WebsiteController {
   }
 
   setPanelVisibility(visible: boolean) {
+    console.log(`LinkedIn: setPanelVisibility(${visible}) called`);
     const panel = LinkedInUtils.getLinkedInPanel() as HTMLElement;
-    if (!panel) return;
+    if (!panel) {
+      console.log('LinkedIn: Panel element not found');
+      return;
+    }
 
     if (!visible) {
+      console.log('LinkedIn: Hiding panel');
       panel.style.display = 'none';
     } else {
+      console.log('LinkedIn: Showing panel');
       panel.style.display = '';
     }
   }

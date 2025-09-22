@@ -58,10 +58,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     console.log(`Updating ${website} toggle to: ${enabled}`);
     
+    // Check if this toggle was previously off (disabled) and is now being enabled
+    const current = await browser.storage.local.get(['websiteToggles']);
+    const websiteToggles = current.websiteToggles || { linkedin: true, youtube: true };
+    const wasDisabled = !websiteToggles[website];
+    const isEnabling = enabled;
+    const isDisabledToEnabled = wasDisabled && isEnabling;
+    
     // Immediately update storage and trigger focus change (no delay)
     try {
-      const current = await browser.storage.local.get(['websiteToggles']);
-      const websiteToggles = current.websiteToggles || { linkedin: true, youtube: true };
       websiteToggles[website] = enabled;
       await browser.storage.local.set({ websiteToggles });
       console.log(`Storage updated for ${website}:`, websiteToggles);
@@ -73,7 +78,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Show loading state for this specific toggle
     toggleContainer.classList.add('loading');
     
-    // Set timeout only for UI cleanup
+    // Use longer loading time if this is a disabled-to-enabled transition (page will reload)
+    const loadingDuration = isDisabledToEnabled ? 2500 : 350;
+    console.log(`${website} toggle loading duration: ${loadingDuration}ms (disabled-to-enabled: ${isDisabledToEnabled})`);
+    
+    // Set timeout for UI cleanup
     const timeout = window.setTimeout(() => {
       // Remove loading state after UI debounce
       toggleContainer.classList.remove('loading');
@@ -85,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       } else {
         youtubeTimeout = null;
       }
-    }, 350);
+    }, loadingDuration);
     
     // Store the timeout reference
     if (isLinkedin) {
