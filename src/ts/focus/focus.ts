@@ -97,9 +97,6 @@ export async function initialize() {
     // Clear the pending reload flag
     await FocusUtils.setInLocalStorage('pendingReload', null);
     
-    // Wait 2 seconds before proceeding with initialization
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
     // Clear loading state
     await FocusUtils.setInLocalStorage('websiteLoading', null);
   }
@@ -197,9 +194,6 @@ async function handleWebsiteToggleChange(website: string, websiteEnum: Website, 
     websiteController = null;
     currentWebsite = Website.Unsupported;
   }
-  
-  // Note: ENABLED → ENABLED transitions (focused ↔ unfocused) are handled by keypress
-  // The popup toggle only controls ENABLED vs DISABLED, not focused vs unfocused
 }
 
 async function triggerReloadForWebsite(website: string) {

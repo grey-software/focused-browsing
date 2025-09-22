@@ -78,7 +78,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Show loading state for this specific toggle
     toggleContainer.classList.add('loading');
     
-    // Use longer loading time if this is a disabled-to-enabled transition (page will reload)
+    // Use longer loading time ONLY for disabled-to-enabled transitions (page will reload)
+    // All other cases (enabled-to-disabled, or enabled-to-enabled) use short duration
     const loadingDuration = isDisabledToEnabled ? 2500 : 350;
     console.log(`${website} toggle loading duration: ${loadingDuration}ms (disabled-to-enabled: ${isDisabledToEnabled})`);
     
