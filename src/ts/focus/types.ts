@@ -18,7 +18,8 @@ export interface AppState extends Record<Website, FocusMode> {
   Github: FocusMode
 }
 
-export interface KeyPressedState extends Record<string, boolean> {
+export interface KeyPressedState {
+  [key: string]: boolean
   ShiftLeft: boolean
   ShiftRight: boolean
 }

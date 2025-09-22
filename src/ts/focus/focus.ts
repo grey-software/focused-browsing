@@ -31,7 +31,20 @@ async function handleKeyEvent(e: KeyboardEvent) {
       keyPressManager.setKeyPressedState(keyCode, true)
     }
     if (keyPressManager.isShortcutPressed()) {
-      toggleFocusMode()
+      // Only allow keypress toggle if the website is currently enabled
+      const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
+      const websiteToggles = settings || { linkedin: true, youtube: true };
+      
+      const isWebsiteEnabled = 
+        (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
+        (currentWebsite === Website.Youtube && websiteToggles.youtube);
+        
+      if (isWebsiteEnabled) {
+        console.log('Keypress shortcut triggered - website is enabled');
+        toggleFocusMode();
+      } else {
+        console.log('Keypress shortcut ignored - website is disabled');
+      }
     }
   }
   if (e.type == 'keyup') {
@@ -94,7 +107,7 @@ export async function initialize() {
   }
 
   // Always listen for website toggle changes, regardless of current state
-  browser.storage.onChanged.addListener((changes, areaName) => {
+  browser.storage.onChanged.addListener(async (changes, areaName) => {
     if (areaName === 'local' && changes.websiteToggles) {
       const newToggles = changes.websiteToggles.newValue;
       const currentURL = document.URL;
@@ -104,43 +117,57 @@ export async function initialize() {
       
       console.log('Website toggles changed:', newToggles);
       
-      // Handle LinkedIn state change
+      // Handle LinkedIn focus state change
       if (isLinkedin) {
-        if (!newToggles.linkedin && websiteController) {
-          console.log('LinkedIn disabled - unfocusing and clearing controller');
-          websiteController.unfocus();
-          websiteController.clearIntervals();
-          websiteController = null as any;
-          currentWebsite = Website.Unsupported;
-        } else if (newToggles.linkedin && !websiteController) {
-          console.log('LinkedIn enabled - initializing controller');
+        if (!websiteController && (newToggles.linkedin !== undefined)) {
+          // Initialize controller if it doesn't exist and we have a toggle state
+          console.log('LinkedIn - initializing controller');
           websiteController = new LinkedInController();
           currentWebsite = Website.LinkedIn;
-          // Apply current focus state
-          if (stateManager) {
-            const mode = stateManager.getFocusMode(currentWebsite);
-            websiteController.renderFocusMode(mode);
+          
+          // Initialize state manager if not already done
+          if (!stateManager) {
+            const appState = await FocusUtils.getFromLocalStorage('appState');
+            stateManager = new AppStateManager(appState);
+            keyPressManager = new KeyPressManager();
           }
+        }
+        
+        if (websiteController && currentWebsite === Website.LinkedIn && stateManager) {
+          // Update the stored state to match toggle and apply the mode
+          const newMode = newToggles.linkedin ? FocusMode.Focused : FocusMode.Unfocused;
+          await stateManager.setFocusMode(currentWebsite, newMode);
+          
+          // Apply focus/unfocus based on the new mode
+          console.log(`LinkedIn toggle ${newToggles.linkedin ? 'ON' : 'OFF'} - applying ${FocusMode[newMode]} mode`);
+          websiteController.renderFocusMode(newMode);
         }
       }
       
-      // Handle YouTube state change  
+      // Handle YouTube focus state change  
       if (isYoutube) {
-        if (!newToggles.youtube && websiteController) {
-          console.log('YouTube disabled - unfocusing and clearing controller');
-          websiteController.unfocus();
-          websiteController.clearIntervals();
-          websiteController = null as any;
-          currentWebsite = Website.Unsupported;
-        } else if (newToggles.youtube && !websiteController) {
-          console.log('YouTube enabled - initializing controller');
+        if (!websiteController && (newToggles.youtube !== undefined)) {
+          // Initialize controller if it doesn't exist and we have a toggle state
+          console.log('YouTube - initializing controller');
           websiteController = new YoutubeController();
           currentWebsite = Website.Youtube;
-          // Apply current focus state
-          if (stateManager) {
-            const mode = stateManager.getFocusMode(currentWebsite);
-            websiteController.renderFocusMode(mode);
+          
+          // Initialize state manager if not already done
+          if (!stateManager) {
+            const appState = await FocusUtils.getFromLocalStorage('appState');
+            stateManager = new AppStateManager(appState);
+            keyPressManager = new KeyPressManager();
           }
+        }
+        
+        if (websiteController && currentWebsite === Website.Youtube && stateManager) {
+          // Update the stored state to match toggle and apply the mode
+          const newMode = newToggles.youtube ? FocusMode.Focused : FocusMode.Unfocused;
+          await stateManager.setFocusMode(currentWebsite, newMode);
+          
+          // Apply focus/unfocus based on the new mode
+          console.log(`YouTube toggle ${newToggles.youtube ? 'ON' : 'OFF'} - applying ${FocusMode[newMode]} mode`);
+          websiteController.renderFocusMode(newMode);
         }
       }
     }

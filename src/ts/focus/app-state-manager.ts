@@ -28,4 +28,9 @@ export default class AppStateManager {
     this.appState[currentWebsite] = (this.appState[currentWebsite] + 1) % focusModeCount
     await this.updateAppState(currentWebsite)
   }
+
+  async setFocusMode(currentWebsite: Website, focusMode: FocusMode) {
+    this.appState[currentWebsite] = focusMode
+    await this.updateAppState(currentWebsite)
+  }
 }

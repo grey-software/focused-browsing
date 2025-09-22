@@ -14,6 +14,7 @@ export default class YouTubeController extends WebsiteController {
   commentIntervalId: number = 0;  // Legacy, can remove if not used elsewhere
   quoteElement: HTMLDivElement | null = null;
   isFeedBlocked: boolean = false;
+  isCreatingQuote: boolean = false; // Guard against async race condition
 
   // Observers array for cleanup
   private observers: MutationObserver[] = [];
@@ -48,6 +49,7 @@ export default class YouTubeController extends WebsiteController {
     } else {
       this.quoteElement?.remove();
       this.quoteElement = null;
+      this.isCreatingQuote = false; // Reset guard when removing quote via settings
     }
   }
 
@@ -69,30 +71,58 @@ export default class YouTubeController extends WebsiteController {
     if (!pageCheck(document.URL)) return;  // Skip if wrong page
 
     const target = document.querySelector(targetSelector) || document.body;
+    const observerIndex = this.observers.length; // Use unique index for debounce timer
+    
     const observer = new MutationObserver((mutations) => {
-      // Debounce: Ignore if recent mutation (e.g., 100ms)
-      if (this.debounceTimers[0]) clearTimeout(this.debounceTimers[0]);
-      this.debounceTimers[0] = setTimeout(() => {
+      // Reduced debounce for better responsiveness 
+      if (this.debounceTimers[observerIndex]) clearTimeout(this.debounceTimers[observerIndex]);
+      this.debounceTimers[observerIndex] = setTimeout(() => {
         if (loadCheck() && !hiddenCheck()) {
           blockAction();
         }
-      }, 100);
+      }, 50); // Reduced from 100ms to 50ms
     });
 
     observer.observe(target, config);
     this.observers.push(observer);
 
-    // Initial scan (elegant one-off check)
-    setTimeout(() => {
-      if (loadCheck() && !hiddenCheck()) blockAction();
-    }, 500);  // Delay for initial load
+    // Immediate initial scan (guard prevents duplicate quote creation)
+    if (loadCheck() && !hiddenCheck()) {
+      blockAction();
+    }
   }
 
   focus() {
     console.log('YouTubeController: Entering focus mode.');
+    console.log('Current URL:', document.URL);
+    console.log('Is homepage?', YouTubeUtils.isHomePage(document.URL));
+    console.log('Is video page?', YouTubeUtils.isVideoPage(document.URL));
+    
     utils.clearElements(this.suggestionElements);
     utils.clearElements(this.commentElements);
     utils.clearElements(this.panelElements);
+    
+    // Immediate blocking for better user experience (like original intervals)
+    const url = document.URL;
+    if (YouTubeUtils.isHomePage(url)) {
+      // Immediate feed blocking on homepage
+      if (YouTubeUtils.hasFeedLoaded() && !YouTubeUtils.isFeedHidden()) {
+        this.setFeedVisibility(false);
+      }
+    } else if (YouTubeUtils.isVideoPage(url)) {
+      // Immediate blocking on video pages
+      if (YouTubeUtils.haveSuggestionsLoaded() && !YouTubeUtils.areSuggestionsHidden()) {
+        this.setSuggestionsVisibility(false);
+      }
+      if (YouTubeUtils.haveCommentsLoaded() && !YouTubeUtils.areCommentsHidden()) {
+        this.setCommentsVisibility(false);
+      }
+      if (YouTubeUtils.havePanelsLoaded() && !YouTubeUtils.arePanelsHidden()) {
+        this.setPanelsVisibility(false);
+      }
+    }
+    
+    // Set up observers for dynamic content
     this.focusFeed();
     this.focusSuggestions();
     this.focusComments();
@@ -186,6 +216,7 @@ export default class YouTubeController extends WebsiteController {
   showFeed() {
     this.quoteElement?.remove();
     this.quoteElement = null;
+    this.isCreatingQuote = false; // Reset guard when removing quote
     this.hiddenFeedElements.forEach((child) => {
       child.style.display = '';  // Restore style
     });
@@ -197,30 +228,37 @@ export default class YouTubeController extends WebsiteController {
     const settings = await browser.storage.local.get('showQuote');
     if (settings.showQuote === false) return;
 
-    if (!this.quoteElement) {
-      this.quoteElement = await quoteUtils.createSimpleQuoteElement();
+    // Guard against race condition - if we're already creating a quote or one exists, skip
+    if (!this.quoteElement && !this.isCreatingQuote) {
+      this.isCreatingQuote = true; // Set guard immediately
       
-      const isDark = YouTubeUtils.isDarkTheme();
-      const backgroundColor = isDark ? '#0f0f0f' : '#f9f9f9';
-      
-      this.quoteElement.style.background = backgroundColor;
-      this.quoteElement.style.marginTop = '24px';
-      this.quoteElement.style.padding = '16px';  // Elegant: Add padding for readability
-      this.quoteElement.style.borderRadius = '8px';  // Subtle integration
+      try {
+        this.quoteElement = await quoteUtils.createSimpleQuoteElement();
+        
+        const isDark = YouTubeUtils.isDarkTheme();
+        const backgroundColor = isDark ? '#0f0f0f' : '#f9f9f9';
+        
+        this.quoteElement.style.background = backgroundColor;
+        this.quoteElement.style.marginTop = '24px';
+        this.quoteElement.style.padding = '16px';  // Elegant: Add padding for readability
+        this.quoteElement.style.borderRadius = '8px';  // Subtle integration
 
-      const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
-      const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
+        const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
+        const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
 
-      if (quoteText && quoteSource) {
-        const textColor = isDark ? '#fff' : '#000';
-        const sourceColor = isDark ? '#ccc' : '#666';
-        quoteText.style.color = textColor;
-        quoteSource.style.color = sourceColor;
-        quoteText.style.marginBottom = '4px';  // Elegant spacing
+        if (quoteText && quoteSource) {
+          const textColor = isDark ? '#fff' : '#000';
+          const sourceColor = isDark ? '#ccc' : '#666';
+          quoteText.style.color = textColor;
+          quoteSource.style.color = sourceColor;
+          quoteText.style.marginBottom = '4px';  // Elegant spacing
+        }
+
+        // Append to end for natural flow
+        feedParentNode.appendChild(this.quoteElement);
+      } finally {
+        this.isCreatingQuote = false; // Clear guard
       }
-
-      // Append to end for natural flow
-      feedParentNode.appendChild(this.quoteElement);
     }
   }
 

@@ -4,7 +4,7 @@ export default class KeyPressManager {
   keyPressedState: KeyPressedState
 
   constructor() {
-    this.keyPressedState = { ShiftRight: false, ShiftLeft: false }
+    this.keyPressedState = { ShiftLeft: false, ShiftRight: false }
   }
 
   setKeyPressedState(keyCode: string, state: boolean) {
@@ -12,7 +12,7 @@ export default class KeyPressManager {
   }
 
   reset() {
-    this.keyPressedState = { ShiftRight: false, ShiftLeft: false }
+    this.keyPressedState = { ShiftLeft: false, ShiftRight: false }
   }
 
   keyIsShortcutKey(e: KeyboardEvent) {
@@ -20,8 +20,7 @@ export default class KeyPressManager {
   }
 
   isShortcutPressed() {
-    let allKeysPressed = true
-    Object.values(this.keyPressedState).forEach((keyPressed) => (allKeysPressed = allKeysPressed && keyPressed))
-    return allKeysPressed
+    // Check for both shift keys pressed (original behavior)
+    return this.keyPressedState.ShiftLeft && this.keyPressedState.ShiftRight
   }
 }
