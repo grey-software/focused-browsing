@@ -36,9 +36,9 @@ function hasFeedLoaded(): boolean {
 }
 
 function isFeedHidden(): boolean {
-  let feed = getFeed()
+  let feed = getFeed() as HTMLElement
   if (feed) {
-    return feed.children[0].nodeName == 'IFRAME'
+    return feed.style.display === 'none' || feed.children.length === 0
   }
   return false
 }

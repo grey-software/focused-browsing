@@ -77,7 +77,6 @@ export default class LinkedInController extends WebsiteController {
     let url = document.URL
     if (LinkedInUtils.isHomePage(url)) {
       this.clearIntervals()
-      utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
       this.setPanelVisibility(true)
       this.setAdVisibility(true)

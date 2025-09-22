@@ -125,7 +125,6 @@ export default class YouTubeController extends WebsiteController {
     let url = document.URL
     if (YouTubeUtils.isHomePage(url)) {
       this.clearIntervals()
-      utils.removeFocusedBrowsingCards()
       this.setFeedVisibility(true)
       this.isFeedBlocked = false
     } else if (YouTubeUtils.isVideoPage(url)) {
