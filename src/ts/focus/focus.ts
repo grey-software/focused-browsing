@@ -1,7 +1,5 @@
 import LinkedInController from '../websites/linkedin/linkedin-controller'
-import TwitterController from '../websites/twitter/twitter-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
-import GithubController from '../websites/github/github-controller'
 import FocusUtils from './focus-utils'
 import AppStateManager from './app-state-manager'
 import { browser } from 'webextension-polyfill-ts'
@@ -59,10 +57,8 @@ export function render() {
 export async function initialize() {
   console.log('Initializing focus script...');
   const websiteMappings = {
-    'twitter.com': { controller: TwitterController, website: Website.Twitter },
     'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn },
     'youtube.com': { controller: YoutubeController, website: Website.Youtube },
-    'github.com': { controller: GithubController, website: Website.Github },
   };
 
   const currentURL = document.URL;

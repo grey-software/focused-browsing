@@ -2,8 +2,7 @@ import YouTubeUtils from './youtube-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
-import QuoteManager from '../../quote-manager';
-import { QuoteSizeHandler } from '../quote-size-handler';
+import quoteUtils from '../../quotes';
 
 export default class YouTubeController extends WebsiteController {
   
@@ -70,7 +69,7 @@ export default class YouTubeController extends WebsiteController {
 
   handleTextSizeChange(textSize: string) {
     if (this.quoteElement) {
-      QuoteSizeHandler.updateQuoteTextSize(this.quoteElement, textSize);
+      quoteUtils.updateQuoteTextSize(this.quoteElement, textSize);
     }
   }
 
@@ -193,7 +192,7 @@ export default class YouTubeController extends WebsiteController {
     if (settings.showQuote === false) return;
 
     if (!this.quoteElement) {
-      this.quoteElement = await QuoteManager.createSimpleQuoteElement();
+      this.quoteElement = await quoteUtils.createSimpleQuoteElement();
       this.quoteElement.style.background = this.currentColor || '#f9f9f9';
       this.quoteElement.style.marginTop = '24px';
 

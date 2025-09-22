@@ -2,8 +2,7 @@ import LinkedInUtils from './linkedin-utils'
 import utils from '../utils'
 import WebsiteController from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
-import QuoteManager from '../../quote-manager';
-import { QuoteSizeHandler } from '../quote-size-handler';
+import quoteUtils from '../../quotes';
 
 export default class LinkedInController extends WebsiteController {
   panelElements: Node[]
@@ -61,7 +60,7 @@ export default class LinkedInController extends WebsiteController {
 
   handleTextSizeChange(textSize: string) {
     if (this.quoteElement) {
-      QuoteSizeHandler.updateQuoteTextSize(this.quoteElement, textSize);
+      quoteUtils.updateQuoteTextSize(this.quoteElement, textSize);
     }
   }
 
@@ -166,7 +165,7 @@ export default class LinkedInController extends WebsiteController {
     if (settings.showQuote === false) return;
 
     if (!this.quoteElement) {
-      this.quoteElement = await QuoteManager.createSimpleQuoteElement();
+      this.quoteElement = await quoteUtils.createSimpleQuoteElement();
       feedParentNode.append(this.quoteElement!);
     }
   }
