@@ -1,5 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
-import '../html/popup.html'; // Import the HTML file to make it available to the test
+import './popup.html'; // Import the HTML file to make it available to the test
+
+// Mock webextension-polyfill-ts
 import './popup'; // Import the popup script to be tested
 
 jest.mock('webextension-polyfill-ts');
@@ -9,7 +11,7 @@ describe('popup.ts', () => {
     // Reset the DOM and storage before each test
     document.body.innerHTML = '';
     const popup = document.createElement('div');
-    popup.innerHTML = require('fs').readFileSync(__dirname + '/../html/popup.html', 'utf8');
+    popup.innerHTML = require('fs').readFileSync(__dirname + '/popup.html', 'utf8');
     document.body.appendChild(popup);
 
     (browser.storage.local.get as jest.Mock).mockResolvedValue({});

@@ -6,7 +6,7 @@
   "action": {
     "default_icon": "icons/logo.png",
     "default_title": "buyao",
-    "default_popup": "html/popup.html"
+    "default_popup": "popup/popup.html"
   },
   "icons": {
     "16": "icons/logox16.png",

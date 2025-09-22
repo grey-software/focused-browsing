@@ -30,7 +30,7 @@ async function build() {
       entryPoints: {
         'background': 'src/ts/background.ts',
         'focus': 'src/ts/focus/focus.ts',
-        'popup': 'src/ts/popup.ts',
+        'popup': 'src/popup/popup.ts',
       },
       bundle: true,
       outdir: 'extension-build',
@@ -45,10 +45,21 @@ async function build() {
       }
     });
 
-    // Copy static files
-    copyRecursive('src/html', 'extension-build/html');
+        // Copy assets
+    if (fs.existsSync('src/html')) {
+      copyRecursive('src/html', 'extension-build/html');
+    }
     copyRecursive('src/icons', 'extension-build/icons');
-    copyRecursive('src/css', 'extension-build/css');
+    if (fs.existsSync('src/css')) {
+      copyRecursive('src/css', 'extension-build/css');
+    }
+    
+    // Copy popup files
+    if (!fs.existsSync('extension-build/popup')) {
+      fs.mkdirSync('extension-build/popup');
+    }
+    fs.copyFileSync('src/popup/popup.html', 'extension-build/popup/popup.html');
+    fs.copyFileSync('src/popup/popup.css', 'extension-build/popup/popup.css');
     
     // Copy manifest.json
     fs.copyFileSync('src/manifest.json', 'extension-build/manifest.json');

@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
-import { SIZE_MAP, SizeKey } from './utils';
+import { SIZE_MAP, SizeKey } from '../ts/utils';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;
