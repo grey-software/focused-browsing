@@ -13,6 +13,10 @@ export default class LinkedInController extends WebsiteController {
   isFeedBlocked: boolean
   hiddenFeedElements: HTMLElement[] = []
   
+  // Child removal standardization properties
+  panelChildren: Node[] = []
+  hiddenAdElements: Map<HTMLElement, Node[]> = new Map()
+  
   // Simplified state management
   private isCreatingQuote: boolean = false
   private currentFocusMode: 'focused' | 'unfocused' | null = null
@@ -174,6 +178,13 @@ export default class LinkedInController extends WebsiteController {
     this.setFeedVisibility(true);
     this.setPanelVisibility(true);
     this.setAdVisibility(true);
+    
+    // Restore feed ads via child restoration
+    this.hiddenAdElements.forEach((adChildren, ad) => {
+      adChildren.forEach(child => ad.appendChild(child));
+    });
+    this.hiddenAdElements.clear();
+    
     this.isFeedBlocked = false;
     
     console.log('LinkedIn: Unfocus mode applied');
@@ -229,9 +240,11 @@ export default class LinkedInController extends WebsiteController {
   private focusFeedAds(): void {
     const adElements = LinkedInUtils.getFeedAdElements();
     adElements.forEach((ad: HTMLElement) => {
-      if (ad.style.display !== 'none') {
-        console.log('LinkedIn: Hiding feed ad');
-        ad.style.display = 'none';
+      if (ad.children.length > 0 && !this.hiddenAdElements.has(ad)) {
+        console.log('LinkedIn: Hiding feed ad via child removal');
+        const adChildren = Array.from(ad.children);
+        adChildren.forEach(child => ad.removeChild(child));
+        this.hiddenAdElements.set(ad, adChildren);
       }
     });
   }
@@ -269,7 +282,7 @@ export default class LinkedInController extends WebsiteController {
     Array.from(feedParentNode.children).forEach((child) => {
       const htmlChild = child as HTMLElement;
       this.hiddenFeedElements.push(htmlChild);
-      htmlChild.style.display = 'none';
+      feedParentNode.removeChild(htmlChild);  // Child removal instead of style hiding
     });
   }
 
@@ -278,17 +291,14 @@ export default class LinkedInController extends WebsiteController {
     this.quoteElement?.remove();
     this.quoteElement = null;
     
-    // Restore previously hidden elements
-    this.hiddenFeedElements.forEach((child) => {
-      child.style.display = '';
-    });
-    this.hiddenFeedElements = [];
-    
-    // Also ensure feed container is visible (in case it was hidden by other means)
+    // Restore previously removed elements
     const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
     if (feedParentNode) {
-      feedParentNode.style.display = '';
-      console.log('LinkedIn: Feed container visibility restored');
+      this.hiddenFeedElements.forEach((child) => {
+        feedParentNode.appendChild(child);  // Restore removed children
+      });
+      this.hiddenFeedElements = [];
+      console.log('LinkedIn: Feed elements restored via child removal');
     }
     
     this.isFeedBlocked = false;
@@ -335,11 +345,13 @@ export default class LinkedInController extends WebsiteController {
     }
 
     if (!visible) {
-      console.log('LinkedIn: Hiding panel');
-      panel.style.display = 'none';
+      console.log('LinkedIn: Hiding panel via child removal');
+      this.panelChildren = Array.from(panel.children);
+      this.panelChildren.forEach(child => panel.removeChild(child));
     } else {
-      console.log('LinkedIn: Showing panel');
-      panel.style.display = '';
+      console.log('LinkedIn: Showing panel via child restoration');
+      this.panelChildren.forEach(child => panel.appendChild(child));
+      this.panelChildren = [];
     }
   }
 }

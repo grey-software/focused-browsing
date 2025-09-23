@@ -194,10 +194,10 @@ export default class YouTubeController extends WebsiteController {
     this.isFeedBlocked = true;
     Array.from(feedParentNode.children).forEach((child) => {
       const htmlChild = child as HTMLElement;
-      // Only hide if it's a content child (skip loaders/spacers)
+      // Only remove if it's a content child (skip loaders/spacers)
       if (htmlChild.children.length > 0 || htmlChild.textContent?.trim()) {
         this.hiddenFeedElements.push(htmlChild);
-        htmlChild.style.display = 'none';  // Style hide as backup to removal
+        feedParentNode.removeChild(htmlChild);  // Child removal instead of style hiding
       }
     });
   }
@@ -206,9 +206,15 @@ export default class YouTubeController extends WebsiteController {
     this.quoteElement?.remove();
     this.quoteElement = null;
     this.isCreatingQuote = false; // Reset guard when removing quote
-    this.hiddenFeedElements.forEach((child) => {
-      child.style.display = '';  // Restore style
-    });
+    
+    // Restore removed children
+    const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
+    if (feedParentNode) {
+      this.hiddenFeedElements.forEach((child) => {
+        feedParentNode.appendChild(child);  // Restore removed children
+      });
+    }
+    
     this.hiddenFeedElements = [];
     this.isFeedBlocked = false;
   }
