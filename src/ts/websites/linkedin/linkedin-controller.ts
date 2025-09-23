@@ -1,5 +1,4 @@
 import LinkedInUtils from './linkedin-utils'
-import utils from '../utils'
 import WebsiteController, { DistractionTarget } from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';

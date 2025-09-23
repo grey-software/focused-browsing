@@ -1,5 +1,5 @@
 /**
- * Universal utilities for hiding/restoring DOM elements by removing/restoring their children.
+ * Universal utilities for DOM element manipulation.
  * This approach works consistently across all websites and maintains element structure.
  */
 
@@ -51,4 +51,13 @@ export function hideElements(elements: (Element | null)[]): () => void {
       restoreElementChildren(element, children);
     });
   };
+}
+
+/**
+ * Clears an array by setting its length to 0.
+ * Useful for cleaning up element storage arrays.
+ * @param elements Array to clear
+ */
+export function clearElements(elements: any[]): void {
+  elements.length = 0;
 }

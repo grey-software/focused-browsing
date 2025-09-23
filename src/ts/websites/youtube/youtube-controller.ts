@@ -1,9 +1,8 @@
 import YouTubeUtils from './youtube-utils'
-import utils from '../utils'
 import WebsiteController, { DistractionTarget } from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
-import { hideElementChildren, restoreElementChildren } from '../element-utils';
+import { hideElementChildren, restoreElementChildren, clearElements } from '../element-utils';
 
 export default class YouTubeController extends WebsiteController {
   
@@ -87,9 +86,9 @@ export default class YouTubeController extends WebsiteController {
     console.log('Is homepage?', YouTubeUtils.isHomePage(document.URL));
     console.log('Is video page?', YouTubeUtils.isVideoPage(document.URL));
     
-    utils.clearElements(this.suggestionElements);
-    utils.clearElements(this.commentElements);
-    utils.clearElements(this.panelElements);
+    clearElements(this.suggestionElements);
+    clearElements(this.commentElements);
+    clearElements(this.panelElements);
     
     // Immediate blocking for better user experience (like original intervals)
     const url = document.URL;

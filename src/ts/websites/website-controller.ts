@@ -1,5 +1,4 @@
 import { FocusMode } from './../focus/types'
-import utils from './utils'
 
 export interface DistractionTarget {
   target: Element | string;
