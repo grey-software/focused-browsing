@@ -6,6 +6,16 @@ import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
 import { FocusMode, Website } from './types'
+import { 
+  isLinkedInURL, 
+  isYouTubeURL, 
+  detectWebsiteFromURL, 
+  WebsiteToggles, 
+  WebsiteLoadingState, 
+  PendingReload,
+  logWebsiteDetection,
+  logToggleChange
+} from '../utils'
 
 let currentWebsite: Website = Website.Unsupported
 let stateManager: AppStateManager
@@ -33,31 +43,36 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
 })
 
 async function handleKeyEvent(e: KeyboardEvent) {
-  if (e.type == 'keydown') {
-    if (keyPressManager.keyIsShortcutKey(e)) {
-      let keyCode = e.code
-      keyPressManager.setKeyPressedState(keyCode, true)
-    }
-    if (keyPressManager.isShortcutPressed()) {
-      // Only allow keypress toggle if the website is currently enabled
-      const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-      const websiteToggles = settings || { linkedin: true, youtube: true };
-      
-      const isWebsiteEnabled = 
-        (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
-        (currentWebsite === Website.Youtube && websiteToggles.youtube);
-        
-      if (isWebsiteEnabled) {
-        console.log('Keypress shortcut triggered - website is enabled');
-        toggleFocusMode();
-      } else {
-        console.log('Keypress shortcut ignored - website is disabled');
-      }
-    }
+  if (e.type === 'keydown') {
+    await handleKeyDown(e);
+  } else if (e.type === 'keyup') {
+    handleKeyUp();
   }
-  if (e.type == 'keyup') {
-    keyPressManager.reset()
+}
+
+async function handleKeyDown(e: KeyboardEvent): Promise<void> {
+  if (!keyPressManager.keyIsShortcutKey(e)) return;
+  
+  keyPressManager.setKeyPressedState(e.code, true);
+  
+  if (keyPressManager.isShortcutPressed() && await isWebsiteEnabledForKeypress()) {
+    console.log('Keypress shortcut triggered - website is enabled');
+    toggleFocusMode();
+  } else if (keyPressManager.isShortcutPressed()) {
+    console.log('Keypress shortcut ignored - website is disabled');
   }
+}
+
+function handleKeyUp(): void {
+  keyPressManager.reset();
+}
+
+async function isWebsiteEnabledForKeypress(): Promise<boolean> {
+  const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
+  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true };
+  
+  return (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
+         (currentWebsite === Website.Youtube && websiteToggles.youtube);
 }
 
 export async function toggleFocusMode() {
@@ -75,46 +90,44 @@ export function render() {
   }
 }
 
-export async function initialize() {
-  console.log('Initializing focus script...');
-  
-  let reloadedWebsite: Website | null = null;
-  
-  // Check if we're loading after a disabled-to-enabled reload
-  const pendingReload = await FocusUtils.getFromLocalStorage('pendingReload');
-  if (pendingReload && (Date.now() - pendingReload.timestamp) < 10000) { // Within 10 seconds
-    console.log(`Detected reload after enabling ${pendingReload.website} from disabled state`);
-    
-    // Remember which website was reloaded so we can set it to focused mode
-    reloadedWebsite = pendingReload.website === 'youtube' ? Website.Youtube : Website.LinkedIn;
-    
-    // Set loading state for the popup to read
-    await FocusUtils.setInLocalStorage('websiteLoading', {
-      website: pendingReload.website,
-      timestamp: Date.now()
-    });
-    
-    // Clear the pending reload flag
-    await FocusUtils.setInLocalStorage('pendingReload', null);
-    
-    // Clear loading state
-    await FocusUtils.setInLocalStorage('websiteLoading', null);
+// Phase 2: Broken down initialize() functions
+async function handleReloadDetection(): Promise<Website | null> {
+  const pendingReload: PendingReload | null = await FocusUtils.getFromLocalStorage('pendingReload');
+  if (!pendingReload || (Date.now() - pendingReload.timestamp) >= 10000) {
+    return null;
   }
-  
-  // Check website toggles before initializing controllers
-  const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles = settings || { linkedin: true, youtube: true };
-  
-  console.log('Initial website toggles:', websiteToggles);
-  console.log('Current URL:', document.URL);
 
-  // Always initialize state managers FIRST, even for disabled/unsupported sites
-  // so that the storage listener can work properly when toggling sites on/off
+  console.log(`Detected reload after enabling ${pendingReload.website} from disabled state`);
+  
+  const reloadedWebsite = pendingReload.website === 'youtube' ? Website.Youtube : Website.LinkedIn;
+  
+  // Set loading state for the popup to read
+  await FocusUtils.setInLocalStorage('websiteLoading', {
+    website: pendingReload.website,
+    timestamp: Date.now()
+  } as WebsiteLoadingState);
+  
+  // Clear the pending reload flag and loading state
+  await FocusUtils.setInLocalStorage('pendingReload', null);
+  await FocusUtils.setInLocalStorage('websiteLoading', null);
+  
+  return reloadedWebsite;
+}
+
+async function initializeManagers(): Promise<void> {
   if (!stateManager) {
     const appState = await FocusUtils.getFromLocalStorage('appState');
     stateManager = new AppStateManager(appState);
     keyPressManager = new KeyPressManager();
   }
+}
+
+async function detectAndCreateController(reloadedWebsite: Website | null): Promise<void> {
+  const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
+  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true };
+  
+  console.log('Initial website toggles:', websiteToggles);
+  console.log('Current URL:', document.URL);
 
   const websiteMappings = {
     'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
@@ -131,7 +144,7 @@ export async function initialize() {
       if (mapping.enabled) {
         websiteController = new mapping.controller();
         currentWebsite = mapping.website;
-        console.log(`Detected website: ${Website[currentWebsite]} (enabled) - controller initialized`);
+        logWebsiteDetection(Website[currentWebsite], true, true);
         
         // If this website was just reloaded from disabled-to-enabled, set it to focused mode
         if (reloadedWebsite && reloadedWebsite === currentWebsite && stateManager) {
@@ -139,7 +152,7 @@ export async function initialize() {
           await stateManager.setFocusMode(reloadedWebsite, FocusMode.Focused);
         }
       } else {
-        console.log(`Detected website: ${Website[mapping.website]} (disabled) - no controller initialized`);
+        logWebsiteDetection(Website[mapping.website], false, false);
         currentWebsite = mapping.website; // Still set the website type so storage listener works
       }
       break;
@@ -151,15 +164,17 @@ export async function initialize() {
   } else {
     console.log('Unsupported or disabled website - listening for toggle changes');
   }
+}
 
+function setupStorageListeners(): void {
   // Always listen for website toggle changes, regardless of current state
   browser.storage.onChanged.addListener(async (changes, areaName) => {
     if (areaName === 'local' && changes.websiteToggles) {
       const newToggles = changes.websiteToggles.newValue;
       const currentURL = document.URL;
       
-      const isLinkedin = currentURL.includes('linkedin.com');
-      const isYoutube = currentURL.includes('youtube.com');
+      const isLinkedin = isLinkedInURL(currentURL);
+      const isYoutube = isYouTubeURL(currentURL);
       
       if (!isLinkedin && !isYoutube) return; // Not a supported website
       
@@ -167,12 +182,27 @@ export async function initialize() {
       const websiteEnum = isLinkedin ? Website.LinkedIn : Website.Youtube;
       const isEnabled = isLinkedin ? newToggles.linkedin : newToggles.youtube;
       
-      console.log(`${website} toggle changed to: ${isEnabled}`);
-      console.log(`Current state - controller: ${websiteController ? 'exists' : 'null'}, website: ${Website[currentWebsite]}`);
+      logToggleChange(website, isEnabled, websiteController !== null, Website[currentWebsite]);
       
       await handleWebsiteToggleChange(website, websiteEnum, isEnabled);
     }
   });
+}
+
+export async function initialize() {
+  console.log('Initializing focus script...');
+  
+  // Phase 1: Handle reload detection
+  const reloadedWebsite = await handleReloadDetection();
+  
+  // Phase 2: Initialize managers
+  await initializeManagers();
+  
+  // Phase 3: Detect website and create controller
+  await detectAndCreateController(reloadedWebsite);
+  
+  // Phase 4: Setup storage listeners
+  setupStorageListeners();
 }
 
 async function handleWebsiteToggleChange(website: string, websiteEnum: Website, isEnabled: boolean) {
