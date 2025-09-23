@@ -3,6 +3,7 @@ import utils from '../utils'
 import WebsiteController, { DistractionTarget } from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
+import { hideElementChildren, restoreElementChildren } from '../element-utils';
 
 export default class LinkedInController extends WebsiteController {
   // Legacy properties for compatibility
@@ -13,7 +14,7 @@ export default class LinkedInController extends WebsiteController {
   isFeedBlocked: boolean
   hiddenFeedElements: HTMLElement[] = []
   
-  // Child removal standardization properties
+  // Clean utility-based storage
   panelChildren: Node[] = []
   hiddenAdElements: Map<HTMLElement, Node[]> = new Map()
   
@@ -181,7 +182,7 @@ export default class LinkedInController extends WebsiteController {
     
     // Restore feed ads via child restoration
     this.hiddenAdElements.forEach((adChildren, ad) => {
-      adChildren.forEach(child => ad.appendChild(child));
+      restoreElementChildren(ad, adChildren);
     });
     this.hiddenAdElements.clear();
     
@@ -242,8 +243,7 @@ export default class LinkedInController extends WebsiteController {
     adElements.forEach((ad: HTMLElement) => {
       if (ad.children.length > 0 && !this.hiddenAdElements.has(ad)) {
         console.log('LinkedIn: Hiding feed ad via child removal');
-        const adChildren = Array.from(ad.children);
-        adChildren.forEach(child => ad.removeChild(child));
+        const adChildren = hideElementChildren(ad);
         this.hiddenAdElements.set(ad, adChildren);
       }
     });
@@ -279,11 +279,8 @@ export default class LinkedInController extends WebsiteController {
 
   hideFeed(feedParentNode: HTMLElement) {
     this.isFeedBlocked = true;
-    Array.from(feedParentNode.children).forEach((child) => {
-      const htmlChild = child as HTMLElement;
-      this.hiddenFeedElements.push(htmlChild);
-      feedParentNode.removeChild(htmlChild);  // Child removal instead of style hiding
-    });
+    const feedChildren = hideElementChildren(feedParentNode);
+    this.hiddenFeedElements = feedChildren as HTMLElement[]; // Safe cast for feed children
   }
 
   showFeed() {
@@ -294,9 +291,7 @@ export default class LinkedInController extends WebsiteController {
     // Restore previously removed elements
     const feedParentNode = LinkedInUtils.getLinkedInFeed() as HTMLElement;
     if (feedParentNode) {
-      this.hiddenFeedElements.forEach((child) => {
-        feedParentNode.appendChild(child);  // Restore removed children
-      });
+      restoreElementChildren(feedParentNode, this.hiddenFeedElements);
       this.hiddenFeedElements = [];
       console.log('LinkedIn: Feed elements restored via child removal');
     }
@@ -346,11 +341,10 @@ export default class LinkedInController extends WebsiteController {
 
     if (!visible) {
       console.log('LinkedIn: Hiding panel via child removal');
-      this.panelChildren = Array.from(panel.children);
-      this.panelChildren.forEach(child => panel.removeChild(child));
+      this.panelChildren = hideElementChildren(panel);
     } else {
       console.log('LinkedIn: Showing panel via child restoration');
-      this.panelChildren.forEach(child => panel.appendChild(child));
+      restoreElementChildren(panel, this.panelChildren);
       this.panelChildren = [];
     }
   }

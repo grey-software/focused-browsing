@@ -3,6 +3,7 @@ import utils from '../utils'
 import WebsiteController, { DistractionTarget } from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
+import { hideElementChildren, restoreElementChildren } from '../element-utils';
 
 export default class YouTubeController extends WebsiteController {
   
@@ -192,14 +193,13 @@ export default class YouTubeController extends WebsiteController {
   hideFeed(feedParentNode: HTMLElement) {
     if (this.isFeedBlocked) return;
     this.isFeedBlocked = true;
-    Array.from(feedParentNode.children).forEach((child) => {
+    
+    const feedChildren = hideElementChildren(feedParentNode);
+    // Filter out empty/non-content children and store as HTMLElements
+    this.hiddenFeedElements = feedChildren.filter((child) => {
       const htmlChild = child as HTMLElement;
-      // Only remove if it's a content child (skip loaders/spacers)
-      if (htmlChild.children.length > 0 || htmlChild.textContent?.trim()) {
-        this.hiddenFeedElements.push(htmlChild);
-        feedParentNode.removeChild(htmlChild);  // Child removal instead of style hiding
-      }
-    });
+      return htmlChild.children.length > 0 || htmlChild.textContent?.trim();
+    }) as HTMLElement[];
   }
 
   showFeed() {
@@ -210,9 +210,7 @@ export default class YouTubeController extends WebsiteController {
     // Restore removed children
     const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
     if (feedParentNode) {
-      this.hiddenFeedElements.forEach((child) => {
-        feedParentNode.appendChild(child);  // Restore removed children
-      });
+      restoreElementChildren(feedParentNode, this.hiddenFeedElements);
     }
     
     this.hiddenFeedElements = [];
@@ -269,28 +267,19 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  // Generic Visibility Setters (Your Logic, with Fallback for Null)
+  // Generic Visibility Setters (Clean utility-based approach)
   private setElementVisibility(
     element: Element | null,
     visible: boolean,
-    elementsArray: Node[],
     arrayName: keyof Pick<YouTubeController, 'suggestionElements' | 'commentElements' | 'panelElements'>
   ) {
     if (!element) return;  // Elegant: Skip if not found
 
     if (!visible) {
-      // Remove children in reverse for clean extraction
-      const children = Array.from(element.children).reverse();
-      children.forEach(child => {
-        if (element.contains(child)) {
-          element.removeChild(child);
-        }
-      });
+      const children = hideElementChildren(element);
       this[arrayName] = children;  // Store for restore
     } else {
-      // Restore in original order (reverse the stored array back)
-      const restoredChildren = this[arrayName].slice().reverse();
-      restoredChildren.forEach(child => element.appendChild(child));
+      restoreElementChildren(element, this[arrayName] as Node[]);
       (this[arrayName] as Node[]) = [];  // Clear
     }
   }
@@ -299,7 +288,6 @@ export default class YouTubeController extends WebsiteController {
     this.setElementVisibility(
       YouTubeUtils.getSuggestions(),
       visible,
-      this.suggestionElements,
       'suggestionElements'
     );
   }
@@ -308,7 +296,6 @@ export default class YouTubeController extends WebsiteController {
     this.setElementVisibility(
       YouTubeUtils.getVideoComments(),
       visible,
-      this.commentElements,
       'commentElements'
     );
   }
@@ -317,7 +304,6 @@ export default class YouTubeController extends WebsiteController {
     this.setElementVisibility(
       YouTubeUtils.getPanels(), 
       visible,
-      this.panelElements,
       'panelElements'
     );
   }
