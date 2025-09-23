@@ -1,14 +1,12 @@
 import LinkedInUtils from './linkedin-utils'
-import WebsiteController, { DistractionTarget } from '../website-controller'
+import WebsiteController from '../website-controller'
+import { DistractionTarget } from '../distraction-watcher'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
 import { hideElementChildren, restoreElementChildren } from '../element-utils';
 
 export default class LinkedInController extends WebsiteController {
-  // Legacy properties for compatibility
-  panelElements: Node[]
-  feedChildNode: string | Node
-  adChildNode: string | Node
+  // Quote and feed management
   quoteElement: HTMLDivElement | null
   isFeedBlocked: boolean
   hiddenFeedElements: HTMLElement[] = []
@@ -16,6 +14,7 @@ export default class LinkedInController extends WebsiteController {
   // Clean utility-based storage
   panelChildren: Node[] = []
   hiddenAdElements: Map<HTMLElement, Node[]> = new Map()
+  adChildren: Node[] = [] // For consistent ad hiding
   
   // Simplified state management
   private isCreatingQuote: boolean = false
@@ -23,9 +22,6 @@ export default class LinkedInController extends WebsiteController {
 
   constructor() {
     super()
-    this.panelElements = []
-    this.feedChildNode = ''
-    this.adChildNode = ''
     this.quoteElement = null
     this.isFeedBlocked = false
 
@@ -263,16 +259,12 @@ export default class LinkedInController extends WebsiteController {
     }
 
     if (!visible) {
-      console.log('LinkedIn: Hiding ad');
-      this.adChildNode = adParentNode.children[0];
-      if (this.adChildNode) {
-        adParentNode.removeChild(this.adChildNode);
-      }
-    } else if (this.adChildNode instanceof Node) {
-      console.log('LinkedIn: Showing ad');
-      adParentNode.append(this.adChildNode);
+      console.log('LinkedIn: Hiding ad via child removal');
+      this.adChildren = hideElementChildren(adParentNode);
     } else {
-      console.log('LinkedIn: No stored ad child to restore');
+      console.log('LinkedIn: Showing ad via child restoration');
+      restoreElementChildren(adParentNode, this.adChildren);
+      this.adChildren = [];
     }
   }
 

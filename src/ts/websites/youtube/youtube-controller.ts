@@ -1,17 +1,18 @@
 import YouTubeUtils from './youtube-utils'
-import WebsiteController, { DistractionTarget } from '../website-controller'
+import WebsiteController from '../website-controller'
+import { DistractionTarget } from '../distraction-watcher'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
 import { hideElementChildren, restoreElementChildren, clearElements } from '../element-utils';
 
 export default class YouTubeController extends WebsiteController {
-  
-  YouTubeFeedChildNode: string | Node = '';
+  // Element storage for distraction management
   suggestionElements: Node[] = [];
   commentElements: Node[] = [];
   panelElements: Node[] = [];  // Now for miniplayer/panels
   hiddenFeedElements: HTMLElement[] = [];
-  commentIntervalId: number = 0;  // Legacy, can remove if not used elsewhere
+  
+  // Quote management
   quoteElement: HTMLDivElement | null = null;
   isFeedBlocked: boolean = false;
   isCreatingQuote: boolean = false; // Guard against async race condition
@@ -130,10 +131,6 @@ export default class YouTubeController extends WebsiteController {
       this.setCommentsVisibility(true);
       this.setPanelsVisibility(true);
     }
-  }
-
-  clearIntervals() {
-    this.stopWatchingAll();
   }
 
   clearObservers() {
