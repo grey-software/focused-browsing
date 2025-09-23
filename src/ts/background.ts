@@ -1,19 +1,87 @@
 import { AppState, FocusMode } from './focus/types'
 import { browser } from 'webextension-polyfill-ts'
+import { 
+  isBrowserInternalPage, 
+  formatErrorMessage, 
+  shouldLogError, 
+  getScriptExecutionResult,
+  hasScriptExecutionResult 
+} from './utils'
+
+// Type augmentation for document extensions
+declare global {
+  interface Document {
+    hasFocusScript?: boolean
+  }
+}
 
 const appState: AppState = {
-  Twitter: FocusMode.Focused,
   LinkedIn: FocusMode.Focused,
   Youtube: FocusMode.Focused,
-  Github: FocusMode.Focused,
   Unsupported: FocusMode.Unfocused,
 }
 
 let activeURL: string | undefined = ''
 
-browser.storage.local.set({ appState: appState, showQuote: true, textSize: 'medium' })
+browser.storage.local.set({ 
+    appState: appState, 
+    showQuote: true, 
+    textSize: 'medium' 
+})
 
-export async function injectFocusScriptOnTabChange(
+// Script checking utilities - separated concerns for clarity
+async function shouldLoadFocusScript(tabId: number): Promise<boolean> {
+  const hasScript = await browser.scripting.executeScript({
+    target: { tabId },
+    func: () => {
+      // Already loaded? Nothing to do
+      if (document.hasFocusScript) {
+        return false
+      }
+      
+      // Claim this loading operation atomically
+      document.hasFocusScript = true
+      return true
+    }
+  })
+
+  return getScriptExecutionResult(hasScript)
+}
+
+async function loadFocusScript(tabId: number): Promise<void> {
+  await browser.scripting.executeScript({
+    target: { tabId },
+    files: ['focus.js']
+  })
+}
+
+export async function checkFocusScript(tabId: number): Promise<boolean> {
+  try {
+    // First check if we can access this tab
+    const tab = await browser.tabs.get(tabId)
+    if (isBrowserInternalPage(tab.url)) {
+      return false
+    }
+
+    const results = await browser.scripting.executeScript({
+      target: { tabId },
+      func: () => {
+        return !!document.hasFocusScript
+      }
+    })
+    
+    return hasScriptExecutionResult(results)
+  } catch (error) {
+    // Don't log errors for browser pages we can't access
+    const errorMessage = formatErrorMessage(error)
+    if (shouldLogError(errorMessage, ['Cannot access'])) {
+      console.error('Failed to check script injection:', error)
+    }
+    return false
+  }
+}
+
+export async function loadFocusScriptOnTabChange(
   tabId: number,
   changeInfo: { status?: string },
   tab: { url?: string }
@@ -25,78 +93,52 @@ export async function injectFocusScriptOnTabChange(
     return
   }
 
-  // Skip injection for browser internal pages
-  if (url?.startsWith('chrome://') || url?.startsWith('edge://') || url?.startsWith('about:')) {
+  // Skip loading for browser internal pages
+  if (isBrowserInternalPage(url)) {
     return
   }
 
   try {
-    const isFocusScriptInjected = await checkFocusScriptInjected(tabId)
-    if (isFocusScriptInjected) {
-      return
+    const shouldLoad = await shouldLoadFocusScript(tabId)
+    if (shouldLoad) {
+      await loadFocusScript(tabId)
+      activeURL = url
     }
-
-    // Inject the script from the extension's build directory
-    await browser.scripting.executeScript({
-      target: { tabId },
-      files: ['focus.js']  // Path relative to extension root
-    })
-
-    await browser.scripting.executeScript({
-      target: { tabId },
-      func: () => {
-        (document as any).isFocusScriptInjected = true
-      }
-    })
-
-    activeURL = url
   } catch (error) {
-    console.error('Failed to inject focus script:', error)
+    console.error('Failed to load focus script:', error)
   }
 }
 
-export async function checkFocusScriptInjected(tabId: number): Promise<boolean> {
+// Tab messaging utilities
+async function sendMessageToTab(tabId: number, message: any): Promise<any> {
   try {
-    // First check if we can access this tab
-    const tab = await browser.tabs.get(tabId)
-    if (tab.url?.startsWith('chrome://') || tab.url?.startsWith('edge://') || tab.url?.startsWith('about:')) {
-      return false
-    }
-
-    const results = await browser.scripting.executeScript({
-      target: { tabId },
-      func: () => {
-        return !!(document as any).isFocusScriptInjected
-      }
-    })
-    
-    return Array.isArray(results) && results.length > 0 ? !!results[0].result : false
+    const response = await browser.tabs.sendMessage(tabId, message)
+    return response
   } catch (error) {
-    // Don't log errors for browser pages we can't access
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    if (!errorMessage.includes('Cannot access')) {
-      console.error('Failed to check script injection:', error)
+    const errorMessage = formatErrorMessage(error)
+    if (shouldLogError(errorMessage, ['Could not establish connection'])) {
+      console.error('Error sending message to tab:', error)
     }
-    return false
+    throw error
+  }
+}
+
+async function notifyTabActivation(tabId: number): Promise<void> {
+  try {
+    const response = await sendMessageToTab(tabId, { text: 'new-tab-activated' })
+    if (response?.status === 'success') {
+      return
+    }
+  } catch (error) {
+    // Error already logged in sendMessageToTab
   }
 }
 
 export function addListeners() {
-  browser.tabs.onUpdated.addListener(injectFocusScriptOnTabChange)
+  browser.tabs.onUpdated.addListener(loadFocusScriptOnTabChange)
 
   browser.tabs.onActivated.addListener(async function(activeInfo: { tabId: number }) {
-    try {
-      const response = await browser.tabs.sendMessage(activeInfo.tabId, { text: 'new-tab-activated' })
-      if (response?.status === 'success') {
-        return
-      }
-    } catch (error) {
-      // Ignore errors from tabs where content script isn't loaded
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      if (!errorMessage.includes('Could not establish connection')) {
-        console.error('Error sending message to tab:', error)
-      }
-    }
+    await notifyTabActivation(activeInfo.tabId)
   })
 }
 
