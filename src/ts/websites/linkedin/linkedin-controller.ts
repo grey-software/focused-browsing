@@ -1,6 +1,6 @@
 import LinkedInUtils from './linkedin-utils'
 import utils from '../utils'
-import WebsiteController from '../website-controller'
+import WebsiteController, { DistractionTarget } from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
 
@@ -13,10 +13,8 @@ export default class LinkedInController extends WebsiteController {
   isFeedBlocked: boolean
   hiddenFeedElements: HTMLElement[] = []
   
-  // New MutationObserver properties
-  private observers: Map<string, MutationObserver> = new Map()
+  // Simplified state management
   private isCreatingQuote: boolean = false
-  private debounceTimers: Map<string, number> = new Map()
   private currentFocusMode: 'focused' | 'unfocused' | null = null
 
   constructor() {
@@ -28,7 +26,7 @@ export default class LinkedInController extends WebsiteController {
     this.isFeedBlocked = false
 
     this.addStorageListener();
-    console.log('LinkedInController: Initialized with MutationObserver strategy');
+    console.log('LinkedInController: Initialized with standardized observer management');
   }
 
   addStorageListener() {
@@ -64,63 +62,32 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  // Observer management methods
-  private createObserver(name: string, callback: () => void, debounceMs: number = 50): MutationObserver {
-    this.destroyObserver(name);
-    
-    const observer = new MutationObserver(() => {
-      this.debounceCallback(name, callback, debounceMs);
-    });
-    
-    this.observers.set(name, observer);
-    return observer;
-  }
-
-  private destroyObserver(name: string): void {
-    const observer = this.observers.get(name);
-    if (observer) {
-      observer.disconnect();
-      this.observers.delete(name);
-    }
-    
-    // Clear associated debounce timer
-    const timer = this.debounceTimers.get(name);
-    if (timer) {
-      clearTimeout(timer);
-      this.debounceTimers.delete(name);
-    }
-  }
-
-  private debounceCallback(name: string, callback: () => void, delay: number): void {
-    const existingTimer = this.debounceTimers.get(name);
-    if (existingTimer) {
-      clearTimeout(existingTimer);
-    }
-    
-    const timer = window.setTimeout(() => {
-      callback();
-      this.debounceTimers.delete(name);
-    }, delay);
-    
-    this.debounceTimers.set(name, timer);
-  }
-
-  private observeContainers(): void {
+  private setupContentObserver(): void {
     const containers = LinkedInUtils.getAllObservableContainers();
-    console.log(`LinkedIn: Setting up observers for ${containers.length} containers`);
+    console.log(`LinkedIn: Setting up watcher for ${containers.length} containers`);
     
     if (containers.length > 0) {
-      const observer = this.createObserver('linkedin-content', () => {
-        this.handleContentChanges();
-      }, 50);
-      
-      containers.forEach(container => {
-        observer.observe(container, {
+      const distractionTarget: DistractionTarget = {
+        target: containers[0], // Use first container as primary target
+        whenFound: () => this.handleContentChanges(),
+        options: {
           childList: true,
           subtree: true,
           attributes: true,
           attributeFilter: ['class', 'style']
-        });
+        }
+      };
+      
+      this.watchFor('linkedin-content', distractionTarget);
+      
+      // Watch additional containers if present
+      containers.slice(1).forEach((container, index) => {
+        const additionalTarget: DistractionTarget = {
+          target: container,
+          whenFound: () => this.handleContentChanges(),
+          options: distractionTarget.options
+        };
+        this.watchFor(`linkedin-content-${index + 1}`, additionalTarget);
       });
     }
   }
@@ -135,7 +102,7 @@ export default class LinkedInController extends WebsiteController {
   }
 
   focus() {
-    console.log('LinkedInController: Entering focus mode with MutationObserver.');
+    console.log('LinkedInController: Entering focus mode with standardized observer management.');
     console.log(`LinkedIn: Current URL: ${document.URL}`);
     this.currentFocusMode = 'focused';
     
@@ -143,7 +110,7 @@ export default class LinkedInController extends WebsiteController {
     this.clearAllIntervals();
     
     // Start observing for dynamic content changes
-    this.observeContainers();
+    this.setupContentObserver();
     
     // Apply initial focus immediately
     this.applyFocusMode();
@@ -154,10 +121,8 @@ export default class LinkedInController extends WebsiteController {
     console.log(`LinkedIn: Current URL: ${document.URL}`);
     this.currentFocusMode = 'unfocused';
     
-    // Stop all observers
-    this.observers.forEach((observer, name) => {
-      this.destroyObserver(name);
-    });
+    // Stop all distraction watching using base class method
+    this.stopWatchingAll();
     
     // Clear all intervals
     this.clearAllIntervals();
@@ -272,10 +237,8 @@ export default class LinkedInController extends WebsiteController {
   }
 
   clearIntervals() {
-    // Legacy method - now handled by observer cleanup
-    this.observers.forEach((observer, name) => {
-      this.destroyObserver(name);
-    });
+    // Use base class method for distraction watching cleanup
+    this.stopWatchingAll();
     this.clearAllIntervals();
   }
 

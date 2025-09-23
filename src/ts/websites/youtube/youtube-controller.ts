@@ -1,6 +1,6 @@
 import YouTubeUtils from './youtube-utils'
 import utils from '../utils'
-import WebsiteController from '../website-controller'
+import WebsiteController, { DistractionTarget } from '../website-controller'
 import { browser } from 'webextension-polyfill-ts';
 import quoteUtils from '../../quotes';
 
@@ -15,10 +15,6 @@ export default class YouTubeController extends WebsiteController {
   quoteElement: HTMLDivElement | null = null;
   isFeedBlocked: boolean = false;
   isCreatingQuote: boolean = false; // Guard against async race condition
-
-  // Observers array for cleanup
-  private observers: MutationObserver[] = [];
-  private debounceTimers: NodeJS.Timeout[] = [];
 
   constructor() {
     super()
@@ -59,37 +55,29 @@ export default class YouTubeController extends WebsiteController {
     }
   }
 
-  // Elegant Observer Creation (Core Strategy)
-  private createObserver(
+  // Simple distraction setup using standardized base class method
+  private setupDistraction(
+    name: string,
     targetSelector: string,
     pageCheck: (url: string) => boolean,
     loadCheck: () => boolean,
     hiddenCheck: () => boolean,
     blockAction: () => void,
     config: MutationObserverInit = { childList: true, subtree: true }
-  ) {
+  ): void {
     if (!pageCheck(document.URL)) return;  // Skip if wrong page
 
-    const target = document.querySelector(targetSelector) || document.body;
-    const observerIndex = this.observers.length; // Use unique index for debounce timer
-    
-    const observer = new MutationObserver((mutations) => {
-      // Reduced debounce for better responsiveness 
-      if (this.debounceTimers[observerIndex]) clearTimeout(this.debounceTimers[observerIndex]);
-      this.debounceTimers[observerIndex] = setTimeout(() => {
+    const distractionTarget: DistractionTarget = {
+      target: targetSelector,
+      whenFound: () => {
         if (loadCheck() && !hiddenCheck()) {
           blockAction();
         }
-      }, 50); // Reduced from 100ms to 50ms
-    });
+      },
+      options: config
+    };
 
-    observer.observe(target, config);
-    this.observers.push(observer);
-
-    // Immediate initial scan (guard prevents duplicate quote creation)
-    if (loadCheck() && !hiddenCheck()) {
-      blockAction();
-    }
+    this.watchFor(name, distractionTarget);
   }
 
   focus() {
@@ -133,11 +121,11 @@ export default class YouTubeController extends WebsiteController {
     console.log('YouTubeController: Exiting focus mode.');
     const url = document.URL;
     if (YouTubeUtils.isHomePage(url)) {
-      this.clearObservers();
+      this.stopWatchingAll();
       this.setFeedVisibility(true);
       this.isFeedBlocked = false;
     } else if (YouTubeUtils.isVideoPage(url)) {
-      this.clearObservers();
+      this.stopWatchingAll();
       this.setSuggestionsVisibility(true);
       this.setCommentsVisibility(true);
       this.setPanelsVisibility(true);
@@ -145,19 +133,17 @@ export default class YouTubeController extends WebsiteController {
   }
 
   clearIntervals() {
-    this.clearObservers();
+    this.stopWatchingAll();
   }
 
   clearObservers() {
-    this.observers.forEach(obs => obs.disconnect());
-    this.observers = [];
-    this.debounceTimers.forEach(timer => clearTimeout(timer));
-    this.debounceTimers = [];
+    this.stopWatchingAll();
   }
 
-  // Feed Focus (Homepage: Observer on browse renderer for load changes)
+  // Feed Focus (Homepage: Watch for distraction in browse renderer)
   focusFeed() {
-    this.createObserver(
+    this.setupDistraction(
+      'youtube-feed',
       'ytd-two-column-browse-results-renderer, ytd-browse',  // From home skeleton
       YouTubeUtils.isHomePage,
       YouTubeUtils.hasFeedLoaded,
@@ -166,9 +152,10 @@ export default class YouTubeController extends WebsiteController {
     );
   }
 
-  // Suggestions Focus (Watch: Observer on watch-flexy for sidebar additions)
+  // Suggestions Focus (Watch: Watch for distraction in watch-flexy for sidebar additions)
   focusSuggestions() {
-    this.createObserver(
+    this.setupDistraction(
+      'youtube-suggestions',
       'ytd-watch-flexy, ytd-app',  // From watch skeleton
       YouTubeUtils.isVideoPage,
       YouTubeUtils.haveSuggestionsLoaded,
@@ -177,9 +164,10 @@ export default class YouTubeController extends WebsiteController {
     );
   }
 
-  // Comments Focus (Watch: Observer on primary for comment section loads)
+  // Comments Focus (Watch: Watch for distraction in primary for comment section loads)
   focusComments() {
-    this.createObserver(
+    this.setupDistraction(
+      'youtube-comments',
       'ytd-watch-flexy #primary, #primary',  // From watch skeleton
       YouTubeUtils.isVideoPage,
       YouTubeUtils.haveCommentsLoaded,
@@ -188,9 +176,10 @@ export default class YouTubeController extends WebsiteController {
     );
   }
 
-  // Panels Focus (Watch: Observer on app for miniplayer insertions)
+  // Panels Focus (Watch: Watch for distraction in app for miniplayer insertions)
   focusPanels() {
-    this.createObserver(
+    this.setupDistraction(
+      'youtube-panels',
       'ytd-app, body',  // Miniplayer floats under app
       YouTubeUtils.isVideoPage,
       YouTubeUtils.havePanelsLoaded,
@@ -320,7 +309,7 @@ export default class YouTubeController extends WebsiteController {
 
   setPanelsVisibility(visible: boolean) {
     this.setElementVisibility(
-      YouTubeUtils.getPanels(),  // Miniplayer or legacy
+      YouTubeUtils.getPanels(), 
       visible,
       this.panelElements,
       'panelElements'

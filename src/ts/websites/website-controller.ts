@@ -1,9 +1,18 @@
 import { FocusMode } from './../focus/types'
 import utils from './utils'
 
+export interface DistractionTarget {
+  target: Element | string;
+  whenFound: () => void;
+  options?: MutationObserverInit;
+}
+
 export default abstract class WebsiteController {
   // Track intervals for automatic cleanup
   protected intervals: Map<string, number> = new Map()
+  
+  // Simple distraction watching
+  protected distractionWatcher: DistractionWatcher = new DistractionWatcher()
   
   renderFocusMode(focusMode: FocusMode) {
     switch (focusMode) {
@@ -82,17 +91,76 @@ export default abstract class WebsiteController {
   // Common unfocus cleanup
   protected performCommonUnfocus(): void {
     this.clearAllIntervals()
+    this.distractionWatcher.stopWatchingAll()
   }
 
   // Shared method to clear all intervals
-  protected clearAllIntervals(): void {
+  protected clearAllIntervals() {
     this.intervals.forEach((intervalId) => {
       window.clearInterval(intervalId)
     })
     this.intervals.clear()
   }
 
-  abstract focus(): void
-  abstract unfocus(): void
-  abstract clearIntervals(): void
+  // Distraction watching helper methods
+  protected watchFor(name: string, distractionTarget: DistractionTarget): void {
+    this.distractionWatcher.watchFor(name, distractionTarget)
+  }
+
+  protected stopWatching(name: string): void {
+    this.distractionWatcher.stopWatching(name)
+  }
+
+  protected stopWatchingAll(): void {
+    this.distractionWatcher.stopWatchingAll()
+  }
+
+  protected abstract focus(): void
+  protected abstract unfocus(): void
+  protected abstract clearIntervals(): void
+}
+
+class DistractionWatcher {
+  private observers: Map<string, MutationObserver> = new Map();
+
+  watchFor(name: string, distractionTarget: DistractionTarget): void {
+    this.stopWatching(name);
+
+    const { target, whenFound, options = { childList: true, subtree: true } } = distractionTarget;
+    
+    // Resolve target element
+    const targetElement = typeof target === 'string' 
+      ? document.querySelector(target) || document.body 
+      : target;
+
+    const observer = new MutationObserver(() => {
+      whenFound();
+    });
+
+    observer.observe(targetElement, options);
+    this.observers.set(name, observer);
+
+    // Execute callback immediately for initial state
+    whenFound();
+  }
+
+  stopWatching(name: string): void {
+    const observer = this.observers.get(name);
+    if (observer) {
+      observer.disconnect();
+      this.observers.delete(name);
+    }
+  }
+
+  stopWatchingAll(): void {
+    this.observers.forEach((_, name) => this.stopWatching(name));
+  }
+
+  isWatching(name: string): boolean {
+    return this.observers.has(name);
+  }
+
+  watchingCount(): number {
+    return this.observers.size;
+  }
 }
