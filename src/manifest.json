@@ -1,6 +1,6 @@
 {
-  "name": "buyao-esbuild",
-  "version": "0.9.8",
+  "name": "focused-browsing",
+  "version": "0.91.0",
   "manifest_version": 3,
   "description": "Focused Browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
   "action": {
@@ -29,10 +29,8 @@
     }
   ],
   "host_permissions": [
-    "*://*.twitter.com/*",
     "*://*.linkedin.com/*",
-    "*://*.youtube.com/*",
-    "*://*.github.com/*"
+    "*://*.youtube.com/*"
   ],
   "permissions": [
     "tabs",
