@@ -2,7 +2,7 @@
 
 ## ✨ What is Focused Browsing?
 
-Focused Browsing (buyao) is a **modern, clean, and maintainable** web extension that helps professionals and creators maintain productivity by intelligently hiding distracting content on social media and professional networking sites. 
+Focused Browsing is a **modern, clean, and maintainable** web extension that helps professionals and creators maintain productivity by intelligently hiding distracting content on social media and professional networking sites. 
 
 Instead of blocking entire websites, it **surgically removes** the addictive feeds while preserving the core functionality you need - all with a **beautiful, refactored codebase** that's a joy to walk through.
 

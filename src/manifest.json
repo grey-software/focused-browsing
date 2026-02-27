@@ -1,6 +1,6 @@
 {
   "name": "focused-browsing",
-  "version": "0.91.0",
+  "version": "0.91.1",
   "manifest_version": 3,
   "description": "Focused Browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
   "action": {

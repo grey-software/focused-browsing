@@ -1,0 +1,104 @@
+{
+  "generatedAt": "2026-02-27T11:35:56.819Z",
+  "thresholds": {
+    "warn": {
+      "maxWarningRatio": 0.2,
+      "maxNonCriticalFailures": 1
+    },
+    "fail": {
+      "maxWarningRatio": 0.5,
+      "maxCriticalFailures": 0,
+      "maxNonCriticalFailures": 3
+    }
+  },
+  "thresholdEvaluation": {
+    "warnings": [
+      "Warning ratio 0.333 exceeded warn threshold 0.200"
+    ],
+    "failures": []
+  },
+  "summary": {
+    "pagesEvaluated": 3,
+    "totalFeatures": 6,
+    "passingFeatures": 3,
+    "warningFeatures": 2,
+    "failingFeatures": 1,
+    "criticalFailures": 0,
+    "nonCriticalFailures": 1,
+    "warningRatio": 0.3333333333333333
+  },
+  "pages": [
+    {
+      "pageId": "linkedin-home",
+      "site": "linkedin",
+      "scenario": "home",
+      "status": "fail",
+      "features": [
+        {
+          "id": "feed-container",
+          "description": "Main feed container remains queryable.",
+          "severity": "critical",
+          "status": "pass",
+          "matchedSelector": "[data-testid=\"mainFeed\"]",
+          "matchedCount": 1
+        },
+        {
+          "id": "panel-container",
+          "description": "Sidebar panel remains queryable.",
+          "severity": "non-critical",
+          "status": "fail",
+          "matchedSelector": null,
+          "matchedCount": 0
+        }
+      ]
+    },
+    {
+      "pageId": "youtube-home",
+      "site": "youtube",
+      "scenario": "home",
+      "status": "pass",
+      "features": [
+        {
+          "id": "feed-container",
+          "description": "Homepage feed container remains queryable.",
+          "severity": "critical",
+          "status": "pass",
+          "matchedSelector": "ytd-two-column-browse-results-renderer #primary",
+          "matchedCount": 1
+        }
+      ]
+    },
+    {
+      "pageId": "youtube-watch",
+      "site": "youtube",
+      "scenario": "watch",
+      "status": "warn",
+      "features": [
+        {
+          "id": "suggestions-container",
+          "description": "Watch-page suggestions container remains queryable.",
+          "severity": "critical",
+          "status": "warn",
+          "matchedSelector": "ytd-watch-next-secondary-results-renderer",
+          "matchedCount": 1
+        },
+        {
+          "id": "comments-container",
+          "description": "Watch-page comments container remains queryable.",
+          "severity": "critical",
+          "status": "warn",
+          "matchedSelector": "ytd-comments",
+          "matchedCount": 2
+        },
+        {
+          "id": "panel-container",
+          "description": "Miniplayer panel selectors remain queryable.",
+          "severity": "non-critical",
+          "status": "pass",
+          "matchedSelector": "ytd-miniplayer.ytdMiniplayerComponentHost",
+          "matchedCount": 1
+        }
+      ]
+    }
+  ]
+}

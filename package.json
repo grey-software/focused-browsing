@@ -1,7 +1,7 @@
 {
-  "name": "buyao",
-  "version": "0.9.8",
-  "description": "buyao is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
+  "name": "focused-browsing",
+  "version": "0.91.1",
+  "description": "Focused Browsing is a web extension that helps you focus on your creative and professional goals by hiding distracting web elements on popular social websites.",
   "scripts": {
     "build": "node build.js",
     "dev": "node build.js --watch",

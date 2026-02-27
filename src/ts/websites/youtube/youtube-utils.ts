@@ -1,29 +1,52 @@
+export const YOUTUBE_HOME_FEED_SELECTORS = [
+  'ytd-two-column-browse-results-renderer #primary',
+  'ytd-browse #primary',
+  '#contents.ytd-rich-grid-renderer',
+]
+
+export const YOUTUBE_SUGGESTIONS_SELECTORS = [
+  'ytd-watch-flexy #secondary #secondary-inner',
+  'ytd-watch-flexy #secondary',
+  'ytd-watch-next-secondary-results-renderer',
+]
+
+export const YOUTUBE_COMMENTS_SELECTORS = [
+  'ytd-watch-flexy #primary-inner ytd-comments',
+  'ytd-comments',
+  '#comments',
+]
+
+export const YOUTUBE_PANEL_SELECTORS = [
+  'ytd-miniplayer.ytdMiniplayerComponentHost',
+  'ytd-app ytd-miniplayer',
+]
+
 function getFeed(): Element | null {
   // Primary selector from skeleton
-  const primary = document.querySelector('ytd-two-column-browse-results-renderer #primary');
+  const primary = document.querySelector(YOUTUBE_HOME_FEED_SELECTORS[0]);
   if (primary) return primary;
 
   // Fallback for variations (e.g., rich grid)
-  return document.querySelector('ytd-browse #primary') || document.querySelector('#contents.ytd-rich-grid-renderer');
+  return document.querySelector(YOUTUBE_HOME_FEED_SELECTORS[1]) || document.querySelector(YOUTUBE_HOME_FEED_SELECTORS[2]);
 }
 
 function getSuggestions(): Element | null {
   // Primary from skeleton
-  let suggestions = document.querySelector('ytd-watch-flexy #secondary');
+  let suggestions = document.querySelector(YOUTUBE_SUGGESTIONS_SELECTORS[1]);
   if (suggestions) return suggestions.querySelector('#secondary-inner') || suggestions;
 
   // Legacy fallback (original)
-  const legacy = document.querySelector('ytd-watch-next-secondary-results-renderer');
+  const legacy = document.querySelector(YOUTUBE_SUGGESTIONS_SELECTORS[2]);
   return legacy ? (legacy.children[1] as Element) || legacy : null;
 }
 
 function getVideoComments(): Element | null {
   // Primary from skeleton
-  let comments = document.querySelector('ytd-watch-flexy #primary-inner ytd-comments');
+  let comments = document.querySelector(YOUTUBE_COMMENTS_SELECTORS[0]);
   if (comments) return comments;
 
   // Standard fallback
-  return document.querySelector('ytd-comments') || document.querySelector('#comments');
+  return document.querySelector(YOUTUBE_COMMENTS_SELECTORS[1]) || document.querySelector(YOUTUBE_COMMENTS_SELECTORS[2]);
 }
 
 function hasFeedLoaded(): boolean {
@@ -85,8 +108,8 @@ function isDarkTheme(): boolean {
 
 function getPanels(): Element | null {
   // Miniplayer as elegant "panel" equivalent (floating distraction)
-  return document.querySelector('ytd-miniplayer.ytdMiniplayerComponentHost') || 
-         document.querySelector('ytd-app ytd-miniplayer');
+  return document.querySelector(YOUTUBE_PANEL_SELECTORS[0]) || 
+         document.querySelector(YOUTUBE_PANEL_SELECTORS[1]);
 }
 
 function havePanelsLoaded(): boolean {

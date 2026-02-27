@@ -1,6 +1,6 @@
 # Code Walkthrough: Focused Browsing Extension 
 
-> A comprehensive guide to the **beautifully refactored** architecture, clean code patterns, and elegant implementations of the Focused Browsing (buyao) web extension.
+> A comprehensive guide to the **beautifully refactored** architecture, clean code patterns, and elegant implementations of the Focused Browsing web extension.
 
 ## Table of Contents
 
