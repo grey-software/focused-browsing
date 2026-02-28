@@ -1,306 +1,112 @@
 import YouTubeUtils from './youtube-utils'
 import WebsiteController from '../website-controller'
-import { DistractionTarget } from '../distraction-watcher'
-import { browser } from 'webextension-polyfill-ts';
-import quoteUtils from '../../quotes';
-import { hideElementChildren, restoreElementChildren, clearElements } from '../element-utils';
 
 export default class YouTubeController extends WebsiteController {
-  // Element storage for distraction management
-  suggestionElements: Node[] = [];
-  commentElements: Node[] = [];
-  panelElements: Node[] = [];  // Now for miniplayer/panels
-  hiddenFeedElements: HTMLElement[] = [];
-  
-  // Quote management
-  quoteElement: HTMLDivElement | null = null;
-  isFeedBlocked: boolean = false;
-  isCreatingQuote: boolean = false; // Guard against async race condition
+  protected readonly quotePosition = 'append' as const
 
-  constructor() {
-    super()
-    this.addStorageListener();
+  protected getFeedElement(): HTMLElement | null {
+    return YouTubeUtils.getFeed() as HTMLElement | null
   }
 
-  addStorageListener() {
-    browser.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName === 'local') {
-        if (changes.showQuote) {
-          this.handleShowQuoteChange(changes.showQuote.newValue);
-        }
-        if (changes.textSize) {
-          this.handleTextSizeChange(changes.textSize.newValue);
-        }
-      }
-    });
-  }
+  protected applyQuoteStyles(quoteElement: HTMLDivElement): void {
+    const isDark = YouTubeUtils.isDarkTheme()
 
-  handleShowQuoteChange(showQuote: boolean) {
-    if (showQuote) {
-      if (this.isFeedBlocked && !this.quoteElement) {
-        const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
-        if (feedParentNode) {
-          this.injectQuote(feedParentNode);
-        }
-      }
-    } else {
-      this.quoteElement?.remove();
-      this.quoteElement = null;
-      this.isCreatingQuote = false; // Reset guard when removing quote via settings
+    // No background — inherit YouTube's own page background
+    quoteElement.style.background = 'transparent'
+    quoteElement.style.textAlign = 'left'
+    quoteElement.style.padding = '48px 24px'
+    quoteElement.style.width = '100%'
+    quoteElement.style.boxSizing = 'border-box'
+
+    const quoteText = quoteElement.querySelector('p:first-child') as HTMLElement
+    const quoteSource = quoteElement.querySelector('p:last-child') as HTMLElement
+    if (quoteText) {
+      quoteText.style.color = isDark ? '#f1f1f1' : '#0f0f0f'
+      quoteText.style.marginBottom = '8px'
     }
-  }
-
-  handleTextSizeChange(textSize: string) {
-    if (this.quoteElement) {
-      quoteUtils.updateQuoteTextSize(this.quoteElement, textSize);
+    if (quoteSource) {
+      quoteSource.style.color = isDark ? '#aaa' : '#606060'
     }
-  }
-
-  // Simple distraction setup using standardized base class method
-  private setupDistraction(
-    name: string,
-    targetSelector: string,
-    pageCheck: (url: string) => boolean,
-    loadCheck: () => boolean,
-    hiddenCheck: () => boolean,
-    blockAction: () => void,
-    config: MutationObserverInit = { childList: true, subtree: true }
-  ): void {
-    if (!pageCheck(document.URL)) return;  // Skip if wrong page
-
-    const distractionTarget: DistractionTarget = {
-      target: targetSelector,
-      whenFound: () => {
-        if (loadCheck() && !hiddenCheck()) {
-          blockAction();
-        }
-      },
-      options: config
-    };
-
-    this.watchFor(name, distractionTarget);
   }
 
   focus() {
-    console.log('YouTubeController: Entering focus mode.');
-    console.log('Current URL:', document.URL);
-    console.log('Is homepage?', YouTubeUtils.isHomePage(document.URL));
-    console.log('Is video page?', YouTubeUtils.isVideoPage(document.URL));
-    
-    clearElements(this.suggestionElements);
-    clearElements(this.commentElements);
-    clearElements(this.panelElements);
-    
-    // Immediate blocking for better user experience (like original intervals)
-    const url = document.URL;
+    console.log('YouTubeController: Entering focus mode.')
+
+    // Immediate blocking for visible content
+    const url = document.URL
     if (YouTubeUtils.isHomePage(url)) {
-      // Immediate feed blocking on homepage
       if (YouTubeUtils.hasFeedLoaded() && !YouTubeUtils.isFeedHidden()) {
-        this.setFeedVisibility(false);
+        this.setFeedVisibility(false)
       }
     } else if (YouTubeUtils.isVideoPage(url)) {
-      // Immediate blocking on video pages
       if (YouTubeUtils.haveSuggestionsLoaded() && !YouTubeUtils.areSuggestionsHidden()) {
-        this.setSuggestionsVisibility(false);
+        this.hideRegion(YouTubeUtils.getSuggestions() as HTMLElement)
       }
       if (YouTubeUtils.haveCommentsLoaded() && !YouTubeUtils.areCommentsHidden()) {
-        this.setCommentsVisibility(false);
+        this.hideRegion(YouTubeUtils.getVideoComments() as HTMLElement)
       }
       if (YouTubeUtils.havePanelsLoaded() && !YouTubeUtils.arePanelsHidden()) {
-        this.setPanelsVisibility(false);
+        this.hideRegion(YouTubeUtils.getPanels() as HTMLElement)
       }
     }
-    
+
     // Set up observers for dynamic content
-    this.focusFeed();
-    this.focusSuggestions();
-    this.focusComments();
-    this.focusPanels();
+    this.setupDistraction({
+      name: 'youtube-feed',
+      observeTarget: 'ytd-two-column-browse-results-renderer, ytd-browse',
+      isOnCorrectPage: () => YouTubeUtils.isHomePage(document.URL),
+      hasLoaded: YouTubeUtils.hasFeedLoaded,
+      isAlreadyHidden: YouTubeUtils.isFeedHidden,
+      hide: () => this.setFeedVisibility(false),
+    })
+
+    this.setupDistraction({
+      name: 'youtube-suggestions',
+      observeTarget: 'ytd-watch-flexy, ytd-app',
+      isOnCorrectPage: () => YouTubeUtils.isVideoPage(document.URL),
+      hasLoaded: YouTubeUtils.haveSuggestionsLoaded,
+      isAlreadyHidden: YouTubeUtils.areSuggestionsHidden,
+      hide: () => this.hideRegion(YouTubeUtils.getSuggestions() as HTMLElement),
+    })
+
+    this.setupDistraction({
+      name: 'youtube-comments',
+      observeTarget: 'ytd-watch-flexy #primary, #primary',
+      isOnCorrectPage: () => YouTubeUtils.isVideoPage(document.URL),
+      hasLoaded: YouTubeUtils.haveCommentsLoaded,
+      isAlreadyHidden: YouTubeUtils.areCommentsHidden,
+      hide: () => this.hideRegion(YouTubeUtils.getVideoComments() as HTMLElement),
+    })
+
+    this.setupDistraction({
+      name: 'youtube-panels',
+      observeTarget: 'ytd-app, body',
+      isOnCorrectPage: () => YouTubeUtils.isVideoPage(document.URL),
+      hasLoaded: YouTubeUtils.havePanelsLoaded,
+      isAlreadyHidden: YouTubeUtils.arePanelsHidden,
+      hide: () => this.hideRegion(YouTubeUtils.getPanels() as HTMLElement),
+    })
   }
 
   unfocus() {
-    console.log('YouTubeController: Exiting focus mode.');
-    const url = document.URL;
+    console.log('YouTubeController: Exiting focus mode.')
+    this.stopWatchingAll()
+
+    const url = document.URL
     if (YouTubeUtils.isHomePage(url)) {
-      this.stopWatchingAll();
-      this.setFeedVisibility(true);
-      this.isFeedBlocked = false;
+      this.setFeedVisibility(true)
     } else if (YouTubeUtils.isVideoPage(url)) {
-      this.stopWatchingAll();
-      this.setSuggestionsVisibility(true);
-      this.setCommentsVisibility(true);
-      this.setPanelsVisibility(true);
+      this.showRegion(YouTubeUtils.getSuggestions() as HTMLElement)
+      this.showRegion(YouTubeUtils.getVideoComments() as HTMLElement)
+      this.showRegion(YouTubeUtils.getPanels() as HTMLElement)
     }
   }
 
-  clearObservers() {
-    this.stopWatchingAll();
+  private hideRegion(el: HTMLElement | null): void {
+    if (el) this.hideElement(el)
   }
 
-  // Feed Focus (Homepage: Watch for distraction in browse renderer)
-  focusFeed() {
-    this.setupDistraction(
-      'youtube-feed',
-      'ytd-two-column-browse-results-renderer, ytd-browse',  // From home skeleton
-      YouTubeUtils.isHomePage,
-      YouTubeUtils.hasFeedLoaded,
-      YouTubeUtils.isFeedHidden,
-      () => this.setFeedVisibility(false)
-    );
-  }
-
-  // Suggestions Focus (Watch: Watch for distraction in watch-flexy for sidebar additions)
-  focusSuggestions() {
-    this.setupDistraction(
-      'youtube-suggestions',
-      'ytd-watch-flexy, ytd-app',  // From watch skeleton
-      YouTubeUtils.isVideoPage,
-      YouTubeUtils.haveSuggestionsLoaded,
-      YouTubeUtils.areSuggestionsHidden,
-      () => this.setSuggestionsVisibility(false)
-    );
-  }
-
-  // Comments Focus (Watch: Watch for distraction in primary for comment section loads)
-  focusComments() {
-    this.setupDistraction(
-      'youtube-comments',
-      'ytd-watch-flexy #primary, #primary',  // From watch skeleton
-      YouTubeUtils.isVideoPage,
-      YouTubeUtils.haveCommentsLoaded,
-      YouTubeUtils.areCommentsHidden,
-      () => this.setCommentsVisibility(false)
-    );
-  }
-
-  // Panels Focus (Watch: Watch for distraction in app for miniplayer insertions)
-  focusPanels() {
-    this.setupDistraction(
-      'youtube-panels',
-      'ytd-app, body',  // Miniplayer floats under app
-      YouTubeUtils.isVideoPage,
-      YouTubeUtils.havePanelsLoaded,
-      YouTubeUtils.arePanelsHidden,
-      () => this.setPanelsVisibility(false)
-    );
-  }
-
-  // Existing Block/Restore Methods (Kept, with Minor Elegance: Better Error Handling)
-  hideFeed(feedParentNode: HTMLElement) {
-    if (this.isFeedBlocked) return;
-    this.isFeedBlocked = true;
-    
-    const feedChildren = hideElementChildren(feedParentNode);
-    // Filter out empty/non-content children and store as HTMLElements
-    this.hiddenFeedElements = feedChildren.filter((child) => {
-      const htmlChild = child as HTMLElement;
-      return htmlChild.children.length > 0 || htmlChild.textContent?.trim();
-    }) as HTMLElement[];
-  }
-
-  showFeed() {
-    this.quoteElement?.remove();
-    this.quoteElement = null;
-    this.isCreatingQuote = false; // Reset guard when removing quote
-    
-    // Restore removed children
-    const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
-    if (feedParentNode) {
-      restoreElementChildren(feedParentNode, this.hiddenFeedElements);
-    }
-    
-    this.hiddenFeedElements = [];
-    this.isFeedBlocked = false;
-  }
-
-  async injectQuote(feedParentNode: HTMLElement) {
-    const settings = await browser.storage.local.get('showQuote');
-    if (settings.showQuote === false) return;
-
-    // Guard against race condition - if we're already creating a quote or one exists, skip
-    if (!this.quoteElement && !this.isCreatingQuote) {
-      this.isCreatingQuote = true; // Set guard immediately
-      
-      try {
-        this.quoteElement = await quoteUtils.createSimpleQuoteElement();
-        
-        const isDark = YouTubeUtils.isDarkTheme();
-        const backgroundColor = isDark ? '#0f0f0f' : '#f9f9f9';
-        
-        this.quoteElement.style.background = backgroundColor;
-        this.quoteElement.style.marginTop = '24px';
-        this.quoteElement.style.padding = '16px';  // Elegant: Add padding for readability
-        this.quoteElement.style.borderRadius = '8px';  // Subtle integration
-
-        const quoteText = this.quoteElement.querySelector('p:first-child') as HTMLElement;
-        const quoteSource = this.quoteElement.querySelector('p:last-child') as HTMLElement;
-
-        if (quoteText && quoteSource) {
-          const textColor = isDark ? '#fff' : '#000';
-          const sourceColor = isDark ? '#ccc' : '#666';
-          quoteText.style.color = textColor;
-          quoteSource.style.color = sourceColor;
-          quoteText.style.marginBottom = '4px';  // Elegant spacing
-        }
-
-        // Append to end for natural flow
-        feedParentNode.appendChild(this.quoteElement);
-      } finally {
-        this.isCreatingQuote = false; // Clear guard
-      }
-    }
-  }
-
-  async setFeedVisibility(visible: boolean) {
-    const feedParentNode = YouTubeUtils.getFeed() as HTMLElement;
-    if (!feedParentNode) return;
-
-    if (!visible) {
-      this.hideFeed(feedParentNode);
-      await this.injectQuote(feedParentNode);
-    } else {
-      this.showFeed();
-    }
-  }
-
-  // Generic Visibility Setters (Clean utility-based approach)
-  private setElementVisibility(
-    element: Element | null,
-    visible: boolean,
-    arrayName: keyof Pick<YouTubeController, 'suggestionElements' | 'commentElements' | 'panelElements'>
-  ) {
-    if (!element) return;  // Elegant: Skip if not found
-
-    if (!visible) {
-      const children = hideElementChildren(element);
-      this[arrayName] = children;  // Store for restore
-    } else {
-      restoreElementChildren(element, this[arrayName] as Node[]);
-      (this[arrayName] as Node[]) = [];  // Clear
-    }
-  }
-
-  setSuggestionsVisibility(visible: boolean) {
-    this.setElementVisibility(
-      YouTubeUtils.getSuggestions(),
-      visible,
-      'suggestionElements'
-    );
-  }
-
-  setCommentsVisibility(visible: boolean) {
-    this.setElementVisibility(
-      YouTubeUtils.getVideoComments(),
-      visible,
-      'commentElements'
-    );
-  }
-
-  setPanelsVisibility(visible: boolean) {
-    this.setElementVisibility(
-      YouTubeUtils.getPanels(), 
-      visible,
-      'panelElements'
-    );
+  private showRegion(el: HTMLElement | null): void {
+    if (el) this.showElement(el)
   }
 }

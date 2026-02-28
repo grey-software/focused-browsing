@@ -63,13 +63,14 @@ function hasAdLoaded(): boolean {
 function isFeedHidden(): boolean {
   const feed = getLinkedInFeed()
   if (!feed) return false
-  const feedElement = feed as HTMLElement
-  const style = window.getComputedStyle(feedElement)
-  const feedIsHidden = style.display === 'none' || style.visibility === 'hidden' || feedElement.hidden
-  const hasHiddenClass = feedElement.classList.contains('focus-mode-linkedin-feed-hidden')
-  const focusQuote = document.querySelector('.focus-quote, .focus-quote-simple, .focus-mode-linkedin-quote')
-  const hasInjectedQuote = !!document.getElementById('focus-mode-linkedin-quote')
-  return feedIsHidden || hasHiddenClass || !!focusQuote || hasInjectedQuote
+  // Feed children are individually hidden via style.display — check first non-quote child
+  const firstContent = Array.from(feed.children).find(
+    (child) => !child.classList.contains('focus-mode-quote') &&
+               !child.classList.contains('focus-mode-linkedin-quote')
+  ) as HTMLElement | undefined
+  if (firstContent && firstContent.style.display === 'none') return true
+  // Also check for presence of quote (indicates focus mode is active)
+  return !!document.getElementById('focus-mode-linkedin-quote')
 }
 
 function isPanelHidden(): boolean {

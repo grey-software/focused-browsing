@@ -61,7 +61,12 @@ function hasFeedLoaded(): boolean {
 
 function isFeedHidden(): boolean {
   const feed = getFeed() as HTMLElement | null;
-  return !!(feed && (feed.style.display === 'none' || feed.children.length === 0));
+  if (!feed) return false;
+  // Feed children are individually hidden via style.display — check first non-quote child
+  const firstContent = Array.from(feed.children).find(
+    (child) => !child.classList.contains('focus-mode-quote')
+  ) as HTMLElement | undefined;
+  return !!(firstContent && firstContent.style.display === 'none');
 }
 
 function haveSuggestionsLoaded(): boolean {
@@ -76,7 +81,7 @@ function haveSuggestionsLoaded(): boolean {
 
 function areSuggestionsHidden(): boolean {
   const suggestions = getSuggestions() as HTMLElement | null;
-  return !!(suggestions && (suggestions.style.display === 'none' || suggestions.children.length <= 1));
+  return !!(suggestions && suggestions.style.display === 'none');
 }
 
 function haveCommentsLoaded(): boolean {
@@ -91,7 +96,7 @@ function haveCommentsLoaded(): boolean {
 
 function areCommentsHidden(): boolean {
   const comments = getVideoComments() as HTMLElement | null;
-  return !!(comments && (comments.style.display === 'none' || comments.children.length === 0));
+  return !!(comments && comments.style.display === 'none');
 }
 
 function isHomePage(url: string): boolean {
@@ -124,7 +129,7 @@ function havePanelsLoaded(): boolean {
 
 function arePanelsHidden(): boolean {
   const panels = getPanels() as HTMLElement | null;
-  return !!(panels && (panels.style.display === 'none' || panels.children.length === 0));
+  return !!(panels && panels.style.display === 'none');
 }
 
 export default {
