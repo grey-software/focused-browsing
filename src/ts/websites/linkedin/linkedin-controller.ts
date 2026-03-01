@@ -100,7 +100,9 @@ export default class LinkedInController extends WebsiteController {
 
   /** Hides panels found via CSS selectors (PANEL_SELECTORS). */
   private hidePanels(): void {
-    LinkedInUtils.getLinkedInPanels().forEach((panel) => this.hideElement(panel))
+    LinkedInUtils.getLinkedInPanels().forEach((panel) => {
+      this.hideElement(panel)
+    })
   }
 }
 
