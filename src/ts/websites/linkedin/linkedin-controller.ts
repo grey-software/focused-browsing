@@ -38,7 +38,7 @@ export default class LinkedInController extends WebsiteController {
       if (LinkedInUtils.hasFeedLoaded() && !LinkedInUtils.isFeedHidden()) {
         this.setFeedVisibility(false)
       }
-      this.hidePanelCandidates()
+      this.hidePanels()
     }
 
     // Targeted observers — one per distraction region
@@ -55,10 +55,9 @@ export default class LinkedInController extends WebsiteController {
       name: 'linkedin-panel',
       observeTarget: PANEL_OBSERVE_TARGETS,
       isOnCorrectPage: () => LinkedInUtils.isHomePage(document.URL),
-      // Panel discovery uses DOM walking, not CSS selectors — always attempt
-      hasLoaded: () => !!this.getFeedElement(),
-      isAlreadyHidden: () => false,
-      hide: () => this.hidePanelCandidates(),
+      hasLoaded: () => LinkedInUtils.getLinkedInPanels().length > 0,
+      isAlreadyHidden: LinkedInUtils.arePanelsHidden,
+      hide: () => this.hidePanels(),
     })
   }
 
@@ -74,7 +73,7 @@ export default class LinkedInController extends WebsiteController {
       // Show feed (in case coming from full focus)
       this.setFeedVisibility(true)
       // Hide side panels
-      this.hidePanelCandidates()
+      this.hidePanels()
     }
 
     // Only watch for panel distractions, not feed
@@ -82,9 +81,9 @@ export default class LinkedInController extends WebsiteController {
       name: 'linkedin-panel',
       observeTarget: PANEL_OBSERVE_TARGETS,
       isOnCorrectPage: () => LinkedInUtils.isHomePage(document.URL),
-      hasLoaded: () => !!this.getFeedElement(),
-      isAlreadyHidden: () => false,
-      hide: () => this.hidePanelCandidates(),
+      hasLoaded: () => LinkedInUtils.getLinkedInPanels().length > 0,
+      isAlreadyHidden: LinkedInUtils.arePanelsHidden,
+      hide: () => this.hidePanels(),
     })
   }
 
@@ -99,51 +98,9 @@ export default class LinkedInController extends WebsiteController {
     }
   }
 
-  /** Walks the DOM to find and hide right-side panel elements. */
-  private hidePanelCandidates(): void {
-    const feed = this.getFeedElement()
-    if (!feed) return
-
-    const panels = this.getRightPanelCandidates(feed)
-    panels.forEach((panel) => this.hideElement(panel))
-  }
-
-  /** Walks up the DOM from the feed to find the row container that holds both feed and panel columns. */
-  private findFeedRowContainer(feedElement: HTMLElement): HTMLElement | null {
-    let current: HTMLElement | null = feedElement.parentElement
-    for (let depth = 0; depth < 8 && current; depth += 1) {
-      const children = Array.from(current.children)
-        .filter((child): child is HTMLElement => child instanceof HTMLElement)
-
-      const hasFeedChild = children.some((child) => child.contains(feedElement))
-      const nonFeedChildren = children.filter((child) => !child.contains(feedElement))
-
-      if (hasFeedChild && nonFeedChildren.length > 0) {
-        return current
-      }
-
-      current = current.parentElement
-    }
-    return null
-  }
-
-  /** Returns sibling elements to the right of the feed column, excluding quote elements. */
-  private getRightPanelCandidates(feedElement: HTMLElement): HTMLElement[] {
-    const feedRow = this.findFeedRowContainer(feedElement)
-    if (!feedRow) return []
-
-    const rowChildren = Array.from(feedRow.children)
-      .filter((child): child is HTMLElement => child instanceof HTMLElement)
-
-    const feedColumnIndex = rowChildren.findIndex((child) => child.contains(feedElement))
-    if (feedColumnIndex === -1) return []
-
-    return rowChildren
-      .filter((_, index) => index > feedColumnIndex)
-      .filter((child) => child.children.length > 0)
-      .filter((child) => child.id !== this.quoteElementId)
-      .filter((child) => !child.classList.contains('focus-quote'))
-      .filter((child) => !child.classList.contains('focus-quote-simple'))
+  /** Hides panels found via CSS selectors (PANEL_SELECTORS). */
+  private hidePanels(): void {
+    LinkedInUtils.getLinkedInPanels().forEach((panel) => this.hideElement(panel))
   }
 }
 

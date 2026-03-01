@@ -12,9 +12,6 @@ export const PANEL_SELECTORS = [
   '.scaffold-layout-container__aside'
 ]
 
-export const AD_SELECTORS: string[] = []
-export const FEED_AD_SELECTORS: string[] = []
-
 function getLinkedInFeed(): Element | null {
   for (const selector of FEED_SELECTORS) {
     const element = document.querySelector(selector)
@@ -27,37 +24,20 @@ function getLinkedInFeed(): Element | null {
   return null
 }
 
-function getLinkedInPanel(): Element | null {
+/** Returns all panel elements matching PANEL_SELECTORS. */
+function getLinkedInPanels(): HTMLElement[] {
+  const panels: HTMLElement[] = []
   for (const selector of PANEL_SELECTORS) {
-    const element = document.querySelector(selector)
-    if (element) {
-      console.log(`LinkedIn panel found with selector: ${selector}`)
-      return element
-    }
+    const el = document.querySelector(selector) as HTMLElement | null
+    if (el) panels.push(el)
   }
-
-  console.log('LinkedIn panel not found with any selector')
-  return null
-}
-
-function getAdHeader(): Element | null {
-  return null
+  return panels
 }
 
 function hasFeedLoaded(): boolean {
   const feed = getLinkedInFeed()
   if (!feed || !feed.children) return false
   return feed.children.length >= 1
-}
-
-function hasPanelLoaded(): boolean {
-  const panel = getLinkedInPanel()
-  if (!panel || !panel.children) return false
-  return panel.children.length >= 1
-}
-
-function hasAdLoaded(): boolean {
-  return false
 }
 
 function isFeedHidden(): boolean {
@@ -73,86 +53,22 @@ function isFeedHidden(): boolean {
   return !!document.getElementById('focus-mode-linkedin-quote')
 }
 
-function isPanelHidden(): boolean {
-  const panel = getLinkedInPanel()
-  if (!panel) return true
-  const element = panel as HTMLElement
-  const style = window.getComputedStyle(element)
-  return style.display === 'none' || style.visibility === 'hidden' || element.hidden
-}
-
-function isAdHidden(): boolean {
-  return true
+function arePanelsHidden(): boolean {
+  const panels = getLinkedInPanels()
+  return panels.length > 0 && panels.every(p => p.style.display === 'none')
 }
 
 function isHomePage(url: string): boolean {
-  if (url.includes('linkedin.com')) {
-    // More permissive LinkedIn homepage detection
-    const isHome = url.includes('/feed') || 
-                   url === 'https://www.linkedin.com/' || 
-                   url === 'https://www.linkedin.com/home' ||
-                   url === 'https://linkedin.com/' ||
-                   url === 'https://linkedin.com/home' ||
-                   url.match(/https:\/\/(www\.)?linkedin\.com\/?$/) ||
-                   url.match(/https:\/\/(www\.)?linkedin\.com\/feed/) ||
-                   url.match(/https:\/\/(www\.)?linkedin\.com\/home/);
-    
-    console.log(`LinkedIn isHomePage: URL="${url}" -> ${isHome}`);
-    return !!isHome;
-  }
-  return false
-}
-
-function getFeedAdElements(): HTMLElement[] {
-  return []
-}
-
-// New utility functions for observer pattern
-function getAllObservableContainers(): Element[] {
-  const containers: Element[] = [];
-  
-  // Add feed container
-  const feed = getLinkedInFeed();
-  if (feed) {
-    containers.push(feed);
-    console.log('LinkedIn: Added feed container for observation');
-  }
-  
-  // Add panel container
-  const panel = getLinkedInPanel(); 
-  if (panel) {
-    containers.push(panel);
-    console.log('LinkedIn: Added panel container for observation');
-  }
-  
-  console.log(`LinkedIn: Total observable containers found: ${containers.length}`)
-  return containers
-}
-
-function isLinkedInContentLoaded(): boolean {
-  const feed = getLinkedInFeed()
-  const panel = getLinkedInPanel()
-  
-  // Consider content loaded if we have either feed or panel
-  return !!(feed?.children?.length || panel?.children?.length)
+  return /^https:\/\/(www\.)?linkedin\.com(\/(feed|home)?)?\/?(\?.*)?$/.test(url)
 }
 
 export default {
   getLinkedInFeed,
-  getLinkedInPanel,
-  getAdHeader,
+  getLinkedInPanels,
   isFeedHidden,
-  isPanelHidden,
-  isAdHidden,
+  arePanelsHidden,
   hasFeedLoaded,
-  hasPanelLoaded,
-  hasAdLoaded,
   isHomePage,
-  getFeedAdElements,
-  getAllObservableContainers,
-  isLinkedInContentLoaded,
   FEED_SELECTORS,
   PANEL_SELECTORS,
-  AD_SELECTORS,
-  FEED_AD_SELECTORS,
 }
