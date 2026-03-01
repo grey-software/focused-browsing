@@ -13,6 +13,7 @@ export interface DistractionConfig {
   observerOptions?: MutationObserverInit
 }
 
+/** Base class for website-specific controllers that hide distracting content and inject quotes. */
 export default abstract class WebsiteController {
   // Track intervals for automatic cleanup
   protected intervals: Map<string, number> = new Map()
@@ -37,6 +38,7 @@ export default abstract class WebsiteController {
   // --- Element hiding via inline style.display ---
   // Works on all sites regardless of CSP. No <style> tag needed.
 
+  /** Hides an element via inline display:none, saving its original display value for restoration. */
   protected hideElement(el: HTMLElement): void {
     if (!this.hiddenDisplayValues.has(el)) {
       this.hiddenDisplayValues.set(el, el.style.display)
@@ -46,6 +48,7 @@ export default abstract class WebsiteController {
     }
   }
 
+  /** Restores a previously hidden element to its original display value. */
   protected showElement(el: HTMLElement): void {
     const prev = this.hiddenDisplayValues.get(el)
     if (prev !== undefined) {
@@ -60,6 +63,7 @@ export default abstract class WebsiteController {
     }
   }
 
+  /** Restores all hidden elements to their original display values and clears the tracking map. */
   protected showAllElements(): void {
     this.hiddenDisplayValues.forEach((prev, el) => {
       if (prev === '') {
@@ -75,6 +79,7 @@ export default abstract class WebsiteController {
 
   protected abstract getFeedElement(): HTMLElement | null
 
+  /** Creates and inserts a quote element into the feed if quotes are enabled. */
   protected async injectQuote(feedElement: HTMLElement): Promise<void> {
     const settings = await browser.storage.local.get('showQuote')
     if (settings.showQuote === false) return
@@ -98,6 +103,7 @@ export default abstract class WebsiteController {
     }
   }
 
+  /** Removes the quote element from the DOM and resets quote state. */
   protected removeQuote(): void {
     this.quoteElement?.remove()
     this.quoteElement = null
@@ -111,6 +117,7 @@ export default abstract class WebsiteController {
 
   // --- Storage listener ---
 
+  /** Subscribes to storage changes for showQuote and textSize settings. */
   private addStorageListener(): void {
     browser.storage.onChanged.addListener((changes, areaName) => {
       if (areaName === 'local') {
@@ -124,6 +131,7 @@ export default abstract class WebsiteController {
     })
   }
 
+  /** Injects or removes the quote when the showQuote setting changes. */
   private handleShowQuoteChange(showQuote: boolean): void {
     if (showQuote) {
       if (this.isFeedBlocked && !this.quoteElement) {
@@ -135,6 +143,7 @@ export default abstract class WebsiteController {
     }
   }
 
+  /** Updates the quote text size when the textSize setting changes. */
   private handleTextSizeChange(textSize: string): void {
     if (this.quoteElement) {
       quoteUtils.updateQuoteTextSize(this.quoteElement, textSize)
@@ -143,6 +152,7 @@ export default abstract class WebsiteController {
 
   // --- Feed hide/show ---
 
+  /** Hides all feed children except the quote element. */
   protected hideFeed(feedElement: HTMLElement): void {
     this.isFeedBlocked = true
     // Hide all direct children except the quote
@@ -154,12 +164,14 @@ export default abstract class WebsiteController {
     })
   }
 
+  /** Removes the quote and restores all hidden feed elements. */
   protected showFeed(): void {
     this.removeQuote()
     this.showAllElements()
     this.isFeedBlocked = false
   }
 
+  /** Shows or hides the feed. When hiding, also injects a quote if enabled. */
   protected async setFeedVisibility(visible: boolean): Promise<void> {
     const feed = this.getFeedElement()
     if (!feed) return
@@ -178,6 +190,7 @@ export default abstract class WebsiteController {
 
   // --- Distraction setup ---
 
+  /** Sets up a MutationObserver to detect and hide a distraction region when it appears. */
   protected setupDistraction(config: DistractionConfig): void {
     if (!config.isOnCorrectPage()) return
 
@@ -196,6 +209,7 @@ export default abstract class WebsiteController {
 
   // --- Focus mode dispatch ---
 
+  /** Dispatches to focus(), unfocus(), or customFocus() based on the current mode. */
   renderFocusMode(focusMode: FocusMode) {
     switch (focusMode) {
       case FocusMode.Focused: {
@@ -215,12 +229,14 @@ export default abstract class WebsiteController {
 
   // --- Interval management ---
 
+  /** Creates a named interval, clearing any existing one with the same name. */
   protected createInterval(name: string, callback: () => void, delay: number = 250): void {
     this.clearInterval(name)
     const intervalId = window.setInterval(callback, delay)
     this.intervals.set(name, intervalId)
   }
 
+  /** Clears a named interval if it exists. */
   protected clearInterval(name: string): void {
     const intervalId = this.intervals.get(name)
     if (intervalId) {
@@ -229,6 +245,7 @@ export default abstract class WebsiteController {
     }
   }
 
+  /** Clears all active intervals. */
   protected clearAllIntervals() {
     this.intervals.forEach((intervalId) => {
       window.clearInterval(intervalId)
@@ -238,20 +255,24 @@ export default abstract class WebsiteController {
 
   // --- Distraction watching delegates ---
 
+  /** Registers a named MutationObserver for a distraction target. */
   protected watchFor(name: string, distractionTarget: DistractionTarget): void {
     this.distractionWatcher.watchFor(name, distractionTarget)
   }
 
+  /** Disconnects a named MutationObserver. */
   protected stopWatching(name: string): void {
     this.distractionWatcher.stopWatching(name)
   }
 
+  /** Disconnects all active MutationObservers. */
   protected stopWatchingAll(): void {
     this.distractionWatcher.stopWatchingAll()
   }
 
   protected abstract focus(): void
   protected abstract unfocus(): void
+  /** Custom focus mode — override in subclass. Defaults to full focus. */
   protected customFocus(): void {
     this.focus()
   }

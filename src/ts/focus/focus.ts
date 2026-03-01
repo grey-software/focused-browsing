@@ -22,7 +22,7 @@ let stateManager: AppStateManager
 let keyPressManager: KeyPressManager
 let websiteController: WebsiteController | null = null
 
-// Export function for testing to reset global state
+/** Resets all global state for testing purposes. */
 export function resetGlobalState() {
   currentWebsite = Website.Unsupported;
   stateManager = undefined as any;
@@ -42,6 +42,7 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
   } 
 })
 
+/** Routes keyboard events to the appropriate keydown/keyup handler. */
 async function handleKeyEvent(e: KeyboardEvent) {
   if (e.type === 'keydown') {
     await handleKeyDown(e);
@@ -50,6 +51,7 @@ async function handleKeyEvent(e: KeyboardEvent) {
   }
 }
 
+/** Checks for the focus mode shortcut (LShift+RShift) and toggles if the website is enabled. */
 async function handleKeyDown(e: KeyboardEvent): Promise<void> {
   if (!keyPressManager.keyIsShortcutKey(e)) return;
   
@@ -63,10 +65,12 @@ async function handleKeyDown(e: KeyboardEvent): Promise<void> {
   }
 }
 
+/** Resets the key press tracker on key release. */
 function handleKeyUp(): void {
   keyPressManager.reset();
 }
 
+/** Checks whether the current website has its toggle enabled in storage. */
 async function isWebsiteEnabledForKeypress(): Promise<boolean> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
   const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true };
@@ -78,6 +82,7 @@ async function isWebsiteEnabledForKeypress(): Promise<boolean> {
 const DEFAULT_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.Unfocused]
 const CUSTOM_FOCUS_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.CustomFocus, FocusMode.Unfocused]
 
+/** Returns the focus mode cycle for the current website based on custom focus settings. */
 async function getFocusCycle(): Promise<FocusMode[]> {
   if (currentWebsite !== Website.LinkedIn) return DEFAULT_CYCLE
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles')
@@ -85,6 +90,7 @@ async function getFocusCycle(): Promise<FocusMode[]> {
   return websiteToggles.linkedinCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
 }
 
+/** Advances the focus mode to the next state in the cycle and re-renders. */
 export async function toggleFocusMode() {
   const cycle = await getFocusCycle()
   await stateManager.updateFocusMode(currentWebsite, cycle)
@@ -93,6 +99,7 @@ export async function toggleFocusMode() {
   render()
 }
 
+/** Renders the current focus mode by dispatching to the website controller. */
 export function render() {
   console.log('Rendering focus mode...');
   if (currentWebsite != Website.Unsupported && websiteController) {
@@ -101,7 +108,7 @@ export function render() {
   }
 }
 
-// Phase 2: Broken down initialize() functions
+/** Checks for a pending disabled-to-enabled reload and returns the reloaded website, if any. */
 async function handleReloadDetection(): Promise<Website | null> {
   const pendingReload: PendingReload | null = await FocusUtils.getFromLocalStorage('pendingReload');
   if (!pendingReload || (Date.now() - pendingReload.timestamp) >= 10000) {
@@ -125,6 +132,7 @@ async function handleReloadDetection(): Promise<Website | null> {
   return reloadedWebsite;
 }
 
+/** Creates the AppStateManager and KeyPressManager if not already initialized. */
 async function initializeManagers(): Promise<void> {
   if (!stateManager) {
     const appState = await FocusUtils.getFromLocalStorage('appState');
@@ -133,6 +141,7 @@ async function initializeManagers(): Promise<void> {
   }
 }
 
+/** Detects the current website from the URL and creates the appropriate controller if enabled. */
 async function detectAndCreateController(reloadedWebsite: Website | null): Promise<void> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
   const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true };
@@ -177,6 +186,7 @@ async function detectAndCreateController(reloadedWebsite: Website | null): Promi
   }
 }
 
+/** Listens for websiteToggles storage changes to handle enable/disable and custom focus transitions. */
 function setupStorageListeners(): void {
   // Always listen for website toggle changes, regardless of current state
   browser.storage.onChanged.addListener(async (changes, areaName) => {
@@ -208,6 +218,7 @@ function setupStorageListeners(): void {
   });
 }
 
+/** Entry point: detects the website, creates managers and controller, and sets up listeners. */
 export async function initialize() {
   console.log('Initializing focus script...');
   
@@ -224,6 +235,7 @@ export async function initialize() {
   setupStorageListeners();
 }
 
+/** Handles a website being toggled on or off: reloads for enable, cleans up for disable. */
 async function handleWebsiteToggleChange(website: string, websiteEnum: Website, isEnabled: boolean) {
   const hasController = websiteController !== null;
   const isCorrectWebsite = currentWebsite === websiteEnum;
@@ -245,6 +257,7 @@ async function handleWebsiteToggleChange(website: string, websiteEnum: Website, 
   }
 }
 
+/** Sets a pending reload flag and reloads the page for a disabled-to-enabled transition. */
 async function triggerReloadForWebsite(website: string) {
   // Set loading state for popup
   await FocusUtils.setInLocalStorage('websiteLoading', {

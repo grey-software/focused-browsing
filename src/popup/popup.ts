@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let linkedinTimeout: number | null = null;
   let youtubeTimeout: number | null = null;
   
+  /** Persists a website toggle change to storage with debounced loading UI. */
   const updateWebsiteToggle = async (website: 'linkedin' | 'youtube', enabled: boolean, toggleElement: HTMLInputElement) => {
     const isLinkedin = website === 'linkedin';
     const currentTimeout = isLinkedin ? linkedinTimeout : youtubeTimeout;
@@ -115,10 +116,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   linkedinCustomFocusToggle.addEventListener('change', async () => {
-    const current = await browser.storage.local.get(['websiteToggles']);
-    const toggles = current.websiteToggles || { linkedin: true, youtube: true };
-    toggles.linkedinCustomFocus = linkedinCustomFocusToggle.checked;
-    await browser.storage.local.set({ websiteToggles: toggles });
+    const previousValue = !linkedinCustomFocusToggle.checked;
+    try {
+      const current = await browser.storage.local.get(['websiteToggles']);
+      const toggles = current.websiteToggles || { linkedin: true, youtube: true };
+      toggles.linkedinCustomFocus = linkedinCustomFocusToggle.checked;
+      await browser.storage.local.set({ websiteToggles: toggles });
+    } catch (error) {
+      console.error('Failed to update custom focus toggle:', error);
+      linkedinCustomFocusToggle.checked = previousValue;
+    }
   });
 
   youtubeToggle.addEventListener('change', () => {
@@ -136,6 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  /** Highlights the active size button and deactivates the others. */
   function updateActiveSizeOption(activeSize: string) {
     sizeOptions.forEach(option => {
       const isActive = option.dataset.size === activeSize;
@@ -143,6 +151,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  /** Enables or disables the custom focus toggle row based on the LinkedIn toggle state. */
   function updateCustomFocusRowState(linkedinEnabled: boolean) {
     if (linkedinEnabled) {
       linkedinCustomFocusRow.classList.remove('disabled');
@@ -153,6 +162,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   }
 
+  /** Enables or disables the text size selector based on the show-quote toggle state. */
   function updateSizeRowState(showQuote: boolean) {
     if (showQuote) {
       fontSizeRow.classList.remove('disabled');

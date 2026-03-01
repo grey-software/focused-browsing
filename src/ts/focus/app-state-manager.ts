@@ -1,6 +1,7 @@
 import { AppState, FocusMode, Website } from './types'
 import FocusUtils from './focus-utils'
 
+/** Manages per-website focus mode state and persists it to local storage. */
 export default class AppStateManager {
   appState: AppState
 
@@ -8,14 +9,17 @@ export default class AppStateManager {
     this.appState = appState
   }
 
+  /** Reloads the app state from local storage to pick up changes from other contexts. */
   async loadLatestState() {
     this.appState = await FocusUtils.getFromLocalStorage('appState')
   }
 
+  /** Returns the current focus mode for the given website. */
   getFocusMode(currentWebsite: Website): FocusMode {
     return this.appState[currentWebsite]
   }
 
+  /** Persists the in-memory state for a website to local storage. */
   async updateAppState(currentWebsite: Website) {
     let updatedState = await FocusUtils.getFromLocalStorage('appState')
     updatedState[currentWebsite] = this.appState[currentWebsite]
@@ -23,6 +27,7 @@ export default class AppStateManager {
     this.appState = updatedState
   }
 
+  /** Advances the focus mode to the next state in the given cycle and persists it. */
   async updateFocusMode(currentWebsite: Website, cycle: FocusMode[]) {
     const currentMode = this.appState[currentWebsite]
     const currentIndex = cycle.indexOf(currentMode)
@@ -31,6 +36,7 @@ export default class AppStateManager {
     await this.updateAppState(currentWebsite)
   }
 
+  /** Sets the focus mode for a website to a specific value and persists it. */
   async setFocusMode(currentWebsite: Website, focusMode: FocusMode) {
     this.appState[currentWebsite] = focusMode
     await this.updateAppState(currentWebsite)
