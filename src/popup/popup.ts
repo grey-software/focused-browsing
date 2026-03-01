@@ -4,6 +4,8 @@ import { SIZE_MAP, SizeKey } from '../ts/utils';
 document.addEventListener('DOMContentLoaded', async () => {
   const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;
   const linkedinToggle = document.getElementById('linkedin-toggle') as HTMLInputElement;
+  const linkedinCustomFocusToggle = document.getElementById('linkedin-custom-focus') as HTMLInputElement;
+  const linkedinCustomFocusRow = document.getElementById('linkedin-custom-focus-row') as HTMLElement;
   const youtubeToggle = document.getElementById('youtube-toggle') as HTMLInputElement;
   const sizeOptions = document.querySelectorAll('.size-option') as NodeListOf<HTMLButtonElement>;
   const fontSizeRow = document.getElementById('font-size-row') as HTMLElement;
@@ -16,6 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   showQuoteCheckbox.checked = showQuote;
   linkedinToggle.checked = websiteToggles.linkedin;
+  linkedinCustomFocusToggle.checked = websiteToggles.linkedinCustomFocus || false;
+  updateCustomFocusRowState(websiteToggles.linkedin);
   youtubeToggle.checked = websiteToggles.youtube;
   
   // Set active size option
@@ -35,6 +39,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let linkedinTimeout: number | null = null;
   let youtubeTimeout: number | null = null;
   
+  /** Persists a website toggle change to storage with debounced loading UI. */
   const updateWebsiteToggle = async (website: 'linkedin' | 'youtube', enabled: boolean, toggleElement: HTMLInputElement) => {
     const isLinkedin = website === 'linkedin';
     const currentTimeout = isLinkedin ? linkedinTimeout : youtubeTimeout;
@@ -107,6 +112,20 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   linkedinToggle.addEventListener('change', () => {
     updateWebsiteToggle('linkedin', linkedinToggle.checked, linkedinToggle);
+    updateCustomFocusRowState(linkedinToggle.checked);
+  });
+
+  linkedinCustomFocusToggle.addEventListener('change', async () => {
+    const previousValue = !linkedinCustomFocusToggle.checked;
+    try {
+      const current = await browser.storage.local.get(['websiteToggles']);
+      const toggles = current.websiteToggles || { linkedin: true, youtube: true };
+      toggles.linkedinCustomFocus = linkedinCustomFocusToggle.checked;
+      await browser.storage.local.set({ websiteToggles: toggles });
+    } catch (error) {
+      console.error('Failed to update custom focus toggle:', error);
+      linkedinCustomFocusToggle.checked = previousValue;
+    }
   });
 
   youtubeToggle.addEventListener('change', () => {
@@ -124,6 +143,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  /** Highlights the active size button and deactivates the others. */
   function updateActiveSizeOption(activeSize: string) {
     sizeOptions.forEach(option => {
       const isActive = option.dataset.size === activeSize;
@@ -131,6 +151,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  /** Enables or disables the custom focus toggle row based on the LinkedIn toggle state. */
+  function updateCustomFocusRowState(linkedinEnabled: boolean) {
+    if (linkedinEnabled) {
+      linkedinCustomFocusRow.classList.remove('disabled');
+      linkedinCustomFocusToggle.disabled = false;
+    } else {
+      linkedinCustomFocusRow.classList.add('disabled');
+      linkedinCustomFocusToggle.disabled = true;
+    }
+  }
+
+  /** Enables or disables the text size selector based on the show-quote toggle state. */
   function updateSizeRowState(showQuote: boolean) {
     if (showQuote) {
       fontSizeRow.classList.remove('disabled');
