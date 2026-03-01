@@ -23,9 +23,11 @@ export default class AppStateManager {
     this.appState = updatedState
   }
 
-  async updateFocusMode(currentWebsite: Website) {
-    let focusModeCount = 2
-    this.appState[currentWebsite] = (this.appState[currentWebsite] + 1) % focusModeCount
+  async updateFocusMode(currentWebsite: Website, cycle: FocusMode[]) {
+    const currentMode = this.appState[currentWebsite]
+    const currentIndex = cycle.indexOf(currentMode)
+    const nextIndex = (currentIndex + 1) % cycle.length
+    this.appState[currentWebsite] = cycle[nextIndex] ?? cycle[0]
     await this.updateAppState(currentWebsite)
   }
 

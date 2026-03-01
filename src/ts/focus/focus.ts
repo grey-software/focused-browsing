@@ -6,12 +6,12 @@ import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
 import KeyPressManager from './keypress-manager'
 import { FocusMode, Website } from './types'
-import { 
-  isLinkedInURL, 
-  isYouTubeURL, 
-  detectWebsiteFromURL, 
-  WebsiteToggles, 
-  WebsiteLoadingState, 
+import {
+  isLinkedInURL,
+  isYouTubeURL,
+  detectWebsiteFromURL,
+  WebsiteToggles,
+  WebsiteLoadingState,
   PendingReload,
   logWebsiteDetection,
   logToggleChange
@@ -75,8 +75,19 @@ async function isWebsiteEnabledForKeypress(): Promise<boolean> {
          (currentWebsite === Website.Youtube && websiteToggles.youtube);
 }
 
+const DEFAULT_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.Unfocused]
+const CUSTOM_FOCUS_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.CustomFocus, FocusMode.Unfocused]
+
+async function getFocusCycle(): Promise<FocusMode[]> {
+  if (currentWebsite !== Website.LinkedIn) return DEFAULT_CYCLE
+  const settings = await FocusUtils.getFromLocalStorage('websiteToggles')
+  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true }
+  return websiteToggles.linkedinCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
+}
+
 export async function toggleFocusMode() {
-  await stateManager.updateFocusMode(currentWebsite)
+  const cycle = await getFocusCycle()
+  await stateManager.updateFocusMode(currentWebsite, cycle)
   const newMode = stateManager.getFocusMode(currentWebsite);
   console.log(`Toggling focus mode to: ${FocusMode[newMode]}`);
   render()
@@ -183,8 +194,16 @@ function setupStorageListeners(): void {
       const isEnabled = isLinkedin ? newToggles.linkedin : newToggles.youtube;
       
       logToggleChange(website, isEnabled, websiteController !== null, Website[currentWebsite]);
-      
+
       await handleWebsiteToggleChange(website, websiteEnum, isEnabled);
+
+      // If custom focus was toggled off while in CustomFocus state, revert to Focused
+      if (isLinkedin && !newToggles.linkedinCustomFocus &&
+          currentWebsite === Website.LinkedIn && stateManager &&
+          stateManager.getFocusMode(currentWebsite) === FocusMode.CustomFocus) {
+        await stateManager.setFocusMode(currentWebsite, FocusMode.Focused);
+        render();
+      }
     }
   });
 }

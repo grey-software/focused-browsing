@@ -4,6 +4,8 @@ import { SIZE_MAP, SizeKey } from '../ts/utils';
 document.addEventListener('DOMContentLoaded', async () => {
   const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;
   const linkedinToggle = document.getElementById('linkedin-toggle') as HTMLInputElement;
+  const linkedinCustomFocusToggle = document.getElementById('linkedin-custom-focus') as HTMLInputElement;
+  const linkedinCustomFocusRow = document.getElementById('linkedin-custom-focus-row') as HTMLElement;
   const youtubeToggle = document.getElementById('youtube-toggle') as HTMLInputElement;
   const sizeOptions = document.querySelectorAll('.size-option') as NodeListOf<HTMLButtonElement>;
   const fontSizeRow = document.getElementById('font-size-row') as HTMLElement;
@@ -16,6 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   showQuoteCheckbox.checked = showQuote;
   linkedinToggle.checked = websiteToggles.linkedin;
+  linkedinCustomFocusToggle.checked = websiteToggles.linkedinCustomFocus || false;
+  updateCustomFocusRowState(websiteToggles.linkedin);
   youtubeToggle.checked = websiteToggles.youtube;
   
   // Set active size option
@@ -107,6 +111,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   linkedinToggle.addEventListener('change', () => {
     updateWebsiteToggle('linkedin', linkedinToggle.checked, linkedinToggle);
+    updateCustomFocusRowState(linkedinToggle.checked);
+  });
+
+  linkedinCustomFocusToggle.addEventListener('change', async () => {
+    const current = await browser.storage.local.get(['websiteToggles']);
+    const toggles = current.websiteToggles || { linkedin: true, youtube: true };
+    toggles.linkedinCustomFocus = linkedinCustomFocusToggle.checked;
+    await browser.storage.local.set({ websiteToggles: toggles });
   });
 
   youtubeToggle.addEventListener('change', () => {
@@ -129,6 +141,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       const isActive = option.dataset.size === activeSize;
       option.classList.toggle('active', isActive);
     });
+  }
+
+  function updateCustomFocusRowState(linkedinEnabled: boolean) {
+    if (linkedinEnabled) {
+      linkedinCustomFocusRow.classList.remove('disabled');
+      linkedinCustomFocusToggle.disabled = false;
+    } else {
+      linkedinCustomFocusRow.classList.add('disabled');
+      linkedinCustomFocusToggle.disabled = true;
+    }
   }
 
   function updateSizeRowState(showQuote: boolean) {

@@ -316,6 +316,16 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
+/* Sub-setting rows (indented, e.g. custom focus under LinkedIn) */
+.setting-row.sub-setting {
+  padding-left: 20px;
+}
+
+.setting-row.sub-setting.disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
 .setting-label:focus {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;

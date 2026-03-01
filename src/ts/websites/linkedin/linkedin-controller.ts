@@ -57,6 +57,31 @@ export default class LinkedInController extends WebsiteController {
     })
   }
 
+  customFocus() {
+    console.log('LinkedInController: Entering custom focus mode (panels only).')
+
+    // Stop any existing watchers before setting up new ones
+    this.stopWatchingAll()
+    this.clearAllIntervals()
+
+    if (LinkedInUtils.isHomePage(document.URL)) {
+      // Show feed (in case coming from full focus)
+      this.setFeedVisibility(true)
+      // Hide side panels
+      this.hidePanelCandidates()
+    }
+
+    // Only watch for panel distractions, not feed
+    this.setupDistraction({
+      name: 'linkedin-panel',
+      observeTarget: PANEL_OBSERVE_TARGETS,
+      isOnCorrectPage: () => LinkedInUtils.isHomePage(document.URL),
+      hasLoaded: () => !!this.getFeedElement(),
+      isAlreadyHidden: () => false,
+      hide: () => this.hidePanelCandidates(),
+    })
+  }
+
   unfocus() {
     console.log('LinkedInController: Exiting focus mode.')
     this.stopWatchingAll()

@@ -206,6 +206,10 @@ export default abstract class WebsiteController {
         this.unfocus()
         return
       }
+      case FocusMode.CustomFocus: {
+        this.customFocus()
+        return
+      }
     }
   }
 
@@ -248,4 +252,7 @@ export default abstract class WebsiteController {
 
   protected abstract focus(): void
   protected abstract unfocus(): void
+  protected customFocus(): void {
+    this.focus()
+  }
 }

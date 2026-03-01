@@ -52,6 +52,7 @@ export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'uns
 export interface WebsiteToggles {
   linkedin: boolean
   youtube: boolean
+  linkedinCustomFocus?: boolean
 }
 
 export interface WebsiteLoadingState {
