@@ -1,3 +1,8 @@
+// CSS selectors for LinkedIn's feed and side panels, ordered from most-specific
+// (data attributes) to least-specific (layout class names). The first match
+// wins. When a selector stops working, add a new entry at the front rather than
+// replacing — old selectors may still match on cached page versions.
+// See selector-registry.ts for the broader selector health-check infrastructure.
 export const FEED_SELECTORS = [
   '[data-testid="mainFeed"]',
   '[aria-label="Main Feed"]',

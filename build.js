@@ -19,13 +19,11 @@ function copyRecursive(src, dest) {
 
 async function build() {
   try {
-    // Clean extension-build directory
     if (fs.existsSync('extension-build')) {
       fs.rmSync('extension-build', { recursive: true });
     }
     fs.mkdirSync('extension-build', { recursive: true });
 
-    // Build TypeScript files
     const ctx = await esbuild.context({
       entryPoints: {
         'background': 'src/ts/background.ts',
@@ -45,7 +43,6 @@ async function build() {
       }
     });
 
-        // Copy assets
     if (fs.existsSync('src/html')) {
       copyRecursive('src/html', 'extension-build/html');
     }
@@ -54,14 +51,12 @@ async function build() {
       copyRecursive('src/css', 'extension-build/css');
     }
     
-    // Copy popup files
     if (!fs.existsSync('extension-build/popup')) {
       fs.mkdirSync('extension-build/popup');
     }
     fs.copyFileSync('src/popup/popup.html', 'extension-build/popup/popup.html');
     fs.copyFileSync('src/popup/popup.css', 'extension-build/popup/popup.css');
     
-    // Copy manifest.json
     fs.copyFileSync('src/manifest.json', 'extension-build/manifest.json');
 
     if (isWatch) {

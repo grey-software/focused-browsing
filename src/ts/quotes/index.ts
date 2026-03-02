@@ -2,7 +2,6 @@ import { quotes } from './quotes-data';
 import { browser } from 'webextension-polyfill-ts';
 import { SIZE_MAP, SizeKey } from '../utils';
 
-// Custom styles for quotes
 const customStyles = {
   quoteContainer: {
     padding: '20px',
@@ -20,7 +19,6 @@ const customStyles = {
   },
 };
 
-// Quote size handler utility
 const updateQuoteTextSize = (quoteElement: HTMLDivElement, textSize: string): void => {
   if (!quoteElement) return;
 
@@ -41,6 +39,8 @@ const getRandomQuote = () => {
   return quotes[randomIndex];
 }
 
+// Legacy: no longer called by any controller. createSimpleQuoteElement below
+// is the active path — it reads textSize from storage instead of hardcoding.
 const createQuoteElement = (): HTMLDivElement => {
   const quote = getRandomQuote();
   const quoteDiv = document.createElement('div');
@@ -92,7 +92,6 @@ const createSimpleQuoteElement = async (): Promise<HTMLDivElement> => {
   const quoteSource = document.createElement('p');
   Object.assign(quoteSource.style, customStyles.quoteSource);
 
-  // Get size settings and apply to both text and source
   const settings = await browser.storage.local.get(['textSize']);
   const textSize = settings.textSize || 'medium';
   const sizes = SIZE_MAP[textSize as SizeKey];

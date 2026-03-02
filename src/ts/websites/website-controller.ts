@@ -18,7 +18,6 @@ export default abstract class WebsiteController {
   // Track intervals for automatic cleanup
   protected intervals: Map<string, number> = new Map()
 
-  // Simple distraction watching
   protected distractionWatcher: DistractionWatcher = new DistractionWatcher()
 
   protected abstract readonly quotePosition: 'prepend' | 'append'
@@ -84,6 +83,9 @@ export default abstract class WebsiteController {
     const settings = await browser.storage.local.get('showQuote')
     if (settings.showQuote === false) return
 
+    // Double guard: isCreatingQuote blocks re-entrant async calls within the
+    // same tick; document.contains catches quotes removed from the DOM by the
+    // site's SPA (e.g. LinkedIn swapping the feed container).
     if (this.quoteElement && document.contains(this.quoteElement)) return
     if (this.isCreatingQuote) return
 
@@ -155,7 +157,6 @@ export default abstract class WebsiteController {
   /** Hides all feed children except the quote element. */
   protected hideFeed(feedElement: HTMLElement): void {
     this.isFeedBlocked = true
-    // Hide all direct children except the quote
     Array.from(feedElement.children).forEach((child) => {
       const el = child as HTMLElement
       if (!el.classList?.contains('focus-mode-quote')) {

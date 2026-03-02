@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const sizeOptions = document.querySelectorAll('.size-option') as NodeListOf<HTMLButtonElement>;
   const fontSizeRow = document.getElementById('font-size-row') as HTMLElement;
 
-  // Load settings
   const settings = await browser.storage.local.get(['showQuote', 'textSize', 'websiteToggles']);
   const showQuote = settings.showQuote !== false;
   const textSize = settings.textSize || 'medium';
@@ -22,13 +21,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateCustomFocusRowState(websiteToggles.linkedin);
   youtubeToggle.checked = websiteToggles.youtube;
   
-  // Set active size option
   updateActiveSizeOption(textSize);
-  
-  // Update size row visibility
   updateSizeRowState(showQuote);
 
-  // Save showQuote setting
   showQuoteCheckbox.addEventListener('change', () => {
     const checked = showQuoteCheckbox.checked;
     browser.storage.local.set({ showQuote: checked });
@@ -63,14 +58,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     console.log(`Updating ${website} toggle to: ${enabled}`);
     
-    // Check if this toggle was previously off (disabled) and is now being enabled
+    // Disabled → enabled requires a page reload because the content script was
+    // never injected for a disabled site. focus.ts reads the pendingReload flag
+    // on the next load and sets the initial mode to Focused.
     const current = await browser.storage.local.get(['websiteToggles']);
     const websiteToggles = current.websiteToggles || { linkedin: true, youtube: true };
     const wasDisabled = !websiteToggles[website];
     const isEnabling = enabled;
     const isDisabledToEnabled = wasDisabled && isEnabling;
     
-    // Immediately update storage and trigger focus change (no delay)
     try {
       websiteToggles[website] = enabled;
       await browser.storage.local.set({ websiteToggles });
@@ -80,7 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       return;
     }
     
-    // Show loading state for this specific toggle
     toggleContainer.classList.add('loading');
     
     // Use longer loading time ONLY for disabled-to-enabled transitions (page will reload)
@@ -88,13 +83,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const loadingDuration = isDisabledToEnabled ? 2500 : 350;
     console.log(`${website} toggle loading duration: ${loadingDuration}ms (disabled-to-enabled: ${isDisabledToEnabled})`);
     
-    // Set timeout for UI cleanup
     const timeout = window.setTimeout(() => {
-      // Remove loading state after UI debounce
       toggleContainer.classList.remove('loading');
       console.log(`${website} toggle loading complete`);
-      
-      // Clear the timeout reference
+
       if (isLinkedin) {
         linkedinTimeout = null;
       } else {
@@ -102,7 +94,6 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
     }, loadingDuration);
     
-    // Store the timeout reference
     if (isLinkedin) {
       linkedinTimeout = timeout;
     } else {
@@ -116,6 +107,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   linkedinCustomFocusToggle.addEventListener('change', async () => {
+    // Capture pre-change value; if the storage write fails, roll back the checkbox.
     const previousValue = !linkedinCustomFocusToggle.checked;
     try {
       const current = await browser.storage.local.get(['websiteToggles']);
@@ -132,7 +124,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateWebsiteToggle('youtube', youtubeToggle.checked, youtubeToggle);
   });
 
-  // Handle size option clicks
   sizeOptions.forEach(option => {
     option.addEventListener('click', () => {
       if (option.disabled) return;

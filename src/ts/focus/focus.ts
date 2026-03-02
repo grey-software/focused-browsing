@@ -1,3 +1,17 @@
+/**
+ * Content script entry point — injected into every tab by the background worker.
+ *
+ * Lifecycle:
+ *   1. Keyboard listeners attach synchronously at parse time (before initialize)
+ *      so no keypress is missed during the async init phase.
+ *   2. initialize() reads storage, creates managers and a site-specific controller,
+ *      and sets up storage-change listeners.
+ *   3. render() applies the current focus mode to the page via the controller.
+ *
+ * State is shared with the background context via chrome.storage.local — the
+ * content script delegates to AppStateManager which does read-before-write to
+ * avoid races.
+ */
 import LinkedInController from '../websites/linkedin/linkedin-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
 import FocusUtils from './focus-utils'
@@ -30,6 +44,9 @@ export function resetGlobalState() {
   websiteController = null;
 }
 
+// Registered synchronously at module evaluation, before the async initialize()
+// call below. Attaching early ensures the LShift+RShift shortcut isn't missed
+// during the brief window while storage and DOM state are still loading.
 document.addEventListener('keydown', handleKeyEvent, false)
 document.addEventListener('keyup', handleKeyEvent, false)
 
@@ -111,6 +128,8 @@ export function render() {
 /** Checks for a pending disabled-to-enabled reload and returns the reloaded website, if any. */
 async function handleReloadDetection(): Promise<Website | null> {
   const pendingReload: PendingReload | null = await FocusUtils.getFromLocalStorage('pendingReload');
+  // 10s stale window: if the reload took longer than this, treat the flag as
+  // leftover from a previous session and discard it.
   if (!pendingReload || (Date.now() - pendingReload.timestamp) >= 10000) {
     return null;
   }
@@ -119,13 +138,11 @@ async function handleReloadDetection(): Promise<Website | null> {
   
   const reloadedWebsite = pendingReload.website === 'youtube' ? Website.Youtube : Website.LinkedIn;
   
-  // Set loading state for the popup to read
   await FocusUtils.setInLocalStorage('websiteLoading', {
     website: pendingReload.website,
     timestamp: Date.now()
   } as WebsiteLoadingState);
-  
-  // Clear the pending reload flag and loading state
+
   await FocusUtils.setInLocalStorage('pendingReload', null);
   await FocusUtils.setInLocalStorage('websiteLoading', null);
   
@@ -160,13 +177,11 @@ async function detectAndCreateController(reloadedWebsite: Website | null): Promi
     if (currentURL.includes(domain)) {
       const mapping = websiteMappings[domain as keyof typeof websiteMappings];
       
-      // Only initialize controller if the website is enabled
       if (mapping.enabled) {
         websiteController = new mapping.controller();
         currentWebsite = mapping.website;
         logWebsiteDetection(Website[currentWebsite], true, true);
-        
-        // If this website was just reloaded from disabled-to-enabled, set it to focused mode
+
         if (reloadedWebsite && reloadedWebsite === currentWebsite && stateManager) {
           console.log(`Setting focus mode to FOCUSED for reloaded website: ${Website[reloadedWebsite]}`);
           await stateManager.setFocusMode(reloadedWebsite, FocusMode.Focused);
@@ -251,7 +266,6 @@ async function handleWebsiteToggleChange(website: string, websiteEnum: Website, 
     await stateManager.setFocusMode(websiteEnum, FocusMode.Unfocused);
     websiteController.renderFocusMode(FocusMode.Unfocused);
     
-    // Clean up controller - website functionality is now disabled
     websiteController = null;
     currentWebsite = Website.Unsupported;
   }
@@ -259,20 +273,17 @@ async function handleWebsiteToggleChange(website: string, websiteEnum: Website, 
 
 /** Sets a pending reload flag and reloads the page for a disabled-to-enabled transition. */
 async function triggerReloadForWebsite(website: string) {
-  // Set loading state for popup
   await FocusUtils.setInLocalStorage('websiteLoading', {
     website: website,
     timestamp: Date.now()
   });
-  
-  // Set reload flag  
+
   await FocusUtils.setInLocalStorage('pendingReload', {
     website: website,
     timestamp: Date.now(),
     reason: 'disabled-to-enabled'
   });
-  
-  // Reload the page
+
   window.location.reload();
 }
 

@@ -23,23 +23,28 @@ const appState: AppState = {
 
 let activeURL: string | undefined = ''
 
-browser.storage.local.set({ 
-    appState: appState, 
-    showQuote: true, 
-    textSize: 'medium' 
+// Runs on every service worker startup. In MV3, the worker is killed and
+// restarted frequently, so this resets appState to Focused and restores
+// showQuote/textSize to defaults each time. To preserve user preferences
+// across restarts, this would need to move behind a runtime.onInstalled guard.
+browser.storage.local.set({
+    appState: appState,
+    showQuote: true,
+    textSize: 'medium'
 })
 
-// Script checking utilities - separated concerns for clarity
+// Atomically checks whether focus.js has already been injected into a tab,
+// and claims the loading slot if not. executeScript runs the function inside
+// the page's JS context (not the service worker), so document.hasFocusScript
+// acts as a per-page flag that prevents double injection when onUpdated fires
+// multiple times for the same navigation.
 async function shouldLoadFocusScript(tabId: number): Promise<boolean> {
   const hasScript = await browser.scripting.executeScript({
     target: { tabId },
     func: () => {
-      // Already loaded? Nothing to do
       if (document.hasFocusScript) {
         return false
       }
-      
-      // Claim this loading operation atomically
       document.hasFocusScript = true
       return true
     }
@@ -57,7 +62,6 @@ async function loadFocusScript(tabId: number): Promise<void> {
 
 export async function checkFocusScript(tabId: number): Promise<boolean> {
   try {
-    // First check if we can access this tab
     const tab = await browser.tabs.get(tabId)
     if (isBrowserInternalPage(tab.url)) {
       return false
@@ -93,7 +97,6 @@ export async function loadFocusScriptOnTabChange(
     return
   }
 
-  // Skip loading for browser internal pages
   if (isBrowserInternalPage(url)) {
     return
   }
@@ -109,7 +112,6 @@ export async function loadFocusScriptOnTabChange(
   }
 }
 
-// Tab messaging utilities
 async function sendMessageToTab(tabId: number, message: any): Promise<any> {
   try {
     const response = await browser.tabs.sendMessage(tabId, message)

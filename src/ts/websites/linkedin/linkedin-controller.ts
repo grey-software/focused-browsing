@@ -7,7 +7,6 @@ export default class LinkedInController extends WebsiteController {
 
   private readonly quoteElementId = 'focus-mode-linkedin-quote'
 
-  /** Returns the LinkedIn main feed element, or null if not found. */
   protected getFeedElement(): HTMLElement | null {
     return LinkedInUtils.getLinkedInFeed() as HTMLElement | null
   }

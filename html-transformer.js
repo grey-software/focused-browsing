@@ -1,3 +1,5 @@
+// Jest transform for .html files: exposes raw HTML as a module.exports string
+// so test files can import page snapshots directly (used by popup.test.ts).
 const fs = require('fs');
 
 module.exports = {
