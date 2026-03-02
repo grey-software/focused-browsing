@@ -31,12 +31,45 @@ function getLinkedInFeed(): Element | null {
 
 /** Returns all panel elements matching PANEL_SELECTORS. */
 function getLinkedInPanels(): HTMLElement[] {
-  const panels: HTMLElement[] = []
   for (const selector of PANEL_SELECTORS) {
-    const el = document.querySelector(selector) as HTMLElement | null
-    if (el) panels.push(el)
+    const matchedElements = Array.from(document.querySelectorAll(selector))
+      .filter((element): element is HTMLElement => element instanceof HTMLElement)
+
+    if (matchedElements.length > 0) return matchedElements
   }
-  return panels
+
+  return inferRightPanelsFromFeedLayout()
+}
+
+/**
+ * Fallback panel detection that infers right-side columns from feed layout structure.
+ * This keeps startup blocking resilient when LinkedIn changes panel CSS classes.
+ */
+function inferRightPanelsFromFeedLayout(): HTMLElement[] {
+  const feed = getLinkedInFeed()
+  if (!(feed instanceof HTMLElement)) return []
+
+  let current: HTMLElement | null = feed.parentElement
+  for (let depth = 0; depth < 10 && current; depth += 1) {
+    const rowChildren = Array.from(current.children)
+      .filter((child): child is HTMLElement => child instanceof HTMLElement)
+    const feedColumnIndex = rowChildren.findIndex((child) => child.contains(feed))
+
+    if (feedColumnIndex !== -1) {
+      const rightPanels = rowChildren
+        .slice(feedColumnIndex + 1)
+        .filter((child) => child.children.length > 0)
+        .filter((child) => child.id !== 'focus-mode-linkedin-quote')
+        .filter((child) => !child.classList.contains('focus-quote'))
+        .filter((child) => !child.classList.contains('focus-quote-simple'))
+
+      if (rightPanels.length > 0) return rightPanels
+    }
+
+    current = current.parentElement
+  }
+
+  return []
 }
 
 function hasFeedLoaded(): boolean {
