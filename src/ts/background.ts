@@ -106,8 +106,19 @@ export async function loadFocusScriptOnTabChange(
   try {
     const shouldLoad = await shouldLoadFocusScript(tabId)
     if (shouldLoad) {
-      await loadFocusScript(tabId)
-      activeURL = url
+      try {
+        await loadFocusScript(tabId)
+        activeURL = url
+      } catch (error) {
+        // Injection failed after claiming the slot — clear the flag so a
+        // future onUpdated event can retry. Without this, the tab would be
+        // permanently stuck with hasFocusScript=true and no content script.
+        await browser.scripting.executeScript({
+          target: { tabId },
+          func: () => { document.hasFocusScript = false }
+        }).catch(() => {})
+        throw error
+      }
     }
   } catch (error) {
     console.error('Failed to load focus script:', error)
