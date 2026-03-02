@@ -1,13 +1,11 @@
 import { browser } from 'webextension-polyfill-ts'
 
-// Legacy allowlist — twitter.com and github.com are not supported by any
-// controller and not in manifest host_permissions. Kept for reference only.
+// Legacy helper — not currently called by any code path. Retained as an export
+// to avoid breaking the module's public interface.
 const isURLValid = (url: string) => {
   return (
-    url.includes('twitter.com') ||
     url.includes('linkedin.com') ||
-    url.includes('youtube.com') ||
-    url.includes('github.com')
+    url.includes('youtube.com')
   )
 }
 
@@ -16,12 +14,10 @@ async function getFromLocalStorage(name: string) {
   return storeObject[name]
 }
 
-// Fire-and-forget: the storage.local.set Promise is not awaited.
-// Callers that need write confirmation should use browser.storage.local.set directly.
-function setInLocalStorage(storageName: string, storageObj: any) {
-  var obj: any = {}
+function setInLocalStorage(storageName: string, storageObj: any): Promise<void> {
+  const obj: any = {}
   obj[storageName] = storageObj
-  browser.storage.local.set(obj)
+  return browser.storage.local.set(obj)
 }
 
 export default {

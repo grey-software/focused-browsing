@@ -23,14 +23,16 @@ const appState: AppState = {
 
 let activeURL: string | undefined = ''
 
-// Runs on every service worker startup. In MV3, the worker is killed and
-// restarted frequently, so this resets appState to Focused and restores
-// showQuote/textSize to defaults each time. To preserve user preferences
-// across restarts, this would need to move behind a runtime.onInstalled guard.
-browser.storage.local.set({
+// Only populate missing keys on service worker startup. In MV3, the worker is
+// killed and restarted frequently — reading first avoids overwriting user
+// preferences (showQuote, textSize) that were changed via the popup.
+// appState is always reset to Focused so each restart begins in focus mode.
+browser.storage.local.get(['appState', 'showQuote', 'textSize']).then((existing) => {
+  browser.storage.local.set({
     appState: appState,
-    showQuote: true,
-    textSize: 'medium'
+    showQuote: existing.showQuote ?? true,
+    textSize: existing.textSize ?? 'medium',
+  })
 })
 
 // Atomically checks whether focus.js has already been injected into a tab,

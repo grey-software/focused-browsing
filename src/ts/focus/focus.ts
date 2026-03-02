@@ -61,6 +61,9 @@ browser.runtime.onMessage.addListener(async (message: { text: string; url: strin
 
 /** Routes keyboard events to the appropriate keydown/keyup handler. */
 async function handleKeyEvent(e: KeyboardEvent) {
+  // Ignore events that arrive before initialize() has set up keyPressManager.
+  if (!keyPressManager) return
+
   if (e.type === 'keydown') {
     await handleKeyDown(e);
   } else if (e.type === 'keyup') {
@@ -71,9 +74,9 @@ async function handleKeyEvent(e: KeyboardEvent) {
 /** Checks for the focus mode shortcut (LShift+RShift) and toggles if the website is enabled. */
 async function handleKeyDown(e: KeyboardEvent): Promise<void> {
   if (!keyPressManager.keyIsShortcutKey(e)) return;
-  
+
   keyPressManager.setKeyPressedState(e.code, true);
-  
+
   if (keyPressManager.isShortcutPressed() && await isWebsiteEnabledForKeypress()) {
     console.log('Keypress shortcut triggered - website is enabled');
     toggleFocusMode();
