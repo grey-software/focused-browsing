@@ -26,22 +26,22 @@ export function shouldLogError(errorMessage: string, ignoredPatterns: string[]):
   return !ignoredPatterns.some(pattern => errorMessage.includes(pattern))
 }
 
-/** Returns true if the script execution result array contains a truthy first result. */
+/** Checks for a strict `true` return from an injected script. Used by shouldLoadFocusScript
+ *  where the injected function returns `true` only when claiming the loading slot. */
 export function getScriptExecutionResult(results: any): boolean {
   return Array.isArray(results) && results.length > 0 && results[0].result === true
 }
 
-/** Returns true if the script execution result array has any result value. */
+/** Checks for any truthy return from an injected script. Used by checkFocusScript
+ *  where the injected function returns `!!document.hasFocusScript` (truthy, not strict boolean). */
 export function hasScriptExecutionResult(results: any): boolean {
   return Array.isArray(results) && results.length > 0 && !!results[0].result
 }
 
-/** Returns true if the URL belongs to linkedin.com. */
 export function isLinkedInURL(url: string): boolean {
   return url.includes('linkedin.com')
 }
 
-/** Returns true if the URL belongs to youtube.com. */
 export function isYouTubeURL(url: string): boolean {
   return url.includes('youtube.com')
 }
@@ -53,7 +53,12 @@ export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'uns
   return 'unsupported'
 }
 
-// Storage operation helpers
+// Cross-context state coordination for MV3. The background service worker and
+// content scripts run in separate JS contexts with no shared memory, so they
+// communicate through chrome.storage.local. WebsiteToggles is the persistent
+// source of truth; WebsiteLoadingState and PendingReload are short-lived flags
+// written before a forced page reload and consumed by the content script on
+// the next load.
 export interface WebsiteToggles {
   linkedin: boolean
   youtube: boolean

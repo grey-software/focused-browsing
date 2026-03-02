@@ -18,9 +18,12 @@ export default class DistractionWatcher {
 
     const { target, whenFound, options = { childList: true, subtree: true } } = distractionTarget;
     
-    // Resolve target element
-    const targetElement = typeof target === 'string' 
-      ? document.querySelector(target) || document.body 
+    // If the selector string doesn't match anything yet, falls back to
+    // document.body — meaning the observer fires on every DOM mutation site-wide
+    // until the intended target appears. Callers should accept this as a temporary
+    // worst case or ensure the selector matches before calling watchFor.
+    const targetElement = typeof target === 'string'
+      ? document.querySelector(target) || document.body
       : target;
 
     const observer = new MutationObserver(() => {

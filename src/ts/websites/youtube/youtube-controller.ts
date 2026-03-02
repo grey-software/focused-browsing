@@ -1,6 +1,16 @@
 import YouTubeUtils from './youtube-utils'
 import WebsiteController from '../website-controller'
 
+/**
+ * Controls YouTube focus mode on the home page and watch page.
+ *
+ * Home page:  hides the video grid feed, injects a quote.
+ * Watch page: hides the suggested-video sidebar, comment section, and the
+ *             miniplayer floating panel.
+ *
+ * YouTube uses SPA navigation internally; DistractionWatcher re-fires its
+ * callbacks via MutationObserver so new DOM regions are hidden as they appear.
+ */
 export default class YouTubeController extends WebsiteController {
   protected readonly quotePosition = 'append' as const
 
