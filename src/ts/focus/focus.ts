@@ -146,10 +146,18 @@ async function handleReloadDetection(): Promise<Website | null> {
 
   console.log(`Detected reload after enabling ${pendingReload.website} from disabled state`);
   
-  const reloadedWebsite = pendingReload.website === 'youtube' ? Website.Youtube
-    : pendingReload.website === 'x' ? Website.X
-    : Website.LinkedIn;
-  
+  const websiteMap: Record<string, Website> = {
+    linkedin: Website.LinkedIn,
+    youtube: Website.Youtube,
+    x: Website.X,
+  };
+  const reloadedWebsite = websiteMap[pendingReload.website];
+  if (!reloadedWebsite) {
+    console.log(`Unknown pending reload website: "${pendingReload.website}", ignoring`);
+    await FocusUtils.setInLocalStorage('pendingReload', null);
+    return null;
+  }
+
   await FocusUtils.setInLocalStorage('websiteLoading', {
     website: pendingReload.website,
     timestamp: Date.now()
@@ -157,7 +165,7 @@ async function handleReloadDetection(): Promise<Website | null> {
 
   await FocusUtils.setInLocalStorage('pendingReload', null);
   await FocusUtils.setInLocalStorage('websiteLoading', null);
-  
+
   return reloadedWebsite;
 }
 
