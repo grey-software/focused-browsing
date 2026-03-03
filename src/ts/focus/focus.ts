@@ -27,6 +27,7 @@ import {
   isXURL,
   detectWebsiteFromURL,
   WebsiteToggles,
+  DEFAULT_WEBSITE_TOGGLES,
   WebsiteLoadingState,
   PendingReload,
   logWebsiteDetection,
@@ -95,7 +96,7 @@ function handleKeyUp(): void {
 /** Checks whether the current website has its toggle enabled in storage. */
 async function isWebsiteEnabledForKeypress(): Promise<boolean> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true, x: true };
+  const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES;
 
   return (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
          (currentWebsite === Website.Youtube && websiteToggles.youtube) ||
@@ -109,7 +110,7 @@ const CUSTOM_FOCUS_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.CustomFocu
 async function getFocusCycle(): Promise<FocusMode[]> {
   if (currentWebsite !== Website.LinkedIn && currentWebsite !== Website.X) return DEFAULT_CYCLE
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles')
-  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true, x: true }
+  const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES
   if (currentWebsite === Website.LinkedIn) {
     return websiteToggles.linkedinCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
   }
@@ -172,23 +173,27 @@ async function initializeManagers(): Promise<void> {
 /** Detects the current website from the URL and creates the appropriate controller if enabled. */
 async function detectAndCreateController(reloadedWebsite: Website | null): Promise<void> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true, x: true };
+  const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES;
 
   console.log('Initial website toggles:', websiteToggles);
   console.log('Current URL:', document.URL);
 
-  const websiteMappings = {
-    'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
-    'youtube.com': { controller: YoutubeController, website: Website.Youtube, enabled: websiteToggles.youtube },
-    'x.com': { controller: XController, website: Website.X, enabled: websiteToggles.x },
-    'twitter.com': { controller: XController, website: Website.X, enabled: websiteToggles.x },
-  };
+  const websiteMappings = [
+    { domains: ['linkedin.com'], controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
+    { domains: ['youtube.com'], controller: YoutubeController, website: Website.Youtube, enabled: websiteToggles.youtube },
+    { domains: ['x.com', 'twitter.com'], controller: XController, website: Website.X, enabled: websiteToggles.x },
+  ];
 
-  const currentURL = document.URL;
+  let hostname: string
+  try {
+    hostname = new URL(document.URL).hostname.replace(/^www\./, '')
+  } catch {
+    return
+  }
 
-  for (const domain in websiteMappings) {
-    if (currentURL.includes(domain)) {
-      const mapping = websiteMappings[domain as keyof typeof websiteMappings];
+  for (const mapping of websiteMappings) {
+    const matches = mapping.domains.some(d => hostname === d || hostname.endsWith('.' + d))
+    if (matches) {
       
       if (mapping.enabled) {
         websiteController = new mapping.controller();

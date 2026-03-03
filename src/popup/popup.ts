@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
-import { SIZE_MAP, SizeKey } from '../ts/utils';
+import { SIZE_MAP, SizeKey, DEFAULT_WEBSITE_TOGGLES } from '../ts/utils';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await browser.storage.local.get(['showQuote', 'textSize', 'websiteToggles']);
   const showQuote = settings.showQuote !== false;
   const textSize = settings.textSize || 'medium';
-  const websiteToggles = settings.websiteToggles || { linkedin: true, youtube: true, x: true };
+  const websiteToggles = settings.websiteToggles || DEFAULT_WEBSITE_TOGGLES;
 
   showQuoteCheckbox.checked = showQuote;
   linkedinToggle.checked = websiteToggles.linkedin;
@@ -62,17 +62,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     // never injected for a disabled site. focus.ts reads the pendingReload flag
     // on the next load and sets the initial mode to Focused.
     const current = await browser.storage.local.get(['websiteToggles']);
-    const websiteToggles = current.websiteToggles || { linkedin: true, youtube: true, x: true };
+    const websiteToggles = current.websiteToggles || DEFAULT_WEBSITE_TOGGLES;
     const wasDisabled = !websiteToggles[website];
     const isEnabling = enabled;
     const isDisabledToEnabled = wasDisabled && isEnabling;
 
+    const previousValue = websiteToggles[website];
     try {
       websiteToggles[website] = enabled;
       await browser.storage.local.set({ websiteToggles });
       console.log(`Storage updated for ${website}:`, websiteToggles);
     } catch (error) {
       console.error('Failed to update website toggle:', error);
+      websiteToggles[website] = previousValue;
+      toggleElement.checked = previousValue;
       return;
     }
 
@@ -97,18 +100,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateCustomFocusRowState(linkedinToggle.checked);
   });
 
-  linkedinCustomFocusToggle.addEventListener('change', async () => {
-    // Capture pre-change value; if the storage write fails, roll back the checkbox.
-    const previousValue = !linkedinCustomFocusToggle.checked;
+  /** Persists a custom focus toggle change to storage with rollback on failure. */
+  async function persistCustomFocusToggle(checkbox: HTMLInputElement, storageKey: 'linkedinCustomFocus' | 'xCustomFocus') {
+    const previousValue = !checkbox.checked;
     try {
       const current = await browser.storage.local.get(['websiteToggles']);
-      const toggles = current.websiteToggles || { linkedin: true, youtube: true, x: true };
-      toggles.linkedinCustomFocus = linkedinCustomFocusToggle.checked;
+      const toggles = current.websiteToggles || DEFAULT_WEBSITE_TOGGLES;
+      toggles[storageKey] = checkbox.checked;
       await browser.storage.local.set({ websiteToggles: toggles });
     } catch (error) {
-      console.error('Failed to update custom focus toggle:', error);
-      linkedinCustomFocusToggle.checked = previousValue;
+      console.error(`Failed to update ${storageKey} toggle:`, error);
+      checkbox.checked = previousValue;
     }
+  }
+
+  linkedinCustomFocusToggle.addEventListener('change', () => {
+    persistCustomFocusToggle(linkedinCustomFocusToggle, 'linkedinCustomFocus');
   });
 
   youtubeToggle.addEventListener('change', () => {
@@ -120,17 +127,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateXCustomFocusRowState(xToggle.checked);
   });
 
-  xCustomFocusToggle.addEventListener('change', async () => {
-    const previousValue = !xCustomFocusToggle.checked;
-    try {
-      const current = await browser.storage.local.get(['websiteToggles']);
-      const toggles = current.websiteToggles || { linkedin: true, youtube: true, x: true };
-      toggles.xCustomFocus = xCustomFocusToggle.checked;
-      await browser.storage.local.set({ websiteToggles: toggles });
-    } catch (error) {
-      console.error('Failed to update X custom focus toggle:', error);
-      xCustomFocusToggle.checked = previousValue;
-    }
+  xCustomFocusToggle.addEventListener('change', () => {
+    persistCustomFocusToggle(xCustomFocusToggle, 'xCustomFocus');
   });
 
   sizeOptions.forEach(option => {

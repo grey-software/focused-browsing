@@ -47,7 +47,13 @@ export function isYouTubeURL(url: string): boolean {
 }
 
 export function isXURL(url: string): boolean {
-  return url.includes('x.com') || url.includes('twitter.com')
+  try {
+    const hostname = new URL(url).hostname
+    return hostname === 'x.com' || hostname.endsWith('.x.com')
+      || hostname === 'twitter.com' || hostname.endsWith('.twitter.com')
+  } catch {
+    return false
+  }
 }
 
 /** Detects which supported website a URL belongs to. */
@@ -71,6 +77,8 @@ export interface WebsiteToggles {
   linkedinCustomFocus?: boolean
   xCustomFocus?: boolean
 }
+
+export const DEFAULT_WEBSITE_TOGGLES: WebsiteToggles = { linkedin: true, youtube: true, x: true }
 
 export interface WebsiteLoadingState {
   website: string
