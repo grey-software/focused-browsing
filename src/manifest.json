@@ -30,7 +30,9 @@
   ],
   "host_permissions": [
     "*://*.linkedin.com/*",
-    "*://*.youtube.com/*"
+    "*://*.youtube.com/*",
+    "*://*.x.com/*",
+    "*://*.twitter.com/*"
   ],
   "permissions": [
     "tabs",

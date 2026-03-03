@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-03-02T11:18:31.812Z",
+  "generatedAt": "2026-03-03T22:40:03.444Z",
   "thresholds": {
     "warn": {
       "maxWarningRatio": 0.2,
@@ -13,19 +13,19 @@
   },
   "thresholdEvaluation": {
     "warnings": [
-      "Warning ratio 0.333 exceeded warn threshold 0.200"
+      "Warning ratio 0.250 exceeded warn threshold 0.200"
     ],
     "failures": []
   },
   "summary": {
-    "pagesEvaluated": 3,
-    "totalFeatures": 6,
-    "passingFeatures": 3,
+    "pagesEvaluated": 4,
+    "totalFeatures": 8,
+    "passingFeatures": 5,
     "warningFeatures": 2,
     "failingFeatures": 1,
     "criticalFailures": 0,
     "nonCriticalFailures": 1,
-    "warningRatio": 0.3333333333333333
+    "warningRatio": 0.25
   },
   "pages": [
     {
@@ -96,6 +96,30 @@
           "severity": "non-critical",
           "status": "pass",
           "matchedSelector": "ytd-miniplayer.ytdMiniplayerComponentHost",
+          "matchedCount": 1
+        }
+      ]
+    },
+    {
+      "pageId": "x-home",
+      "site": "x",
+      "scenario": "home",
+      "status": "pass",
+      "features": [
+        {
+          "id": "feed-container",
+          "description": "Primary column / feed container remains queryable.",
+          "severity": "critical",
+          "status": "pass",
+          "matchedSelector": "[data-testid=\"primaryColumn\"]",
+          "matchedCount": 1
+        },
+        {
+          "id": "sidebar-container",
+          "description": "Sidebar column remains queryable.",
+          "severity": "non-critical",
+          "status": "pass",
+          "matchedSelector": "[data-testid=\"sidebarColumn\"]",
           "matchedCount": 1
         }
       ]

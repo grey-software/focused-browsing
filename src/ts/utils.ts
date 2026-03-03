@@ -46,10 +46,15 @@ export function isYouTubeURL(url: string): boolean {
   return url.includes('youtube.com')
 }
 
+export function isXURL(url: string): boolean {
+  return url.includes('x.com') || url.includes('twitter.com')
+}
+
 /** Detects which supported website a URL belongs to. */
-export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'unsupported' {
+export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'x' | 'unsupported' {
   if (isLinkedInURL(url)) return 'linkedin'
   if (isYouTubeURL(url)) return 'youtube'
+  if (isXURL(url)) return 'x'
   return 'unsupported'
 }
 
@@ -62,7 +67,9 @@ export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'uns
 export interface WebsiteToggles {
   linkedin: boolean
   youtube: boolean
+  x: boolean
   linkedinCustomFocus?: boolean
+  xCustomFocus?: boolean
 }
 
 export interface WebsiteLoadingState {

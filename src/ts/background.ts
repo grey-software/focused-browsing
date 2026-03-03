@@ -18,6 +18,7 @@ declare global {
 const appState: AppState = {
   LinkedIn: FocusMode.Focused,
   Youtube: FocusMode.Focused,
+  X: FocusMode.Focused,
   Unsupported: FocusMode.Unfocused,
 }
 

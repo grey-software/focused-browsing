@@ -13,12 +13,14 @@ export enum FocusMode {
 export enum Website {
   LinkedIn = 'LinkedIn',
   Youtube = 'Youtube',
+  X = 'X',
   Unsupported = 'Unsupported',
 }
 
 export interface AppState extends Record<Website, FocusMode> {
   LinkedIn: FocusMode
   Youtube: FocusMode
+  X: FocusMode
 }
 
 export interface KeyPressedState {

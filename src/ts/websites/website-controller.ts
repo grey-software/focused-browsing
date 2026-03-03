@@ -198,7 +198,7 @@ export default abstract class WebsiteController {
     const distractionTarget: DistractionTarget = {
       target: config.observeTarget,
       whenFound: () => {
-        if (config.hasLoaded() && !config.isAlreadyHidden()) {
+        if (config.isOnCorrectPage() && config.hasLoaded() && !config.isAlreadyHidden()) {
           config.hide()
         }
       },

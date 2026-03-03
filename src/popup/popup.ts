@@ -7,20 +7,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   const linkedinCustomFocusToggle = document.getElementById('linkedin-custom-focus') as HTMLInputElement;
   const linkedinCustomFocusRow = document.getElementById('linkedin-custom-focus-row') as HTMLElement;
   const youtubeToggle = document.getElementById('youtube-toggle') as HTMLInputElement;
+  const xToggle = document.getElementById('x-toggle') as HTMLInputElement;
+  const xCustomFocusToggle = document.getElementById('x-custom-focus') as HTMLInputElement;
+  const xCustomFocusRow = document.getElementById('x-custom-focus-row') as HTMLElement;
   const sizeOptions = document.querySelectorAll('.size-option') as NodeListOf<HTMLButtonElement>;
   const fontSizeRow = document.getElementById('font-size-row') as HTMLElement;
 
   const settings = await browser.storage.local.get(['showQuote', 'textSize', 'websiteToggles']);
   const showQuote = settings.showQuote !== false;
   const textSize = settings.textSize || 'medium';
-  const websiteToggles = settings.websiteToggles || { linkedin: true, youtube: true };
-  
+  const websiteToggles = settings.websiteToggles || { linkedin: true, youtube: true, x: true };
+
   showQuoteCheckbox.checked = showQuote;
   linkedinToggle.checked = websiteToggles.linkedin;
   linkedinCustomFocusToggle.checked = websiteToggles.linkedinCustomFocus || false;
   updateCustomFocusRowState(websiteToggles.linkedin);
   youtubeToggle.checked = websiteToggles.youtube;
-  
+  xToggle.checked = websiteToggles.x !== false;
+  xCustomFocusToggle.checked = websiteToggles.xCustomFocus || false;
+  updateXCustomFocusRowState(websiteToggles.x !== false);
+
   updateActiveSizeOption(textSize);
   updateSizeRowState(showQuote);
 
@@ -31,42 +37,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Save website toggle settings with immediate action but debounced UI
-  let linkedinTimeout: number | null = null;
-  let youtubeTimeout: number | null = null;
-  
+  const toggleTimeouts = new Map<string, number>();
+
   /** Persists a website toggle change to storage with debounced loading UI. */
-  const updateWebsiteToggle = async (website: 'linkedin' | 'youtube', enabled: boolean, toggleElement: HTMLInputElement) => {
-    const isLinkedin = website === 'linkedin';
-    const currentTimeout = isLinkedin ? linkedinTimeout : youtubeTimeout;
+  const updateWebsiteToggle = async (website: 'linkedin' | 'youtube' | 'x', enabled: boolean, toggleElement: HTMLInputElement) => {
     const toggleContainer = toggleElement.closest('.toggle') as HTMLElement;
-    
+
     // Prevent multiple rapid clicks on the same toggle
     if (toggleContainer.classList.contains('loading')) {
       console.log(`${website} toggle already processing, ignoring click`);
       return;
     }
-    
+
     // Clear any pending timeout for this specific toggle
+    const currentTimeout = toggleTimeouts.get(website);
     if (currentTimeout) {
       clearTimeout(currentTimeout);
-      if (isLinkedin) {
-        linkedinTimeout = null;
-      } else {
-        youtubeTimeout = null;
-      }
+      toggleTimeouts.delete(website);
     }
-    
+
     console.log(`Updating ${website} toggle to: ${enabled}`);
-    
+
     // Disabled → enabled requires a page reload because the content script was
     // never injected for a disabled site. focus.ts reads the pendingReload flag
     // on the next load and sets the initial mode to Focused.
     const current = await browser.storage.local.get(['websiteToggles']);
-    const websiteToggles = current.websiteToggles || { linkedin: true, youtube: true };
+    const websiteToggles = current.websiteToggles || { linkedin: true, youtube: true, x: true };
     const wasDisabled = !websiteToggles[website];
     const isEnabling = enabled;
     const isDisabledToEnabled = wasDisabled && isEnabling;
-    
+
     try {
       websiteToggles[website] = enabled;
       await browser.storage.local.set({ websiteToggles });
@@ -75,30 +75,21 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Failed to update website toggle:', error);
       return;
     }
-    
+
     toggleContainer.classList.add('loading');
-    
+
     // Use longer loading time ONLY for disabled-to-enabled transitions (page will reload)
     // All other cases (enabled-to-disabled, or enabled-to-enabled) use short duration
     const loadingDuration = isDisabledToEnabled ? 2500 : 350;
     console.log(`${website} toggle loading duration: ${loadingDuration}ms (disabled-to-enabled: ${isDisabledToEnabled})`);
-    
+
     const timeout = window.setTimeout(() => {
       toggleContainer.classList.remove('loading');
       console.log(`${website} toggle loading complete`);
-
-      if (isLinkedin) {
-        linkedinTimeout = null;
-      } else {
-        youtubeTimeout = null;
-      }
+      toggleTimeouts.delete(website);
     }, loadingDuration);
-    
-    if (isLinkedin) {
-      linkedinTimeout = timeout;
-    } else {
-      youtubeTimeout = timeout;
-    }
+
+    toggleTimeouts.set(website, timeout);
   };
   
   linkedinToggle.addEventListener('change', () => {
@@ -111,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const previousValue = !linkedinCustomFocusToggle.checked;
     try {
       const current = await browser.storage.local.get(['websiteToggles']);
-      const toggles = current.websiteToggles || { linkedin: true, youtube: true };
+      const toggles = current.websiteToggles || { linkedin: true, youtube: true, x: true };
       toggles.linkedinCustomFocus = linkedinCustomFocusToggle.checked;
       await browser.storage.local.set({ websiteToggles: toggles });
     } catch (error) {
@@ -122,6 +113,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   youtubeToggle.addEventListener('change', () => {
     updateWebsiteToggle('youtube', youtubeToggle.checked, youtubeToggle);
+  });
+
+  xToggle.addEventListener('change', () => {
+    updateWebsiteToggle('x', xToggle.checked, xToggle);
+    updateXCustomFocusRowState(xToggle.checked);
+  });
+
+  xCustomFocusToggle.addEventListener('change', async () => {
+    const previousValue = !xCustomFocusToggle.checked;
+    try {
+      const current = await browser.storage.local.get(['websiteToggles']);
+      const toggles = current.websiteToggles || { linkedin: true, youtube: true, x: true };
+      toggles.xCustomFocus = xCustomFocusToggle.checked;
+      await browser.storage.local.set({ websiteToggles: toggles });
+    } catch (error) {
+      console.error('Failed to update X custom focus toggle:', error);
+      xCustomFocusToggle.checked = previousValue;
+    }
   });
 
   sizeOptions.forEach(option => {
@@ -150,6 +159,17 @@ document.addEventListener('DOMContentLoaded', async () => {
     } else {
       linkedinCustomFocusRow.classList.add('disabled');
       linkedinCustomFocusToggle.disabled = true;
+    }
+  }
+
+  /** Enables or disables the X custom focus toggle row based on the X toggle state. */
+  function updateXCustomFocusRowState(xEnabled: boolean) {
+    if (xEnabled) {
+      xCustomFocusRow.classList.remove('disabled');
+      xCustomFocusToggle.disabled = false;
+    } else {
+      xCustomFocusRow.classList.add('disabled');
+      xCustomFocusToggle.disabled = true;
     }
   }
 
