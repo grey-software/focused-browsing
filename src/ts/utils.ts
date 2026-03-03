@@ -39,11 +39,21 @@ export function hasScriptExecutionResult(results: any): boolean {
 }
 
 export function isLinkedInURL(url: string): boolean {
-  return url.includes('linkedin.com')
+  try {
+    const hostname = new URL(url).hostname
+    return hostname === 'linkedin.com' || hostname.endsWith('.linkedin.com')
+  } catch {
+    return false
+  }
 }
 
 export function isYouTubeURL(url: string): boolean {
-  return url.includes('youtube.com')
+  try {
+    const hostname = new URL(url).hostname
+    return hostname === 'youtube.com' || hostname.endsWith('.youtube.com')
+  } catch {
+    return false
+  }
 }
 
 export function isXURL(url: string): boolean {
@@ -56,7 +66,7 @@ export function isXURL(url: string): boolean {
   }
 }
 
-/** Detects which supported website a URL belongs to. */
+/** Detects which supported website a URL belongs to using hostname matching. */
 export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'x' | 'unsupported' {
   if (isLinkedInURL(url)) return 'linkedin'
   if (isYouTubeURL(url)) return 'youtube'

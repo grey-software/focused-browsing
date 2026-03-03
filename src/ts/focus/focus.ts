@@ -96,7 +96,7 @@ function handleKeyUp(): void {
 /** Checks whether the current website has its toggle enabled in storage. */
 async function isWebsiteEnabledForKeypress(): Promise<boolean> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES;
+  const websiteToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings };
 
   return (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
          (currentWebsite === Website.Youtube && websiteToggles.youtube) ||
@@ -173,7 +173,7 @@ async function initializeManagers(): Promise<void> {
 /** Detects the current website from the URL and creates the appropriate controller if enabled. */
 async function detectAndCreateController(reloadedWebsite: Website | null): Promise<void> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES;
+  const websiteToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings };
 
   console.log('Initial website toggles:', websiteToggles);
   console.log('Current URL:', document.URL);

@@ -83,7 +83,7 @@ describe('popup.ts', () => {
   });
 
   it('should save linkedin toggle setting when changed', async () => {
-    const currentSettings = { websiteToggles: { linkedin: true, youtube: true } };
+    const currentSettings = { websiteToggles: { linkedin: true, youtube: true, x: true } };
     (browser.storage.local.get as jest.Mock).mockResolvedValue(currentSettings);
 
     document.dispatchEvent(new Event('DOMContentLoaded'));
@@ -97,12 +97,12 @@ describe('popup.ts', () => {
     await new Promise(resolve => setTimeout(resolve, 200));
 
     expect(browser.storage.local.set).toHaveBeenCalledWith({ 
-      websiteToggles: { linkedin: false, youtube: true } 
+      websiteToggles: { linkedin: false, youtube: true, x: true }
     });
   });
 
   it('should save youtube toggle setting when changed', async () => {
-    const currentSettings = { websiteToggles: { linkedin: true, youtube: true } };
+    const currentSettings = { websiteToggles: { linkedin: true, youtube: true, x: true } };
     (browser.storage.local.get as jest.Mock).mockResolvedValue(currentSettings);
 
     document.dispatchEvent(new Event('DOMContentLoaded'));
@@ -115,8 +115,8 @@ describe('popup.ts', () => {
     // Wait for debounce delay
     await new Promise(resolve => setTimeout(resolve, 350));
 
-    expect(browser.storage.local.set).toHaveBeenCalledWith({ 
-      websiteToggles: { linkedin: true, youtube: false } 
+    expect(browser.storage.local.set).toHaveBeenCalledWith({
+      websiteToggles: { linkedin: true, youtube: false, x: true }
     });
   });
 });

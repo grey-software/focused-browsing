@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await browser.storage.local.get(['showQuote', 'textSize', 'websiteToggles']);
   const showQuote = settings.showQuote !== false;
   const textSize = settings.textSize || 'medium';
-  const websiteToggles = settings.websiteToggles || DEFAULT_WEBSITE_TOGGLES;
+  const websiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings.websiteToggles };
 
   showQuoteCheckbox.checked = showQuote;
   linkedinToggle.checked = websiteToggles.linkedin;
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // never injected for a disabled site. focus.ts reads the pendingReload flag
     // on the next load and sets the initial mode to Focused.
     const current = await browser.storage.local.get(['websiteToggles']);
-    const websiteToggles = current.websiteToggles || DEFAULT_WEBSITE_TOGGLES;
+    const websiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...current.websiteToggles };
     const wasDisabled = !websiteToggles[website];
     const isEnabling = enabled;
     const isDisabledToEnabled = wasDisabled && isEnabling;
@@ -76,6 +76,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       console.error('Failed to update website toggle:', error);
       websiteToggles[website] = previousValue;
       toggleElement.checked = previousValue;
+      // Revert dependent row-level UI to match the reverted toggle state
+      if (website === 'linkedin') updateCustomFocusRowState(previousValue);
+      if (website === 'x') updateXCustomFocusRowState(previousValue);
       return;
     }
 
@@ -105,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const previousValue = !checkbox.checked;
     try {
       const current = await browser.storage.local.get(['websiteToggles']);
-      const toggles = current.websiteToggles || DEFAULT_WEBSITE_TOGGLES;
+      const toggles = { ...DEFAULT_WEBSITE_TOGGLES, ...current.websiteToggles };
       toggles[storageKey] = checkbox.checked;
       await browser.storage.local.set({ websiteToggles: toggles });
     } catch (error) {
