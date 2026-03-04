@@ -232,7 +232,7 @@ function setupStorageListeners(): void {
   // Always listen for website toggle changes, regardless of current state
   browser.storage.onChanged.addListener(async (changes, areaName) => {
     if (areaName === 'local' && changes.websiteToggles) {
-      const newToggles = changes.websiteToggles.newValue;
+      const newToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...changes.websiteToggles.newValue };
       const currentURL = document.URL;
       
       const isLinkedin = isLinkedInURL(currentURL);
