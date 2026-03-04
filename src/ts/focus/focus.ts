@@ -140,7 +140,9 @@ async function handleReloadDetection(): Promise<Website | null> {
   const pendingReload: PendingReload | null = await FocusUtils.getFromLocalStorage('pendingReload');
   // 10s stale window: if the reload took longer than this, treat the flag as
   // leftover from a previous session and discard it.
-  if (!pendingReload || (Date.now() - pendingReload.timestamp) >= 10000) {
+  if (!pendingReload) return null;
+  if ((Date.now() - pendingReload.timestamp) >= 10000) {
+    await FocusUtils.setInLocalStorage('pendingReload', null);
     return null;
   }
 
