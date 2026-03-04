@@ -39,17 +39,38 @@ export function hasScriptExecutionResult(results: any): boolean {
 }
 
 export function isLinkedInURL(url: string): boolean {
-  return url.includes('linkedin.com')
+  try {
+    const hostname = new URL(url).hostname
+    return hostname === 'linkedin.com' || hostname.endsWith('.linkedin.com')
+  } catch {
+    return false
+  }
 }
 
 export function isYouTubeURL(url: string): boolean {
-  return url.includes('youtube.com')
+  try {
+    const hostname = new URL(url).hostname
+    return hostname === 'youtube.com' || hostname.endsWith('.youtube.com')
+  } catch {
+    return false
+  }
 }
 
-/** Detects which supported website a URL belongs to. */
-export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'unsupported' {
+export function isXURL(url: string): boolean {
+  try {
+    const hostname = new URL(url).hostname
+    return hostname === 'x.com' || hostname.endsWith('.x.com')
+      || hostname === 'twitter.com' || hostname.endsWith('.twitter.com')
+  } catch {
+    return false
+  }
+}
+
+/** Detects which supported website a URL belongs to using hostname matching. */
+export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'x' | 'unsupported' {
   if (isLinkedInURL(url)) return 'linkedin'
   if (isYouTubeURL(url)) return 'youtube'
+  if (isXURL(url)) return 'x'
   return 'unsupported'
 }
 
@@ -62,8 +83,12 @@ export function detectWebsiteFromURL(url: string): 'linkedin' | 'youtube' | 'uns
 export interface WebsiteToggles {
   linkedin: boolean
   youtube: boolean
+  x: boolean
   linkedinCustomFocus?: boolean
+  xCustomFocus?: boolean
 }
+
+export const DEFAULT_WEBSITE_TOGGLES: WebsiteToggles = { linkedin: true, youtube: true, x: true }
 
 export interface WebsiteLoadingState {
   website: string

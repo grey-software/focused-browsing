@@ -29,6 +29,10 @@ import {
   YOUTUBE_PANEL_SELECTORS,
   YOUTUBE_SUGGESTIONS_SELECTORS,
 } from '../websites/youtube/youtube-utils'
+import {
+  FEED_SELECTORS as X_FEED_SELECTORS,
+  SIDEBAR_SELECTORS as X_SIDEBAR_SELECTORS,
+} from '../websites/x/x-utils'
 
 export type SelectorFeatureSeverity = 'critical' | 'non-critical'
 
@@ -42,7 +46,7 @@ export interface SelectorFeatureDefinition {
 
 export interface SelectorPageDefinition {
   id: string
-  site: 'linkedin' | 'youtube'
+  site: 'linkedin' | 'youtube' | 'x'
   scenario: 'home' | 'watch'
   snapshotPaths: string[]
   features: SelectorFeatureDefinition[]
@@ -138,6 +142,28 @@ export const selectorRegistry: SelectorPageDefinition[] = [
         id: 'panel-container',
         description: 'Miniplayer panel selectors remain queryable.',
         selectors: YOUTUBE_PANEL_SELECTORS,
+        minMatches: 1,
+        severity: 'non-critical',
+      },
+    ],
+  },
+  {
+    id: 'x-home',
+    site: 'x',
+    scenario: 'home',
+    snapshotPaths: ['tests/page-snapshots/x-home.html'],
+    features: [
+      {
+        id: 'feed-container',
+        description: 'Primary column / feed container remains queryable.',
+        selectors: X_FEED_SELECTORS,
+        minMatches: 1,
+        severity: 'critical',
+      },
+      {
+        id: 'sidebar-container',
+        description: 'Sidebar column remains queryable.',
+        selectors: X_SIDEBAR_SELECTORS,
         minMatches: 1,
         severity: 'non-critical',
       },

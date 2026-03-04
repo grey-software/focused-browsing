@@ -14,6 +14,7 @@
  */
 import LinkedInController from '../websites/linkedin/linkedin-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
+import XController from '../websites/x/x-controller'
 import FocusUtils from './focus-utils'
 import AppStateManager from './app-state-manager'
 import { browser } from 'webextension-polyfill-ts'
@@ -23,8 +24,10 @@ import { FocusMode, Website } from './types'
 import {
   isLinkedInURL,
   isYouTubeURL,
+  isXURL,
   detectWebsiteFromURL,
   WebsiteToggles,
+  DEFAULT_WEBSITE_TOGGLES,
   WebsiteLoadingState,
   PendingReload,
   logWebsiteDetection,
@@ -93,10 +96,11 @@ function handleKeyUp(): void {
 /** Checks whether the current website has its toggle enabled in storage. */
 async function isWebsiteEnabledForKeypress(): Promise<boolean> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true };
-  
+  const websiteToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings };
+
   return (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
-         (currentWebsite === Website.Youtube && websiteToggles.youtube);
+         (currentWebsite === Website.Youtube && websiteToggles.youtube) ||
+         (currentWebsite === Website.X && websiteToggles.x);
 }
 
 const DEFAULT_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.Unfocused]
@@ -104,10 +108,13 @@ const CUSTOM_FOCUS_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.CustomFocu
 
 /** Returns the focus mode cycle for the current website based on custom focus settings. */
 async function getFocusCycle(): Promise<FocusMode[]> {
-  if (currentWebsite !== Website.LinkedIn) return DEFAULT_CYCLE
+  if (currentWebsite !== Website.LinkedIn && currentWebsite !== Website.X) return DEFAULT_CYCLE
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles')
-  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true }
-  return websiteToggles.linkedinCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
+  const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES
+  if (currentWebsite === Website.LinkedIn) {
+    return websiteToggles.linkedinCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
+  }
+  return websiteToggles.xCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
 }
 
 /** Advances the focus mode to the next state in the cycle and re-renders. */
@@ -133,14 +140,26 @@ async function handleReloadDetection(): Promise<Website | null> {
   const pendingReload: PendingReload | null = await FocusUtils.getFromLocalStorage('pendingReload');
   // 10s stale window: if the reload took longer than this, treat the flag as
   // leftover from a previous session and discard it.
-  if (!pendingReload || (Date.now() - pendingReload.timestamp) >= 10000) {
+  if (!pendingReload) return null;
+  if ((Date.now() - pendingReload.timestamp) >= 10000) {
+    await FocusUtils.setInLocalStorage('pendingReload', null);
     return null;
   }
 
   console.log(`Detected reload after enabling ${pendingReload.website} from disabled state`);
   
-  const reloadedWebsite = pendingReload.website === 'youtube' ? Website.Youtube : Website.LinkedIn;
-  
+  const websiteMap: Record<string, Website> = {
+    linkedin: Website.LinkedIn,
+    youtube: Website.Youtube,
+    x: Website.X,
+  };
+  const reloadedWebsite = websiteMap[pendingReload.website];
+  if (!reloadedWebsite) {
+    console.log(`Unknown pending reload website: "${pendingReload.website}", ignoring`);
+    await FocusUtils.setInLocalStorage('pendingReload', null);
+    return null;
+  }
+
   await FocusUtils.setInLocalStorage('websiteLoading', {
     website: pendingReload.website,
     timestamp: Date.now()
@@ -148,7 +167,7 @@ async function handleReloadDetection(): Promise<Website | null> {
 
   await FocusUtils.setInLocalStorage('pendingReload', null);
   await FocusUtils.setInLocalStorage('websiteLoading', null);
-  
+
   return reloadedWebsite;
 }
 
@@ -164,21 +183,27 @@ async function initializeManagers(): Promise<void> {
 /** Detects the current website from the URL and creates the appropriate controller if enabled. */
 async function detectAndCreateController(reloadedWebsite: Website | null): Promise<void> {
   const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
-  const websiteToggles: WebsiteToggles = settings || { linkedin: true, youtube: true };
-  
+  const websiteToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings };
+
   console.log('Initial website toggles:', websiteToggles);
   console.log('Current URL:', document.URL);
 
-  const websiteMappings = {
-    'linkedin.com': { controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
-    'youtube.com': { controller: YoutubeController, website: Website.Youtube, enabled: websiteToggles.youtube },
-  };
+  const websiteMappings = [
+    { domains: ['linkedin.com'], controller: LinkedInController, website: Website.LinkedIn, enabled: websiteToggles.linkedin },
+    { domains: ['youtube.com'], controller: YoutubeController, website: Website.Youtube, enabled: websiteToggles.youtube },
+    { domains: ['x.com', 'twitter.com'], controller: XController, website: Website.X, enabled: websiteToggles.x },
+  ];
 
-  const currentURL = document.URL;
+  let hostname: string
+  try {
+    hostname = new URL(document.URL).hostname.replace(/^www\./, '')
+  } catch {
+    return
+  }
 
-  for (const domain in websiteMappings) {
-    if (currentURL.includes(domain)) {
-      const mapping = websiteMappings[domain as keyof typeof websiteMappings];
+  for (const mapping of websiteMappings) {
+    const matches = mapping.domains.some(d => hostname === d || hostname.endsWith('.' + d))
+    if (matches) {
       
       if (mapping.enabled) {
         websiteController = new mapping.controller();
@@ -209,28 +234,32 @@ function setupStorageListeners(): void {
   // Always listen for website toggle changes, regardless of current state
   browser.storage.onChanged.addListener(async (changes, areaName) => {
     if (areaName === 'local' && changes.websiteToggles) {
-      const newToggles = changes.websiteToggles.newValue;
+      const newToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...changes.websiteToggles.newValue };
       const currentURL = document.URL;
       
       const isLinkedin = isLinkedInURL(currentURL);
       const isYoutube = isYouTubeURL(currentURL);
-      
-      if (!isLinkedin && !isYoutube) return; // Not a supported website
-      
-      const website = isLinkedin ? 'linkedin' : 'youtube';
-      const websiteEnum = isLinkedin ? Website.LinkedIn : Website.Youtube;
-      const isEnabled = isLinkedin ? newToggles.linkedin : newToggles.youtube;
+      const isX = isXURL(currentURL);
+
+      if (!isLinkedin && !isYoutube && !isX) return; // Not a supported website
+
+      const website = isLinkedin ? 'linkedin' : isYoutube ? 'youtube' : 'x';
+      const websiteEnum = isLinkedin ? Website.LinkedIn : isYoutube ? Website.Youtube : Website.X;
+      const isEnabled = isLinkedin ? newToggles.linkedin : isYoutube ? newToggles.youtube : newToggles.x;
       
       logToggleChange(website, isEnabled, websiteController !== null, Website[currentWebsite]);
 
       await handleWebsiteToggleChange(website, websiteEnum, isEnabled);
 
       // If custom focus was toggled off while in CustomFocus state, revert to Focused
-      if (isLinkedin && !newToggles.linkedinCustomFocus &&
-          currentWebsite === Website.LinkedIn && stateManager &&
-          stateManager.getFocusMode(currentWebsite) === FocusMode.CustomFocus) {
-        await stateManager.setFocusMode(currentWebsite, FocusMode.Focused);
-        render();
+      if (stateManager && stateManager.getFocusMode(currentWebsite) === FocusMode.CustomFocus) {
+        const shouldRevert =
+          (isLinkedin && !newToggles.linkedinCustomFocus) ||
+          (isX && !newToggles.xCustomFocus);
+        if (shouldRevert) {
+          await stateManager.setFocusMode(currentWebsite, FocusMode.Focused);
+          render();
+        }
       }
     }
   });
