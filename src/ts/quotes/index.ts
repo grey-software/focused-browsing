@@ -1,6 +1,6 @@
 import { quotes } from './quotes-data';
 import { browser } from 'webextension-polyfill-ts';
-import { SIZE_MAP, SizeKey } from '../utils';
+import { SIZE_MAP, SizeKey } from './text-size';
 
 const customStyles = {
   quoteContainer: {
@@ -39,51 +39,10 @@ const getRandomQuote = () => {
   return quotes[randomIndex];
 }
 
-// Legacy: no longer called by any controller. createSimpleQuoteElement below
-// is the active path — it reads textSize from storage instead of hardcoding.
-const createQuoteElement = (): HTMLDivElement => {
+const createQuoteElement = async (): Promise<HTMLDivElement> => {
   const quote = getRandomQuote();
   const quoteDiv = document.createElement('div');
   quoteDiv.className = 'focus-quote';
-  quoteDiv.style.cssText = `
-    padding: 2rem;
-    text-align: center;
-    font-family: system-ui, -apple-system, sans-serif;
-    max-width: 800px;
-    margin: 2rem auto;
-    background: var(--focus-quote-bg, #f8f9fa);
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  `;
-
-  const quoteText = document.createElement('p');
-  quoteText.style.cssText = `
-    font-size: 1.5rem;
-    line-height: 1.6;
-    color: var(--focus-quote-text, #2c3e50);
-    margin-bottom: 1rem;
-    font-style: italic;
-  `;
-  quoteText.textContent = `"${quote.text}"`;
-
-  const quoteSource = document.createElement('p');
-  quoteSource.style.cssText = `
-    font-size: 1rem;
-    color: var(--focus-quote-source, #7f8c8d);
-    margin: 0;
-  `;
-  quoteSource.textContent = `— ${quote.source}`;
-
-  quoteDiv.appendChild(quoteText);
-  quoteDiv.appendChild(quoteSource);
-
-  return quoteDiv;
-}
-
-const createSimpleQuoteElement = async (): Promise<HTMLDivElement> => {
-  const quote = getRandomQuote();
-  const quoteDiv = document.createElement('div');
-  quoteDiv.className = 'focus-quote-simple';
   Object.assign(quoteDiv.style, customStyles.quoteContainer);
 
   const quoteText = document.createElement('p');
@@ -111,6 +70,5 @@ const createSimpleQuoteElement = async (): Promise<HTMLDivElement> => {
 export default {
   getRandomQuote,
   createQuoteElement,
-  createSimpleQuoteElement,
   updateQuoteTextSize,
 }

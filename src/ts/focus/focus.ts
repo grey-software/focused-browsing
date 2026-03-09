@@ -15,7 +15,7 @@
 import LinkedInController from '../websites/linkedin/linkedin-controller'
 import YoutubeController from '../websites/youtube/youtube-controller'
 import XController from '../websites/x/x-controller'
-import FocusUtils from './focus-utils'
+import { getFromLocalStorage, setInLocalStorage } from '../storage'
 import AppStateManager from './app-state-manager'
 import { browser } from 'webextension-polyfill-ts'
 import WebsiteController from '../websites/website-controller'
@@ -25,14 +25,13 @@ import {
   isLinkedInURL,
   isYouTubeURL,
   isXURL,
-  detectWebsiteFromURL,
   WebsiteToggles,
   DEFAULT_WEBSITE_TOGGLES,
   WebsiteLoadingState,
   PendingReload,
   logWebsiteDetection,
   logToggleChange
-} from '../utils'
+} from '../websites/website-config'
 
 let currentWebsite: Website = Website.Unsupported
 let stateManager: AppStateManager
@@ -95,7 +94,7 @@ function handleKeyUp(): void {
 
 /** Checks whether the current website has its toggle enabled in storage. */
 async function isWebsiteEnabledForKeypress(): Promise<boolean> {
-  const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
+  const settings = await getFromLocalStorage('websiteToggles');
   const websiteToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings };
 
   return (currentWebsite === Website.LinkedIn && websiteToggles.linkedin) ||
@@ -109,7 +108,7 @@ const CUSTOM_FOCUS_CYCLE: FocusMode[] = [FocusMode.Focused, FocusMode.CustomFocu
 /** Returns the focus mode cycle for the current website based on custom focus settings. */
 async function getFocusCycle(): Promise<FocusMode[]> {
   if (currentWebsite !== Website.LinkedIn && currentWebsite !== Website.X) return DEFAULT_CYCLE
-  const settings = await FocusUtils.getFromLocalStorage('websiteToggles')
+  const settings = await getFromLocalStorage('websiteToggles')
   const websiteToggles: WebsiteToggles = settings || DEFAULT_WEBSITE_TOGGLES
   if (currentWebsite === Website.LinkedIn) {
     return websiteToggles.linkedinCustomFocus ? CUSTOM_FOCUS_CYCLE : DEFAULT_CYCLE
@@ -137,12 +136,12 @@ export function render() {
 
 /** Checks for a pending disabled-to-enabled reload and returns the reloaded website, if any. */
 async function handleReloadDetection(): Promise<Website | null> {
-  const pendingReload: PendingReload | null = await FocusUtils.getFromLocalStorage('pendingReload');
+  const pendingReload: PendingReload | null = await getFromLocalStorage('pendingReload');
   // 10s stale window: if the reload took longer than this, treat the flag as
   // leftover from a previous session and discard it.
   if (!pendingReload) return null;
   if ((Date.now() - pendingReload.timestamp) >= 10000) {
-    await FocusUtils.setInLocalStorage('pendingReload', null);
+    await setInLocalStorage('pendingReload', null);
     return null;
   }
 
@@ -156,17 +155,17 @@ async function handleReloadDetection(): Promise<Website | null> {
   const reloadedWebsite = websiteMap[pendingReload.website];
   if (!reloadedWebsite) {
     console.log(`Unknown pending reload website: "${pendingReload.website}", ignoring`);
-    await FocusUtils.setInLocalStorage('pendingReload', null);
+    await setInLocalStorage('pendingReload', null);
     return null;
   }
 
-  await FocusUtils.setInLocalStorage('websiteLoading', {
+  await setInLocalStorage('websiteLoading', {
     website: pendingReload.website,
     timestamp: Date.now()
   } as WebsiteLoadingState);
 
-  await FocusUtils.setInLocalStorage('pendingReload', null);
-  await FocusUtils.setInLocalStorage('websiteLoading', null);
+  await setInLocalStorage('pendingReload', null);
+  await setInLocalStorage('websiteLoading', null);
 
   return reloadedWebsite;
 }
@@ -174,7 +173,7 @@ async function handleReloadDetection(): Promise<Website | null> {
 /** Creates the AppStateManager and KeyPressManager if not already initialized. */
 async function initializeManagers(): Promise<void> {
   if (!stateManager) {
-    const appState = await FocusUtils.getFromLocalStorage('appState');
+    const appState = await getFromLocalStorage('appState');
     stateManager = new AppStateManager(appState);
     keyPressManager = new KeyPressManager();
   }
@@ -182,7 +181,7 @@ async function initializeManagers(): Promise<void> {
 
 /** Detects the current website from the URL and creates the appropriate controller if enabled. */
 async function detectAndCreateController(reloadedWebsite: Website | null): Promise<void> {
-  const settings = await FocusUtils.getFromLocalStorage('websiteToggles');
+  const settings = await getFromLocalStorage('websiteToggles');
   const websiteToggles: WebsiteToggles = { ...DEFAULT_WEBSITE_TOGGLES, ...settings };
 
   console.log('Initial website toggles:', websiteToggles);
@@ -305,12 +304,12 @@ async function handleWebsiteToggleChange(website: string, websiteEnum: Website, 
 
 /** Sets a pending reload flag and reloads the page for a disabled-to-enabled transition. */
 async function triggerReloadForWebsite(website: string) {
-  await FocusUtils.setInLocalStorage('websiteLoading', {
+  await setInLocalStorage('websiteLoading', {
     website: website,
     timestamp: Date.now()
   });
 
-  await FocusUtils.setInLocalStorage('pendingReload', {
+  await setInLocalStorage('pendingReload', {
     website: website,
     timestamp: Date.now(),
     reason: 'disabled-to-enabled'
