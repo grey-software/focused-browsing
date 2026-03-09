@@ -29,6 +29,7 @@ async function build() {
         'background': 'src/ts/background.ts',
         'focus': 'src/ts/focus/focus.ts',
         'popup': 'src/popup/popup.ts',
+        'options': 'src/options/options.ts',
       },
       bundle: true,
       outdir: 'extension-build',
@@ -56,6 +57,12 @@ async function build() {
     }
     fs.copyFileSync('src/popup/popup.html', 'extension-build/popup/popup.html');
     fs.copyFileSync('src/popup/popup.css', 'extension-build/popup/popup.css');
+
+    if (!fs.existsSync('extension-build/options')) {
+      fs.mkdirSync('extension-build/options');
+    }
+    fs.copyFileSync('src/options/options.html', 'extension-build/options/options.html');
+    fs.copyFileSync('src/options/options.css', 'extension-build/options/options.css');
     
     fs.copyFileSync('src/manifest.json', 'extension-build/manifest.json');
 

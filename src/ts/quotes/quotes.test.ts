@@ -1,17 +1,6 @@
 import quoteUtils from '.';
 import { quotes } from './quotes-data';
 
-// Mock webextension-polyfill-ts
-jest.mock('webextension-polyfill-ts', () => ({
-  browser: {
-    storage: {
-      local: {
-        get: jest.fn().mockResolvedValue({ textSize: 'medium' })
-      }
-    }
-  }
-}));
-
 describe('Quote Utils', () => {
   describe('getRandomQuote', () => {
     it('should return a valid quote object', () => {
@@ -75,63 +64,11 @@ describe('Quote Utils', () => {
       expect(matchingQuote).toBeDefined();
     });
 
-    it('should apply correct font sizes based on textSize setting', () => {
+    it('should apply the default font sizes', () => {
       const [textElement, sourceElement] = Array.from(quoteElement.children) as HTMLParagraphElement[];
       
-      // Medium size should be applied (default)
       expect(textElement.style.fontSize).toBe('2rem');
       expect(sourceElement.style.fontSize).toBe('1.5rem');
-    });
-  });
-
-  describe('updateQuoteTextSize', () => {
-    let quoteElement: HTMLDivElement;
-
-    beforeEach(() => {
-      // Create a basic quote element structure
-      quoteElement = document.createElement('div');
-      const textElement = document.createElement('p');
-      const sourceElement = document.createElement('p');
-      textElement.textContent = '"Test quote"';
-      sourceElement.textContent = '— Test Author';
-      quoteElement.appendChild(textElement);
-      quoteElement.appendChild(sourceElement);
-    });
-
-    it('should update font sizes for small text size', () => {
-      quoteUtils.updateQuoteTextSize(quoteElement, 'small');
-
-      const textElement = quoteElement.querySelector('p:first-child') as HTMLElement;
-      const sourceElement = quoteElement.querySelector('p:last-child') as HTMLElement;
-
-      expect(textElement.style.fontSize).toBe('1.5rem');
-      expect(sourceElement.style.fontSize).toBe('1.25rem');
-    });
-
-    it('should update font sizes for large text size', () => {
-      quoteUtils.updateQuoteTextSize(quoteElement, 'large');
-
-      const textElement = quoteElement.querySelector('p:first-child') as HTMLElement;
-      const sourceElement = quoteElement.querySelector('p:last-child') as HTMLElement;
-
-      expect(textElement.style.fontSize).toBe('2.5rem');
-      expect(sourceElement.style.fontSize).toBe('2rem');
-    });
-
-    it('should default to medium size for invalid textSize', () => {
-      quoteUtils.updateQuoteTextSize(quoteElement, 'invalid');
-
-      const textElement = quoteElement.querySelector('p:first-child') as HTMLElement;
-      const sourceElement = quoteElement.querySelector('p:last-child') as HTMLElement;
-
-      expect(textElement.style.fontSize).toBe('2rem');
-      expect(sourceElement.style.fontSize).toBe('1.5rem');
-    });
-
-    it('should handle null quoteElement gracefully', () => {
-      expect(() => {
-        quoteUtils.updateQuoteTextSize(null as any, 'medium');
-      }).not.toThrow();
     });
   });
 });

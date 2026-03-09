@@ -25,5 +25,6 @@ export const browser = {
     onMessage: {
       addListener: jest.fn(),
     },
+    openOptionsPage: jest.fn(() => Promise.resolve()),
   },
 };

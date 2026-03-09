@@ -1,6 +1,5 @@
 import { FocusMode } from './../focus/types'
 import DistractionWatcher, { DistractionTarget } from './distraction-watcher'
-import { browser } from 'webextension-polyfill-ts'
 import quoteUtils from '../quotes'
 
 export interface DistractionConfig {
@@ -29,10 +28,6 @@ export default abstract class WebsiteController {
 
   // Element hiding: stores original display values for restoration
   protected hiddenDisplayValues: Map<HTMLElement, string> = new Map()
-
-  constructor() {
-    this.addStorageListener()
-  }
 
   // --- Element hiding via inline style.display ---
   // Works on all sites regardless of CSP. No <style> tag needed.
@@ -80,9 +75,6 @@ export default abstract class WebsiteController {
 
   /** Creates and inserts a quote element into the feed if quotes are enabled. */
   protected async injectQuote(feedElement: HTMLElement): Promise<void> {
-    const settings = await browser.storage.local.get('showQuote')
-    if (settings.showQuote === false) return
-
     // Double guard: isCreatingQuote blocks re-entrant async calls within the
     // same tick; document.contains catches quotes removed from the DOM by the
     // site's SPA (e.g. LinkedIn swapping the feed container).
@@ -115,41 +107,6 @@ export default abstract class WebsiteController {
   /** Override to apply site-specific styles (e.g. YouTube dark theme) */
   protected applyQuoteStyles(_quoteElement: HTMLDivElement): void {
     // Default: no extra styles
-  }
-
-  // --- Storage listener ---
-
-  /** Subscribes to storage changes for showQuote and textSize settings. */
-  private addStorageListener(): void {
-    browser.storage.onChanged.addListener((changes, areaName) => {
-      if (areaName === 'local') {
-        if (changes.showQuote) {
-          this.handleShowQuoteChange(changes.showQuote.newValue)
-        }
-        if (changes.textSize) {
-          this.handleTextSizeChange(changes.textSize.newValue)
-        }
-      }
-    })
-  }
-
-  /** Injects or removes the quote when the showQuote setting changes. */
-  private handleShowQuoteChange(showQuote: boolean): void {
-    if (showQuote) {
-      if (this.isFeedBlocked && !this.quoteElement) {
-        const feed = this.getFeedElement()
-        if (feed) this.injectQuote(feed)
-      }
-    } else {
-      this.removeQuote()
-    }
-  }
-
-  /** Updates the quote text size when the textSize setting changes. */
-  private handleTextSizeChange(textSize: string): void {
-    if (this.quoteElement) {
-      quoteUtils.updateQuoteTextSize(this.quoteElement, textSize)
-    }
   }
 
   // --- Feed hide/show ---
@@ -210,7 +167,7 @@ export default abstract class WebsiteController {
 
   // --- Focus mode dispatch ---
 
-  /** Dispatches to focus(), unfocus(), or customFocus() based on the current mode. */
+  /** Dispatches to focus() or unfocus() based on the current mode. */
   renderFocusMode(focusMode: FocusMode) {
     switch (focusMode) {
       case FocusMode.Focused: {
@@ -219,10 +176,6 @@ export default abstract class WebsiteController {
       }
       case FocusMode.Unfocused: {
         this.unfocus()
-        return
-      }
-      case FocusMode.CustomFocus: {
-        this.customFocus()
         return
       }
     }
@@ -273,8 +226,4 @@ export default abstract class WebsiteController {
 
   protected abstract focus(): void
   protected abstract unfocus(): void
-  /** Custom focus mode — override in subclass. Defaults to full focus. */
-  protected customFocus(): void {
-    this.focus()
-  }
 }

@@ -1,13 +1,12 @@
 /**
- * The three visual states a website can be in:
- *   Focused     – all distracting regions hidden, quote injected into feed
- *   Unfocused   – everything restored to its natural state
- *   CustomFocus – side panels hidden only; feed remains visible (LinkedIn, X)
+ * The two visual states a website can be in:
+ *   Focused   – distracting regions hidden, quote injected into feed
+ *   Unfocused – feed visible, with low-value side distractions still hidden
+ *               where the site controller treats that as the sensible default
  */
 export enum FocusMode {
   Focused = 0,
   Unfocused = 1,
-  CustomFocus = 2,
 }
 
 export enum Website {
