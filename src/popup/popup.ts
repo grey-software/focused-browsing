@@ -1,5 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
-import { SIZE_MAP, SizeKey, DEFAULT_WEBSITE_TOGGLES } from '../ts/utils';
+import { SIZE_MAP, SizeKey } from '../ts/quotes/text-size';
+import { DEFAULT_WEBSITE_TOGGLES } from '../ts/websites/website-config';
 
 document.addEventListener('DOMContentLoaded', async () => {
   const showQuoteCheckbox = document.getElementById('show-quote') as HTMLInputElement;

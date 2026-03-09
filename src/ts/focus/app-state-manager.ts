@@ -1,5 +1,5 @@
 import { AppState, FocusMode, Website } from './types'
-import FocusUtils from './focus-utils'
+import { getFromLocalStorage, setInLocalStorage } from '../storage'
 
 /** Manages per-website focus mode state and persists it to local storage. */
 export default class AppStateManager {
@@ -11,7 +11,7 @@ export default class AppStateManager {
 
   /** Reloads the app state from local storage to pick up changes from other contexts. */
   async loadLatestState() {
-    this.appState = await FocusUtils.getFromLocalStorage('appState')
+    this.appState = await getFromLocalStorage('appState')
   }
 
   /** Returns the current focus mode for the given website. */
@@ -21,9 +21,9 @@ export default class AppStateManager {
 
   /** Persists the in-memory state for a website to local storage. */
   async updateAppState(currentWebsite: Website) {
-    let updatedState = await FocusUtils.getFromLocalStorage('appState')
+    let updatedState = await getFromLocalStorage('appState')
     updatedState[currentWebsite] = this.appState[currentWebsite]
-    FocusUtils.setInLocalStorage('appState', updatedState)
+    await setInLocalStorage('appState', updatedState)
     this.appState = updatedState
   }
 

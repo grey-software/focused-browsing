@@ -61,7 +61,6 @@ function inferRightPanelsFromFeedLayout(): HTMLElement[] {
         .filter((child) => child.children.length > 0)
         .filter((child) => child.id !== 'focus-mode-linkedin-quote')
         .filter((child) => !child.classList.contains('focus-quote'))
-        .filter((child) => !child.classList.contains('focus-quote-simple'))
 
       if (rightPanels.length > 0) return rightPanels
     }
