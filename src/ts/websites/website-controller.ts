@@ -83,7 +83,7 @@ export default abstract class WebsiteController {
 
     this.isCreatingQuote = true
     try {
-      this.quoteElement = await quoteUtils.createQuoteElement()
+      this.quoteElement = quoteUtils.createQuoteElement()
       this.quoteElement.classList.add('focus-mode-quote')
       this.applyQuoteStyles(this.quoteElement)
 

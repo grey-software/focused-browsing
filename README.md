@@ -31,7 +31,7 @@ the popup.
 2. Run `npm run build`
 3. Open your browser's extension page (`chrome://extensions`, `edge://extensions`, or `brave://extensions`)
 4. Enable "Developer mode"
-5. Click "Load unpacked" and select the `dist` folder
+5. Click "Load unpacked" and select the `extension-build` folder
 
 ## Browser support
 

@@ -22,7 +22,7 @@ const getRandomQuote = () => {
   return quotes[randomIndex];
 }
 
-const createQuoteElement = async (): Promise<HTMLDivElement> => {
+const createQuoteElement = (): HTMLDivElement => {
   const quote = getRandomQuote();
   const quoteDiv = document.createElement('div');
   quoteDiv.className = 'focus-quote';

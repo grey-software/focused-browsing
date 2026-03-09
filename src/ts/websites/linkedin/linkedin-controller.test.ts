@@ -7,6 +7,8 @@ jest.mock('./linkedin-utils', () => ({
     isHomePage: jest.fn(),
     getLinkedInFeed: jest.fn(),
     getLinkedInPanels: jest.fn(),
+    hasFeedLoaded: jest.fn(),
+    isFeedHidden: jest.fn(),
     arePanelsHidden: jest.fn(),
   },
 }))

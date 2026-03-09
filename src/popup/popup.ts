@@ -4,7 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const openOptionsButton = document.getElementById('open-options') as HTMLButtonElement | null;
   if (!openOptionsButton) return;
 
-  openOptionsButton.addEventListener('click', async () => {
-    await browser.runtime.openOptionsPage();
+  openOptionsButton.addEventListener('click', () => {
+    browser.runtime.openOptionsPage().catch((error) => {
+      console.error('Failed to open options page', error);
+    });
   });
 });

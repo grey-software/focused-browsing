@@ -16,8 +16,8 @@ describe('Quote Utils', () => {
   describe('createQuoteElement', () => {
     let quoteElement: HTMLDivElement;
 
-    beforeEach(async () => {
-      quoteElement = await quoteUtils.createQuoteElement();
+    beforeEach(() => {
+      quoteElement = quoteUtils.createQuoteElement();
     });
 
     it('should create a div with correct class', () => {

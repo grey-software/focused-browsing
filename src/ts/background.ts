@@ -24,10 +24,8 @@ const appState: AppState = {
 
 // In MV3 the worker restarts frequently. Reset appState on startup so each
 // worker begins from the same focused baseline.
-browser.storage.local.get(['appState']).then(() => {
-  browser.storage.local.set({
-    appState: appState,
-  })
+browser.storage.local.set({
+  appState: appState,
 })
 
 // Atomically checks whether focus.js has already been injected into a tab,
