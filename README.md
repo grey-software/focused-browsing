@@ -8,7 +8,7 @@ Instead of blocking entire websites, Focused Browsing selectively hides the part
 
 ### Supported sites
 - **LinkedIn**: Focused mode hides the feed and side panels. Unfocused mode restores the feed but still hides the side panels.
-- **YouTube**: Hides recommended videos, comments, and suggestions while preserving video playback.
+- **YouTube**: Focused mode hides recommendations, comments, and suggestion rails while preserving video playback. Unfocused mode restores the standard page around the video player.
 - **X**: Focused mode hides the home feed and sidebar. Unfocused mode restores the feed but still hides the sidebar.
 
 ## How to use it
@@ -21,9 +21,8 @@ On LinkedIn and X, **Unfocused** still keeps the side panels hidden.
 Click the extension icon for a compact status view and shortcut reference.
 
 ### Settings page
-Advanced controls will live on a separate extension page. The scaffold is now
-part of the extension so future customization can move there without bloating
-the popup.
+The popup's `Open Settings` action opens the separate extension settings page.
+That page is scaffold-only today and does not expose user controls yet.
 
 ## Installation
 

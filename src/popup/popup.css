@@ -3,7 +3,7 @@
   --ink: #0f172a;
   --muted: #5b6474;
   --rule: #dbe4f0;
-  --accent: #3b82f6;
+  --accent: #2563eb;
 }
 
 * {
@@ -52,7 +52,7 @@ body {
 
 .title {
   font-size: 38px;
-  line-height: 0.92;
+  line-height: 1.04;
   letter-spacing: -0.06em;
   max-width: 250px;
   margin-top: 6px;

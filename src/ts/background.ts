@@ -24,9 +24,17 @@ const appState: AppState = {
 
 // In MV3 the worker restarts frequently. Reset appState on startup so each
 // worker begins from the same focused baseline.
-browser.storage.local.set({
-  appState: appState,
-})
+async function initializeAppState(): Promise<void> {
+  try {
+    await browser.storage.local.set({
+      appState: appState,
+    })
+  } catch (error) {
+    console.error('Failed to initialize app state:', error)
+  }
+}
+
+void initializeAppState()
 
 // Atomically checks whether focus.js has already been injected into a tab,
 // and claims the loading slot if not. executeScript runs the function inside
