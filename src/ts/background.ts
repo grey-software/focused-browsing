@@ -22,19 +22,19 @@ const appState: AppState = {
   Unsupported: FocusMode.Unfocused,
 }
 
-let activeURL: string | undefined = ''
+// In MV3 the worker restarts frequently. Reset appState on startup so each
+// worker begins from the same focused baseline.
+async function initializeAppState(): Promise<void> {
+  try {
+    await browser.storage.local.set({
+      appState: appState,
+    })
+  } catch (error) {
+    console.error('Failed to initialize app state:', error)
+  }
+}
 
-// Only populate missing keys on service worker startup. In MV3, the worker is
-// killed and restarted frequently — reading first avoids overwriting user
-// preferences (showQuote, textSize) that were changed via the popup.
-// appState is always reset to Focused so each restart begins in focus mode.
-browser.storage.local.get(['appState', 'showQuote', 'textSize']).then((existing) => {
-  browser.storage.local.set({
-    appState: appState,
-    showQuote: existing.showQuote ?? true,
-    textSize: existing.textSize ?? 'medium',
-  })
-})
+void initializeAppState()
 
 // Atomically checks whether focus.js has already been injected into a tab,
 // and claims the loading slot if not. executeScript runs the function inside
@@ -109,7 +109,6 @@ export async function loadFocusScriptOnTabChange(
     if (shouldLoad) {
       try {
         await loadFocusScript(tabId)
-        activeURL = url
       } catch (error) {
         // Injection failed after claiming the slot — clear the flag so a
         // future onUpdated event can retry. Without this, the tab would be

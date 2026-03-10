@@ -6,6 +6,7 @@ export default class LinkedInController extends WebsiteController {
   protected readonly quotePosition = 'prepend' as const
 
   private readonly quoteElementId = 'focus-mode-linkedin-quote'
+  private readonly concealedPanels = new Map<HTMLElement, ConcealedPanelStyles>()
 
   protected getFeedElement(): HTMLElement | null {
     return LinkedInUtils.getLinkedInFeed() as HTMLElement | null
@@ -31,6 +32,7 @@ export default class LinkedInController extends WebsiteController {
   /** Hides the feed and side panels, sets up observers for both. */
   focus() {
     console.log('LinkedInController: Entering focus mode.')
+    this.restoreConcealedPanels()
 
     // Immediate blocking
     if (LinkedInUtils.isHomePage(document.URL)) {
@@ -60,22 +62,18 @@ export default class LinkedInController extends WebsiteController {
     })
   }
 
-  /** Hides only the side panels while keeping the feed visible. */
-  customFocus() {
-    console.log('LinkedInController: Entering custom focus mode (panels only).')
-
-    // Stop any existing watchers before setting up new ones
+  /** Shows the feed but keeps nuisance side panels hidden. */
+  unfocus() {
+    console.log('LinkedInController: Entering unfocused mode (feed visible, panels hidden).')
     this.stopWatchingAll()
     this.clearAllIntervals()
+    this.restoreConcealedPanels()
 
     if (LinkedInUtils.isHomePage(document.URL)) {
-      // Show feed (in case coming from full focus)
       this.setFeedVisibility(true)
-      // Hide side panels
       this.hidePanels()
     }
 
-    // Only watch for panel distractions, not feed
     this.setupDistraction({
       name: 'linkedin-panel',
       observeTarget: PANEL_OBSERVE_TARGETS,
@@ -86,22 +84,34 @@ export default class LinkedInController extends WebsiteController {
     })
   }
 
-  /** Stops all observers and restores all hidden elements. */
-  unfocus() {
-    console.log('LinkedInController: Exiting focus mode.')
-    this.stopWatchingAll()
-    this.clearAllIntervals()
-
-    if (LinkedInUtils.isHomePage(document.URL)) {
-      this.setFeedVisibility(true)
-    }
-  }
-
   /** Hides panels found via CSS selectors (PANEL_SELECTORS). */
   private hidePanels(): void {
     LinkedInUtils.getLinkedInPanels().forEach((panel) => {
-      this.hideElement(panel)
+      this.concealPanel(panel)
     })
+  }
+
+  private concealPanel(panel: HTMLElement): void {
+    if (!this.concealedPanels.has(panel)) {
+      this.concealedPanels.set(panel, {
+        visibility: panel.style.visibility,
+        opacity: panel.style.opacity,
+        pointerEvents: panel.style.pointerEvents,
+      })
+    }
+
+    panel.style.setProperty('visibility', 'hidden', 'important')
+    panel.style.setProperty('opacity', '0', 'important')
+    panel.style.setProperty('pointer-events', 'none', 'important')
+  }
+
+  private restoreConcealedPanels(): void {
+    this.concealedPanels.forEach((styles, panel) => {
+      restoreInlineStyle(panel, 'visibility', styles.visibility)
+      restoreInlineStyle(panel, 'opacity', styles.opacity)
+      restoreInlineStyle(panel, 'pointer-events', styles.pointerEvents)
+    })
+    this.concealedPanels.clear()
   }
 }
 
@@ -109,3 +119,18 @@ export default class LinkedInController extends WebsiteController {
 // which kills any observer attached to them
 const FEED_OBSERVE_TARGETS = '.scaffold-layout__main, main#workspace, [role="main"], body'
 const PANEL_OBSERVE_TARGETS = 'body'
+
+interface ConcealedPanelStyles {
+  visibility: string
+  opacity: string
+  pointerEvents: string
+}
+
+function restoreInlineStyle(element: HTMLElement, property: string, value: string): void {
+  if (value === '') {
+    element.style.removeProperty(property)
+    return
+  }
+
+  element.style.setProperty(property, value)
+}

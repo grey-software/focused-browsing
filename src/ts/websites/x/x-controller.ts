@@ -66,10 +66,8 @@ export default class XController extends WebsiteController {
     })
   }
 
-  /** Hides only the sidebar while keeping the feed visible. */
-  customFocus() {
-    console.log('XController: Entering custom focus mode (sidebar only).')
-
+  unfocus() {
+    console.log('XController: Entering unfocused mode (feed visible, sidebar hidden).')
     this.stopWatchingAll()
     this.clearAllIntervals()
 
@@ -88,24 +86,8 @@ export default class XController extends WebsiteController {
     })
   }
 
-  unfocus() {
-    console.log('XController: Exiting focus mode.')
-    this.stopWatchingAll()
-    this.clearAllIntervals()
-
-    if (XUtils.isHomePage(document.URL)) {
-      this.setFeedVisibility(true)
-      this.showSidebar()
-    }
-  }
-
   private hideSidebar(): void {
     const sidebar = XUtils.getXSidebar()
     if (sidebar) this.hideElement(sidebar)
-  }
-
-  private showSidebar(): void {
-    const sidebar = XUtils.getXSidebar()
-    if (sidebar) this.showElement(sidebar)
   }
 }

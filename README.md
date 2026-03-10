@@ -1,34 +1,28 @@
 # Focused Browsing
 
-A browser extension that hides distracting content on LinkedIn and YouTube, letting you use these sites productively without getting pulled into endless scrolling.
+A browser extension that hides distracting content on LinkedIn, YouTube, and X, letting you use these sites productively without getting pulled into endless scrolling.
 
 ## What it does
 
 Instead of blocking entire websites, Focused Browsing selectively hides the parts that waste your time while keeping the parts you actually need.
 
-### LinkedIn
-- **Full focus mode**: Hides the feed and side panels (news, trending, "Add to your feed"). Replaces the feed with an inspirational quote.
-- **Custom focus mode**: Hides only the side panels while keeping the main feed visible. Useful when you want to browse your feed without sidebar distractions.
-
-### YouTube
-- **Focus mode**: Hides recommended videos, comments, and suggestions while preserving video playback.
+### Supported sites
+- **LinkedIn**: Focused mode hides the feed and side panels. Unfocused mode restores the feed but still hides the side panels.
+- **YouTube**: Focused mode hides recommendations, comments, and suggestion rails while preserving video playback. Unfocused mode restores the standard page around the video player.
+- **X**: Focused mode hides the home feed and sidebar. Unfocused mode restores the feed but still hides the sidebar.
 
 ## How to use it
 
 ### Toggle focus mode
-Press **Left Shift + Right Shift** on any supported site to cycle through focus modes.
-
-With custom focus enabled for LinkedIn, the cycle is:
-**Full Focus** → **Custom Focus** → **Unfocused** → **Full Focus**
-
-Without custom focus, it toggles between **Full Focus** and **Unfocused**.
+Press **Left Shift + Right Shift** on any supported site to switch between **Focused** and **Unfocused**.
+On LinkedIn and X, **Unfocused** still keeps the side panels hidden.
 
 ### Extension popup
-Click the extension icon to access settings:
-- **LinkedIn** / **YouTube** toggles: Enable or disable the extension per site
-- **Custom focus** (under LinkedIn): Enable the custom focus mode that hides only side panels
-- **Show inspirational quotes**: Toggle motivational quotes that replace hidden feeds
-- **Text size**: Adjust quote text size (S / M / L / XL)
+Click the extension icon for a compact status view and shortcut reference.
+
+### Settings page
+The popup's `Open Settings` action opens the separate extension settings page.
+That page is scaffold-only today and does not expose user controls yet.
 
 ## Installation
 
@@ -36,7 +30,7 @@ Click the extension icon to access settings:
 2. Run `npm run build`
 3. Open your browser's extension page (`chrome://extensions`, `edge://extensions`, or `brave://extensions`)
 4. Enable "Developer mode"
-5. Click "Load unpacked" and select the `dist` folder
+5. Click "Load unpacked" and select the `extension-build` folder
 
 ## Browser support
 
@@ -50,11 +44,10 @@ Click the extension icon to access settings:
 ## Troubleshooting
 
 **Extension not working?**
-- Make sure the site is enabled in the popup
-- Try refreshing the page after enabling a site
+- Refresh the current page on a supported site
 
 **Keyboard shortcut not working?**
-- Confirm you're on a supported site with the extension enabled for it
+- Confirm you're on a supported site
 
 **Content not hiding?**
 - Try toggling the extension off and on for that site

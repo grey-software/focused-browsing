@@ -6,101 +6,32 @@
     <meta charset="UTF-8" />
   </head>
   <body>
-    <div class="popup-container">
-      <div class="header">
-        <div class="brand">
-          <h1 class="title">Focused Browsing</h1>
+    <main class="popup-shell">
+      <div class="index-row">
+        <span class="index-label">Focused Browsing</span>
+      </div>
+
+      <div class="top-rule"></div>
+      <h1 class="title">Reclaim Your Focus</h1>
+      <p class="summary">LinkedIn, YouTube, and X start in Focused mode.</p>
+
+      <div class="info-grid">
+        <div class="info-row">
+          <span class="info-label">Sites</span>
+          <span class="info-value">LinkedIn, YouTube, X</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Shortcut</span>
+          <span class="info-value">Left Shift + Right Shift</span>
         </div>
       </div>
 
-      <div class="shortcut-section">
-        <div class="shortcut-label">Toggle focus mode</div>
-        <div class="shortcut-keys">
-          <kbd class="key">⇧</kbd>
-          <span class="plus">+</span>
-          <kbd class="key">⇧</kbd>
-        </div>
-        <div class="shortcut-hint">Left Shift + Right Shift</div>
+      <div class="actions">
+        <button type="button" class="options-button" id="open-options">
+          Open Settings
+        </button>
       </div>
-
-      <div class="settings-section">
-        <div class="setting-row">
-          <div class="setting-info">
-            <label class="setting-label" for="linkedin-toggle">LinkedIn</label>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="linkedin-toggle" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <div class="setting-row sub-setting" id="linkedin-custom-focus-row">
-          <div class="setting-info">
-            <label class="setting-label" for="linkedin-custom-focus">Custom focus</label>
-            <span class="setting-description">Hide only side panels, keep the feed</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="linkedin-custom-focus" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <div class="setting-row">
-          <div class="setting-info">
-            <label class="setting-label" for="youtube-toggle">YouTube</label>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="youtube-toggle" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <div class="setting-row">
-          <div class="setting-info">
-            <label class="setting-label" for="x-toggle">X</label>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="x-toggle" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <div class="setting-row sub-setting" id="x-custom-focus-row">
-          <div class="setting-info">
-            <label class="setting-label" for="x-custom-focus">Custom focus</label>
-            <span class="setting-description">Hide only the sidebar, keep the feed</span>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="x-custom-focus" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-      </div>
-
-      <div class="settings-section">
-        <div class="setting-row">
-          <div class="setting-info">
-            <label class="setting-label" for="show-quote">Show inspirational quotes</label>
-          </div>
-          <label class="toggle">
-            <input type="checkbox" id="show-quote" />
-            <span class="toggle-slider"></span>
-          </label>
-        </div>
-
-        <div class="setting-row" id="font-size-row">
-          <div class="setting-info">
-            <label class="setting-label" for="font-size">Text size</label>
-          </div>
-          <div class="size-selector">
-            <button type="button" class="size-option" data-size="small">S</button>
-            <button type="button" class="size-option" data-size="medium">M</button>
-            <button type="button" class="size-option" data-size="large">L</button>
-            <button type="button" class="size-option" data-size="xlarge">XL</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
     <script src="../popup.js"></script>
   </body>
 </html>

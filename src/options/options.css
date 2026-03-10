@@ -1,0 +1,54 @@
+:root {
+  --paper: #f5f7fa;
+  --ink: #0f172a;
+  --muted: #5b6474;
+  --rule: #dbe4f0;
+  --accent: #3b82f6;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.page {
+  width: min(960px, calc(100vw - 48px));
+  margin: 0 auto;
+  padding: 48px 0 72px;
+}
+
+.hero {
+  display: grid;
+  gap: 14px;
+  padding: 0 0 32px;
+}
+
+.hero-index {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.hero-title {
+  max-width: 720px;
+  font-size: clamp(40px, 7vw, 72px);
+  line-height: 0.96;
+  letter-spacing: -0.05em;
+}
+
+@media (max-width: 800px) {
+  .page {
+    width: min(100vw - 32px, 960px);
+    padding-top: 32px;
+  }
+}
